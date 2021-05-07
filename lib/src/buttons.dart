@@ -19,7 +19,7 @@ class AgoraVideoButtons extends StatefulWidget {
   final Color disableVideoBgColor;
   // Default button size = 20.0
   final double buttonSize;
-  // Default disconnect button size = 20.0
+  // Default disconnect button size = 35.0
   final double disconnectButtonSize;
   // Adds a vertical padding to the set of button
   final double bottomPadding;
@@ -51,6 +51,7 @@ class AgoraVideoButtons extends StatefulWidget {
 
 class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   bool muted = false;
+  bool disabledVideo = false;
 
   @override
   void initState() {
@@ -109,6 +110,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
               muteMicButton(),
               disconnectCallButton(),
               switchCameraButton(),
+              disableVideoButton(),
               if (widget.extraButtons != null)
                 for (var i = 0; i < widget.extraButtons.length; i++)
                   widget.extraButtons[i]
@@ -178,6 +180,33 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     );
   }
 
+  Widget disableVideoButton() {
+    return RawMaterialButton(
+      onPressed: _onToggleCamera,
+      child: Icon(
+        disabledVideo ? Icons.videocam_off : Icons.videocam,
+        color: disabledVideo
+            ? widget.muteButtonColor == null
+                ? Colors.white
+                : widget.muteButtonColor
+            : widget.unmuteButtonColor == null
+                ? Colors.blueAccent
+                : widget.unmuteButtonColor,
+        size: widget.buttonSize == null ? 20.0 : widget.buttonSize,
+      ),
+      shape: CircleBorder(),
+      elevation: 2.0,
+      fillColor: disabledVideo
+          ? widget.muteButtonBgColor == null
+              ? Colors.blueAccent
+              : widget.muteButtonBgColor
+          : widget.unmuteButtonBgColor == null
+              ? Colors.white
+              : widget.unmuteButtonBgColor,
+      padding: const EdgeInsets.all(12.0),
+    );
+  }
+
   void _onCallEnd(BuildContext context) {
     Navigator.pop(context);
   }
@@ -187,6 +216,18 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
       muted = !muted;
     });
     globals.engine.muteLocalAudioStream(muted);
+  }
+
+  void _onToggleCamera() {
+    setState(() {
+      disabledVideo = !disabledVideo;
+    });
+    globals.engine.muteLocalVideoStream(disabledVideo);
+    if (disabledVideo) {
+      globals.engine.disableVideo();
+    } else {
+      globals.engine.enableVideo();
+    }
   }
 
   void _onSwitchCamera() {

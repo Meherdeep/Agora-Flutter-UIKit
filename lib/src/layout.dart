@@ -7,8 +7,15 @@ import 'enums.dart';
 
 class AgoraVideoViewer extends StatefulWidget {
   final Layout layoutType;
+  final double floatingLayoutContainerHeight;
+  final double floatingLayoutContainerWidth;
 
-  const AgoraVideoViewer({Key key, this.layoutType}) : super(key: key);
+  const AgoraVideoViewer({
+    Key key,
+    this.layoutType,
+    this.floatingLayoutContainerHeight,
+    this.floatingLayoutContainerWidth,
+  }) : super(key: key);
 
   @override
   _AgoraVideoViewerState createState() => _AgoraVideoViewerState();
@@ -16,6 +23,7 @@ class AgoraVideoViewer extends StatefulWidget {
 
 class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   var userList = <int>[];
+  int activeState = 0;
 
   ScrollController scrollController = ScrollController(
     initialScrollOffset: 1, // or whatever offset you wish
@@ -92,45 +100,58 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
 
   // Floating Video Layout
   Widget viewFloat() {
-    final views = _getRenderViews();
+    var views = _getRenderViews();
     print("VIEWS: $views");
-    var activeState = 0;
 
     return views.length > 1
         ? Column(
             children: [
               Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: MediaQuery.of(context).size.width,
-                  alignment: Alignment.topLeft,
-                  child: ListView.builder(
-                      controller: scrollController,
-                      scrollDirection: Axis.horizontal,
-                      physics: BouncingScrollPhysics(),
-                      itemCount: views.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return index == 0
-                            ? Container()
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.2,
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
-                                      child: _videoView(views[index])),
-                                ],
-                              );
-                      })),
-              Expanded(
-                child: Column(
-                  children: [
-                    _videoView(views[activeState]),
+                padding: EdgeInsets.all(3),
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.bottomLeft,
+                child: ReorderableListView(
+                  scrollDirection: Axis.horizontal,
+                  onReorder: (int oldIndex, int newIndex) {
+                    setState(() {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
+                      }
+                      final Widget item = views.removeAt(oldIndex);
+                      views.insert(newIndex, item);
+                    });
+                  },
+                  children: <Widget>[
+                    for (var index = 1; index < views.length; index++)
+                      Container(
+                        padding: EdgeInsets.only(right: 3),
+                        key: Key('$index'),
+                        height: widget.floatingLayoutContainerHeight == null
+                            ? MediaQuery.of(context).size.height * 0.2
+                            : widget.floatingLayoutContainerHeight,
+                        width: widget.floatingLayoutContainerWidth == null
+                            ? MediaQuery.of(context).size.width / 3
+                            : widget.floatingLayoutContainerWidth,
+                        child: Column(
+                          children: [
+                            _videoView(views[index]),
+                          ],
+                        ),
+                      )
                   ],
                 ),
-              )
+              ),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
+                  child: Column(
+                    children: [
+                      _videoView(views[activeState]),
+                    ],
+                  ),
+                ),
+              ),
             ],
           )
         : Container(

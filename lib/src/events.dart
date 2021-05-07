@@ -1,13 +1,16 @@
 import 'package:agora_flutter_uikit/global/global_variable.dart';
+import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter_super_state/flutter_super_state.dart';
 
 class AgoraEvents extends StoreModule {
-  AgoraEvents(Store store, RtcEngine engine) : super(store) {
-    addAgoraEventHandlers(engine);
+  AgoraEvents(Store store, RtcEngine engine, String channelName, String baseUrl)
+      : super(store) {
+    addAgoraEventHandlers(engine, channelName, baseUrl);
   }
 
-  void addAgoraEventHandlers(RtcEngine engine) {
+  void addAgoraEventHandlers(
+      RtcEngine engine, String channelName, String baseUrl) {
     engine.setEventHandler(RtcEngineEventHandler(
       error: (code) {
         setState(() {
@@ -31,7 +34,6 @@ class AgoraEvents extends StoreModule {
           final info = 'userJoined: $uid';
           users.value = [...users.value, uid];
           print(info);
-          // print("Updated user list: ${users.value}");
         });
       },
       userOffline: (uid, reason) {
@@ -43,7 +45,10 @@ class AgoraEvents extends StoreModule {
           tempList.remove(uid);
           users.value = [...tempList];
         });
-        print("Updated user leftlist: ${users.value}");
+      },
+      tokenPrivilegeWillExpire: (token) async {
+        await store.getModule<AgoraTokens>().getToken(baseUrl, channelName);
+        await engine.renewToken(token);
       },
       firstRemoteVideoFrame: (uid, width, height, elapsed) {
         setState(() {
