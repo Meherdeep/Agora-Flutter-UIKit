@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:agora_flutter_uikit/global/global_variable.dart';
+import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,22 +28,25 @@ class AgoraFlutterUIKit {
     @required String channelName,
     AreaCode areaCode,
     String token,
+    String tokenUrl,
     List<EnabledPermission> enabledPermission,
     ChannelProfiles channelProfile,
     UserRole userRole,
   }) {
     handleCameraAndMicPermission(enabledPermission);
-    _initAgoraRtcEngine(
-        appId, channelName, token, areaCode, channelProfile, userRole);
+    _initAgoraRtcEngine(appId, channelName, token, tokenUrl, areaCode,
+        channelProfile, userRole);
   }
 
   Future<void> _initAgoraRtcEngine(
-      @required String appId,
-      @required String channelName,
-      String token,
-      AreaCode areaCode,
-      ChannelProfiles channelProfile,
-      UserRole userRole) async {
+    @required String appId,
+    @required String channelName,
+    String tempToken,
+    String tokenUrl,
+    AreaCode areaCode,
+    ChannelProfiles channelProfile,
+    UserRole userRole,
+  ) async {
     try {
       if (areaCode != null) {
         engine = await RtcEngine.createWithConfig(
@@ -57,7 +61,10 @@ class AgoraFlutterUIKit {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
     await engine.enableVideo();
-    AgoraEvents(store, engine);
+    AgoraEvents(store, engine, channelName, tokenUrl);
+    if (tokenUrl != null) {
+      AgoraTokens(store: store, channelName: channelName, baseUrl: tokenUrl);
+    }
     if (channelProfile != null) {
       if (channelProfile == ChannelProfiles.Communication) {
         await engine.setChannelProfile(ChannelProfile.Communication);
@@ -80,15 +87,26 @@ class AgoraFlutterUIKit {
         print("You can set the user role only for live broadcasting mode");
       }
     }
-    store.getModule<AgoraEvents>().addAgoraEventHandlers(engine);
-    await engine.joinChannel(token, channelName, null, 0);
+    store
+        .getModule<AgoraEvents>()
+        .addAgoraEventHandlers(engine, channelName, tokenUrl);
+
+    if (tempToken != null) {
+      await engine.joinChannel(tempToken, channelName, null, 0);
+    } else {
+      if (tokenUrl != null) {
+        await store.getModule<AgoraTokens>().getToken(tokenUrl, channelName);
+        await engine.joinChannel(token.value, channelName, null, uid.value);
+      } else {
+        await engine.joinChannel(null, channelName, null, 0);
+      }
+    }
   }
 
   /// @name handleCameraAndMicPermission
   /// @description Function to request permission for Audio, video and Local Storage
   static Future<void> handleCameraAndMicPermission(
       List<EnabledPermission> permissions) async {
-    print("PERMISSION LENGTH: ${permissions.length}");
     for (int i = 0; i < permissions.length; i++) {
       if (permissions[i] == EnabledPermission.camera) {
         await Permission.camera.request();
