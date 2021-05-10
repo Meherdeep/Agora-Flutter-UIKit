@@ -9,21 +9,13 @@ class AgoraVideoButtons extends StatefulWidget {
   final bool autoHideButtons;
   // The default auto hide time = 5 seconds
   final int autoHideButtonTime;
-  final Color muteButtonColor;
-  final Color unmuteButtonColor;
-  final Color muteButtonBgColor;
-  final Color unmuteButtonBgColor;
-  final Color enableVideoColor;
-  final Color disableVideoColor;
-  final Color enableVideoBgColor;
-  final Color disableVideoBgColor;
-  // Default button size = 20.0
-  final double buttonSize;
-  // Default disconnect button size = 35.0
-  final double disconnectButtonSize;
   // Adds a vertical padding to the set of button
   final double bottomPadding;
   final Alignment buttonAlignment;
+  final Widget disconnectButtonChild;
+  final Widget muteButtonChild;
+  final Widget switchCameraButtonChild;
+  final Widget disableVideoButtonChild;
 
   const AgoraVideoButtons(
       {Key key,
@@ -31,18 +23,12 @@ class AgoraVideoButtons extends StatefulWidget {
       this.extraButtons,
       this.autoHideButtons,
       this.autoHideButtonTime,
-      this.muteButtonColor,
-      this.unmuteButtonColor,
-      this.muteButtonBgColor,
-      this.unmuteButtonBgColor,
-      this.enableVideoColor,
-      this.disableVideoColor,
-      this.enableVideoBgColor,
-      this.disableVideoBgColor,
-      this.buttonSize,
-      this.disconnectButtonSize,
       this.bottomPadding,
-      this.buttonAlignment})
+      this.buttonAlignment,
+      this.disconnectButtonChild,
+      this.muteButtonChild,
+      this.switchCameraButtonChild,
+      this.disableVideoButtonChild})
       : super(key: key);
 
   @override
@@ -122,92 +108,84 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   }
 
   Widget muteMicButton() {
-    return RawMaterialButton(
-      onPressed: _onToggleMute,
-      child: Icon(
-        muted ? Icons.mic_off : Icons.mic,
-        color: muted
-            ? widget.muteButtonColor == null
-                ? Colors.white
-                : widget.muteButtonColor
-            : widget.unmuteButtonColor == null
-                ? Colors.blueAccent
-                : widget.unmuteButtonColor,
-        size: widget.buttonSize == null ? 20.0 : widget.buttonSize,
-      ),
-      shape: CircleBorder(),
-      elevation: 2.0,
-      fillColor: muted
-          ? widget.muteButtonBgColor == null
-              ? Colors.blueAccent
-              : widget.muteButtonBgColor
-          : widget.unmuteButtonBgColor == null
-              ? Colors.white
-              : widget.unmuteButtonBgColor,
-      padding: const EdgeInsets.all(12.0),
-    );
+    return widget.muteButtonChild != null
+        ? RawMaterialButton(
+            onPressed: _onToggleMute,
+            child: widget.muteButtonChild,
+          )
+        : RawMaterialButton(
+            onPressed: _onToggleMute,
+            child: Icon(
+              muted ? Icons.mic_off : Icons.mic,
+              color: muted ? Colors.white : Colors.blueAccent,
+              size: 20.0,
+            ),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: muted ? Colors.blueAccent : Colors.white,
+            padding: const EdgeInsets.all(12.0),
+          );
   }
 
   Widget disconnectCallButton() {
-    return RawMaterialButton(
-      onPressed: () => _onCallEnd(context),
-      child: Icon(
-        Icons.call_end,
-        color: Colors.white,
-        size: widget.disconnectButtonSize == null
-            ? 35.0
-            : widget.disconnectButtonSize,
-      ),
-      shape: CircleBorder(),
-      elevation: 2.0,
-      fillColor: Colors.redAccent,
-      padding: const EdgeInsets.all(15.0),
-    );
+    return widget.disconnectButtonChild != null
+        ? RawMaterialButton(
+            onPressed: () => _onCallEnd(context),
+            child: widget.disconnectButtonChild,
+          )
+        : RawMaterialButton(
+            onPressed: () => _onCallEnd(context),
+            child: Icon(Icons.call_end, color: Colors.white, size: 35),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: Colors.redAccent,
+            padding: const EdgeInsets.all(15.0),
+          );
   }
 
   Widget switchCameraButton() {
-    return RawMaterialButton(
-      onPressed: _onSwitchCamera,
-      child: Icon(
-        Icons.switch_camera,
-        color: Colors.blueAccent,
-        size: widget.buttonSize == null ? 20.0 : widget.buttonSize,
-      ),
-      shape: CircleBorder(),
-      elevation: 2.0,
-      fillColor: Colors.white,
-      padding: const EdgeInsets.all(12.0),
-    );
+    return widget.switchCameraButtonChild != null
+        ? RawMaterialButton(
+            onPressed: _onSwitchCamera,
+            child: widget.switchCameraButtonChild,
+          )
+        : RawMaterialButton(
+            onPressed: _onSwitchCamera,
+            child: Icon(
+              Icons.switch_camera,
+              color: Colors.blueAccent,
+              size: 20.0,
+            ),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: Colors.white,
+            padding: const EdgeInsets.all(12.0),
+          );
   }
 
   Widget disableVideoButton() {
-    return RawMaterialButton(
-      onPressed: _onToggleCamera,
-      child: Icon(
-        disabledVideo ? Icons.videocam_off : Icons.videocam,
-        color: disabledVideo
-            ? widget.muteButtonColor == null
-                ? Colors.white
-                : widget.muteButtonColor
-            : widget.unmuteButtonColor == null
-                ? Colors.blueAccent
-                : widget.unmuteButtonColor,
-        size: widget.buttonSize == null ? 20.0 : widget.buttonSize,
-      ),
-      shape: CircleBorder(),
-      elevation: 2.0,
-      fillColor: disabledVideo
-          ? widget.muteButtonBgColor == null
-              ? Colors.blueAccent
-              : widget.muteButtonBgColor
-          : widget.unmuteButtonBgColor == null
-              ? Colors.white
-              : widget.unmuteButtonBgColor,
-      padding: const EdgeInsets.all(12.0),
-    );
+    return widget.disableVideoButtonChild != null
+        ? RawMaterialButton(
+            onPressed: _onToggleCamera,
+            child: widget.disableVideoButtonChild,
+          )
+        : RawMaterialButton(
+            onPressed: _onToggleCamera,
+            child: Icon(
+              disabledVideo ? Icons.videocam_off : Icons.videocam,
+              color: disabledVideo ? Colors.white : Colors.blueAccent,
+              size: 20.0,
+            ),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: disabledVideo ? Colors.blueAccent : Colors.white,
+            padding: const EdgeInsets.all(12.0),
+          );
   }
 
-  void _onCallEnd(BuildContext context) {
+  void _onCallEnd(BuildContext context) async {
+    await globals.engine.leaveChannel();
+    await globals.engine.destroy();
     Navigator.pop(context);
   }
 

@@ -12,7 +12,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final agView = AgoraFlutterUIKit(
-    appId: '<--Add your App Id Here--->',
+    appId: '<---Add your App Id here--->',
     enabledPermission: [EnabledPermission.camera, EnabledPermission.microphone],
     channelName: 'test',
   );
@@ -31,7 +31,17 @@ class _MyAppState extends State<MyApp> {
               AgoraVideoViewer(
                 layoutType: Layout.Floating,
               ),
-              AgoraVideoButtons(),
+              AgoraVideoButtons(
+                disconnectButtonChild: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration:
+                      BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                  child: Icon(
+                    Icons.ac_unit,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
