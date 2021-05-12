@@ -22,13 +22,14 @@ class AgoraVideoViewer extends StatefulWidget {
 }
 
 class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
-  var userList = <int>[];
   int activeState = 0;
+  bool statusCheck = false;
 
-  ScrollController scrollController = ScrollController(
-    initialScrollOffset: 1, // or whatever offset you wish
-    keepScrollOffset: true,
-  );
+  @override
+  void dispose() {
+    activeState = 0;
+    super.dispose();
+  }
 
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
@@ -47,6 +48,30 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
       ),
     );
     return list;
+  }
+
+  List<Widget> _getMaxViews() {
+    final List<StatefulWidget> list = [];
+    list.add(RtcLocalView.SurfaceView());
+    return list;
+  }
+
+  /// Helper function to get list of native views
+  List<Widget> _getMinViews() {
+    final List<StatefulWidget> list = [];
+    globals.users.value
+        .forEach((uid) => list.add(RtcRemoteView.SurfaceView(uid: uid)));
+    return list;
+  }
+
+  Widget _getLocalViews() {
+    return RtcLocalView.SurfaceView();
+  }
+
+  Widget _getRemoteViews(int uid) {
+    return RtcRemoteView.SurfaceView(
+      uid: uid,
+    );
   }
 
   /// Video view wrapper
@@ -110,104 +135,84 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
 
   // Floating Video Layout
   Widget viewFloat() {
-    var views = _getRenderViews();
-    print("VIEWS: $views");
-    Widget mainview = views.length > activeState
-        ? _getRenderViews().removeAt(activeState)
-        : _getRenderViews().removeAt(0);
+    final minViews = _getMinViews();
+    final maxViews = _getMaxViews();
+    print("min views length = ${minViews.length}");
+    print("max views length = ${maxViews.length}");
 
-    return views.length > 1
+    return minViews.length + maxViews.length > 1 &&
+            globals.users.value.length > 0
         ? Column(
             children: [
               Container(
-                padding: const EdgeInsets.all(3),
-                alignment: Alignment.topLeft,
                 height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.all(3),
+                alignment: Alignment.topLeft,
                 child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemCount: views.length,
-                  itemBuilder: (context, index) {
-                    return index != activeState && views[index] != mainview
-                        ? Padding(
-                            padding: const EdgeInsets.only(right: 3.0),
-                            child: Container(
-                              height:
-                                  widget.floatingLayoutContainerHeight == null
-                                      ? MediaQuery.of(context).size.height * 0.2
-                                      : widget.floatingLayoutContainerHeight,
-                              width: widget.floatingLayoutContainerWidth == null
-                                  ? MediaQuery.of(context).size.width / 3
-                                  : widget.floatingLayoutContainerWidth,
-                              child: Stack(
-                                alignment: Alignment.topLeft,
-                                children: [
-                                  Column(
-                                    children: [
-                                      _videoView(views[index]),
-                                    ],
-                                  ),
-                                  Container(
-                                    alignment: Alignment.topLeft,
-                                    height: MediaQuery.of(context).size.height *
-                                        0.04,
-                                    // color: Colors.black26.withOpacity(0.3),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.push_pin,
-                                            color: Colors.white,
-                                            size: 20,
-                                          ),
-                                          onPressed: () {
-                                            print("CLICK REGISTERED : $index");
-                                            setState(
-                                              () {
-                                                activeState = index;
-                                                mainview = _videoView(
-                                                  views[index],
-                                                );
-                                              },
-                                            );
-                                            print("LIST OF VIEWS : $views");
-                                          },
-                                        ),
-                                        Text(
-                                          'Index: $index',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                        : Container();
+                  itemCount: globals.users.value.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 3.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: GestureDetector(
+                          onTap: () {
+                            print("CLICK REGISTERED : $index");
+                            print("USER uid : ${globals.users.value[index]}");
+                            setState(
+                              () {
+                                final int temp = globals.maxUid.value;
+                                globals.maxUid.value =
+                                    globals.users.value[index];
+                                globals.users.value.removeAt(index);
+                                globals.users.value.add(temp);
+                              },
+                            );
+                            // print("LIST OF VIEWS : $views");
+                          },
+                          child: Column(
+                            children: [
+                              globals.users.value[index] ==
+                                      globals.localUid.value
+                                  ? _videoView(_getLocalViews())
+                                  : _videoView(_getRemoteViews(
+                                      globals.users.value[index])),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
-                  child: Column(
-                    children: [
-                      _videoView(mainview),
-                    ],
-                  ),
-                ),
-              ),
+              globals.maxUid.value == globals.localUid.value
+                  ? Expanded(
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
+                        child: Column(
+                          children: [
+                            _videoView(maxViews[0]),
+                          ],
+                        ),
+                      ),
+                    )
+                  : Expanded(
+                      child: Container(
+                        child: Column(
+                          children: [
+                            _videoView(_getRemoteViews(globals.maxUid.value))
+                          ],
+                        ),
+                      ),
+                    ),
             ],
           )
         : Container(
             child: Column(
-              children: <Widget>[_videoView(mainview)],
+              children: <Widget>[_videoView(_getLocalViews())],
             ),
           );
   }

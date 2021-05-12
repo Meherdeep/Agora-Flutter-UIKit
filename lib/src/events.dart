@@ -22,6 +22,8 @@ class AgoraEvents extends StoreModule {
         setState(() {
           final info = 'onJoinChannel: $channel, uid: $uid';
           print(info);
+          maxUid.value = uid;
+          localUid.value = uid;
         });
       },
       leaveChannel: (stats) {
@@ -44,6 +46,12 @@ class AgoraEvents extends StoreModule {
           tempList = users.value;
           tempList.remove(uid);
           users.value = [...tempList];
+          if (maxUid.value == uid) {
+            var temp2List = <dynamic>[];
+            temp2List = users.value;
+            temp2List.remove(localUid.value);
+            maxUid.value = localUid.value;
+          }
         });
       },
       tokenPrivilegeWillExpire: (token) async {
@@ -54,6 +62,15 @@ class AgoraEvents extends StoreModule {
         setState(() {
           final info = 'firstRemoteVideoFrame: $uid';
           print(info);
+        });
+      },
+      audioVolumeIndication: (speakers, totalVolume) {
+        print("Speakers: $speakers with total volume : $totalVolume");
+      },
+      activeSpeaker: (uid) {
+        print("Active speaker = $uid");
+        setState(() {
+          speakerUid.value = uid;
         });
       },
     ));

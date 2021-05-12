@@ -11,11 +11,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final agView = AgoraFlutterUIKit(
-    appId: '<---Add Your App Id here--->',
-    enabledPermission: [EnabledPermission.camera, EnabledPermission.microphone],
-    channelName: 'test',
-  );
+  @override
+  void initState() {
+    super.initState();
+    AgoraFlutterUIKit(
+      appId: '<---Add your App Id here--->',
+      enabledPermission: [
+        EnabledPermission.camera,
+        EnabledPermission.microphone
+      ],
+      channelName: 'test',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +38,7 @@ class _MyAppState extends State<MyApp> {
               AgoraVideoViewer(
                 layoutType: Layout.Floating,
               ),
-              AgoraVideoButtons(),
+              AgoraVideoButtons()
             ],
           ),
         ),
