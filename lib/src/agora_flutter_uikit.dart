@@ -97,6 +97,7 @@ class AgoraFlutterUIKit {
         print("You can set the user role only for live broadcasting mode");
       }
     }
+    await engine.enableAudioVolumeIndication(200, 3, true);
     store
         .getModule<AgoraEvents>()
         .addAgoraEventHandlers(engine, channelName, tokenUrl);
