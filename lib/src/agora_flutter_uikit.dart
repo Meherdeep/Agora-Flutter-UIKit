@@ -32,13 +32,22 @@ class AgoraFlutterUIKit {
     List<EnabledPermission> enabledPermission,
     ChannelProfiles channelProfile,
     UserRole userRole,
+    VideoEncoderConfiguration videoEncoderConfiguration,
   }) {
     handleCameraAndMicPermission(enabledPermission);
-    _initAgoraRtcEngine(appId, channelName, token, tokenUrl, areaCode,
-        channelProfile, userRole);
+    _initAgoraRtcEngine(
+      appId: appId,
+      channelName: channelName,
+      tempToken: token,
+      tokenUrl: tokenUrl,
+      areaCode: areaCode,
+      channelProfile: channelProfile,
+      userRole: userRole,
+      videoEncoderConfiguration: videoEncoderConfiguration,
+    );
   }
 
-  Future<void> _initAgoraRtcEngine(
+  Future<void> _initAgoraRtcEngine({
     @required String appId,
     @required String channelName,
     String tempToken,
@@ -46,7 +55,8 @@ class AgoraFlutterUIKit {
     AreaCode areaCode,
     ChannelProfiles channelProfile,
     UserRole userRole,
-  ) async {
+    VideoEncoderConfiguration videoEncoderConfiguration,
+  }) async {
     try {
       if (areaCode != null) {
         engine = await RtcEngine.createWithConfig(
@@ -90,7 +100,9 @@ class AgoraFlutterUIKit {
     store
         .getModule<AgoraEvents>()
         .addAgoraEventHandlers(engine, channelName, tokenUrl);
-
+    if (videoEncoderConfiguration != null) {
+      await engine.setVideoEncoderConfiguration(videoEncoderConfiguration);
+    }
     if (tempToken != null) {
       await engine.joinChannel(tempToken, channelName, null, 0);
     } else {

@@ -33,9 +33,19 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    list.add(RtcLocalView.SurfaceView());
-    globals.users.value
-        .forEach((uid) => list.add(RtcRemoteView.SurfaceView(uid: uid)));
+    list.add(
+      RtcLocalView.SurfaceView(
+        zOrderMediaOverlay: true,
+      ),
+    );
+    globals.users.value.forEach(
+      (uid) => list.add(
+        RtcRemoteView.SurfaceView(
+          uid: uid,
+          zOrderMediaOverlay: true,
+        ),
+      ),
+    );
     return list;
   }
 
@@ -102,44 +112,85 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   Widget viewFloat() {
     var views = _getRenderViews();
     print("VIEWS: $views");
+    Widget mainview = views.length > activeState
+        ? _getRenderViews().removeAt(activeState)
+        : _getRenderViews().removeAt(0);
 
     return views.length > 1
         ? Column(
             children: [
               Container(
-                padding: EdgeInsets.all(3),
+                padding: const EdgeInsets.all(3),
+                alignment: Alignment.topLeft,
                 height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width,
-                alignment: Alignment.bottomLeft,
-                child: ReorderableListView(
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  onReorder: (int oldIndex, int newIndex) {
-                    setState(() {
-                      if (oldIndex < newIndex) {
-                        newIndex -= 1;
-                      }
-                      final Widget item = views.removeAt(oldIndex);
-                      views.insert(newIndex, item);
-                    });
+                  itemCount: views.length,
+                  itemBuilder: (context, index) {
+                    return index != activeState && views[index] != mainview
+                        ? Padding(
+                            padding: const EdgeInsets.only(right: 3.0),
+                            child: Container(
+                              height:
+                                  widget.floatingLayoutContainerHeight == null
+                                      ? MediaQuery.of(context).size.height * 0.2
+                                      : widget.floatingLayoutContainerHeight,
+                              width: widget.floatingLayoutContainerWidth == null
+                                  ? MediaQuery.of(context).size.width / 3
+                                  : widget.floatingLayoutContainerWidth,
+                              child: Stack(
+                                alignment: Alignment.topLeft,
+                                children: [
+                                  Column(
+                                    children: [
+                                      _videoView(views[index]),
+                                    ],
+                                  ),
+                                  Container(
+                                    alignment: Alignment.topLeft,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.04,
+                                    // color: Colors.black26.withOpacity(0.3),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.push_pin,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                          onPressed: () {
+                                            print("CLICK REGISTERED : $index");
+                                            setState(
+                                              () {
+                                                activeState = index;
+                                                mainview = _videoView(
+                                                  views[index],
+                                                );
+                                              },
+                                            );
+                                            print("LIST OF VIEWS : $views");
+                                          },
+                                        ),
+                                        Text(
+                                          'Index: $index',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        : Container();
                   },
-                  children: <Widget>[
-                    for (var index = 1; index < views.length; index++)
-                      Container(
-                        padding: EdgeInsets.only(right: 3),
-                        key: Key('$index'),
-                        height: widget.floatingLayoutContainerHeight == null
-                            ? MediaQuery.of(context).size.height * 0.2
-                            : widget.floatingLayoutContainerHeight,
-                        width: widget.floatingLayoutContainerWidth == null
-                            ? MediaQuery.of(context).size.width / 3
-                            : widget.floatingLayoutContainerWidth,
-                        child: Column(
-                          children: [
-                            _videoView(views[index]),
-                          ],
-                        ),
-                      )
-                  ],
                 ),
               ),
               Expanded(
@@ -147,7 +198,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                   padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
                   child: Column(
                     children: [
-                      _videoView(views[activeState]),
+                      _videoView(mainview),
                     ],
                   ),
                 ),
@@ -156,7 +207,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           )
         : Container(
             child: Column(
-              children: <Widget>[_videoView(views[0])],
+              children: <Widget>[_videoView(mainview)],
             ),
           );
   }
