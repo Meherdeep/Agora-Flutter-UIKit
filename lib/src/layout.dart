@@ -28,6 +28,18 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   bool statusCheck = false;
 
   @override
+  void initState() {
+    widget.enableActiveSpeaker == true
+        ? setState(() {
+            globals.isActiveSpeakerEnabled = true;
+          })
+        : setState(() {
+            globals.isActiveSpeakerEnabled = false;
+          });
+    super.initState();
+  }
+
+  @override
   void dispose() {
     activeState = 0;
     super.dispose();
@@ -154,6 +166,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                   itemCount: globals.users.value.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
+                      key: Key('$index'),
                       padding: const EdgeInsets.only(right: 3.0),
                       child: Container(
                         height: MediaQuery.of(context).size.height * 0.2,
@@ -161,17 +174,17 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                         child: GestureDetector(
                           onTap: () {
                             print("CLICK REGISTERED : $index");
-                            print("USER uid : ${globals.users.value[index]}");
-                            setState(
-                              () {
-                                final int temp = globals.maxUid.value;
-                                globals.maxUid.value =
-                                    globals.users.value[index];
-                                globals.users.value.removeAt(index);
-                                globals.users.value.add(temp);
-                              },
-                            );
-                            // print("LIST OF VIEWS : $views");
+                            if (!globals.isActiveSpeakerEnabled) {
+                              setState(
+                                () {
+                                  final int temp = globals.maxUid.value;
+                                  globals.maxUid.value =
+                                      globals.users.value[index];
+                                  globals.users.value.removeAt(index);
+                                  globals.users.value.add(temp);
+                                },
+                              );
+                            }
                           },
                           child: Column(
                             children: [
