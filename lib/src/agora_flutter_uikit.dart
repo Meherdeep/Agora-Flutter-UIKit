@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:agora_flutter_uikit/global/global_variable.dart';
+import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +9,6 @@ import 'package:flutter_super_state/flutter_super_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:agora_flutter_uikit/src/events.dart';
-
-import 'enums.dart';
 
 class AgoraFlutterUIKit {
   static const MethodChannel _channel =
@@ -29,9 +27,9 @@ class AgoraFlutterUIKit {
     AreaCode areaCode,
     String token,
     String tokenUrl,
-    List<EnabledPermission> enabledPermission,
-    ChannelProfiles channelProfile,
-    UserRole userRole,
+    List<Permission> enabledPermission,
+    ChannelProfile channelProfile,
+    ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
   }) {
     handleCameraAndMicPermission(enabledPermission);
@@ -53,65 +51,63 @@ class AgoraFlutterUIKit {
     String tempToken,
     String tokenUrl,
     AreaCode areaCode,
-    ChannelProfiles channelProfile,
-    UserRole userRole,
+    ChannelProfile channelProfile,
+    ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
   }) async {
     try {
       if (areaCode != null) {
-        engine = await RtcEngine.createWithConfig(
+        globals.engine = await RtcEngine.createWithConfig(
           RtcEngineConfig(appId, areaCode: areaCode),
         );
       } else {
-        engine = await RtcEngine.createWithConfig(
+        globals.engine = await RtcEngine.createWithConfig(
           RtcEngineConfig(appId),
         );
       }
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
-    await engine.enableVideo();
-    AgoraEvents(store, engine, channelName, tokenUrl);
+    await globals.engine.enableVideo();
+    AgoraEvents(store, globals.engine, channelName, tokenUrl);
     if (tokenUrl != null) {
       AgoraTokens(store: store, channelName: channelName, baseUrl: tokenUrl);
     }
     if (channelProfile != null) {
-      if (channelProfile == ChannelProfiles.Communication) {
-        await engine.setChannelProfile(ChannelProfile.Communication);
+      if (channelProfile == ChannelProfile.Communication) {
+        await globals.engine.setChannelProfile(ChannelProfile.Communication);
       } else {
-        await engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
+        await globals.engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
       }
     } else {
-      await engine.setChannelProfile(ChannelProfile.Communication);
+      await globals.engine.setChannelProfile(ChannelProfile.Communication);
     }
-    if (userRole == UserRole.Audience) {
-      if (channelProfile == ChannelProfiles.LiveBroadcasting) {
-        await engine.setClientRole(ClientRole.Audience);
-      } else {
-        print("You can set the user role only for live broadcasting mode");
-      }
-    } else if (userRole == UserRole.Broadcaster) {
-      if (channelProfile == ChannelProfiles.LiveBroadcasting) {
-        await engine.setClientRole(ClientRole.Broadcaster);
+    if (userRole == ClientRole.Broadcaster || userRole == ClientRole.Audience) {
+      if (channelProfile == ChannelProfile.LiveBroadcasting) {
+        await globals.engine.setClientRole(userRole == ClientRole.Broadcaster
+            ? ClientRole.Broadcaster
+            : ClientRole.Audience);
       } else {
         print("You can set the user role only for live broadcasting mode");
       }
     }
-    await engine.enableAudioVolumeIndication(200, 3, true);
+    await globals.engine.enableAudioVolumeIndication(200, 3, true);
     store
         .getModule<AgoraEvents>()
-        .addAgoraEventHandlers(engine, channelName, tokenUrl);
+        .addAgoraEventHandlers(globals.engine, channelName, tokenUrl);
     if (videoEncoderConfiguration != null) {
-      await engine.setVideoEncoderConfiguration(videoEncoderConfiguration);
+      await globals.engine
+          .setVideoEncoderConfiguration(videoEncoderConfiguration);
     }
     if (tempToken != null) {
-      await engine.joinChannel(tempToken, channelName, null, 0);
+      await globals.engine.joinChannel(tempToken, channelName, null, 0);
     } else {
       if (tokenUrl != null) {
         await store.getModule<AgoraTokens>().getToken(tokenUrl, channelName);
-        await engine.joinChannel(token.value, channelName, null, uid.value);
+        await globals.engine.joinChannel(
+            globals.token.value, channelName, null, globals.uid.value);
       } else {
-        await engine.joinChannel(null, channelName, null, 0);
+        await globals.engine.joinChannel(null, channelName, null, 0);
       }
     }
   }
@@ -119,15 +115,7 @@ class AgoraFlutterUIKit {
   /// @name handleCameraAndMicPermission
   /// @description Function to request permission for Audio, video and Local Storage
   static Future<void> handleCameraAndMicPermission(
-      List<EnabledPermission> permissions) async {
-    for (int i = 0; i < permissions.length; i++) {
-      if (permissions[i] == EnabledPermission.camera) {
-        await Permission.camera.request();
-      } else if (permissions[i] == EnabledPermission.microphone) {
-        await Permission.microphone.request();
-      } else if (permissions[i] == EnabledPermission.storage) {
-        await Permission.storage.request();
-      }
-    }
+      List<Permission> permissions) async {
+    await permissions.request();
   }
 }

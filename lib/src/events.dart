@@ -67,12 +67,15 @@ class AgoraEvents extends StoreModule {
       audioVolumeIndication: (speakers, totalVolume) {
         print("Speakers: $speakers with total volume : $totalVolume");
       },
-      activeSpeaker: (uid) {
-        print("Active speaker = $uid");
-        setState(() {
-          speakerUid.value = uid;
-        });
-      },
+      // activeSpeaker: (uid) {
+      //   print("Active speaker = $uid");
+      //   setState(() {
+      //     final int temp = maxUid.value;
+      //     maxUid.value = speakerUid.value;
+      //     users.value.removeWhere((element) => element == speakerUid.value);
+      //     users.value.add(temp);
+      //   });
+      // },
     ));
   }
 }

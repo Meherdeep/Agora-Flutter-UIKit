@@ -9,12 +9,14 @@ class AgoraVideoViewer extends StatefulWidget {
   final Layout layoutType;
   final double floatingLayoutContainerHeight;
   final double floatingLayoutContainerWidth;
+  final bool enableActiveSpeaker;
 
   const AgoraVideoViewer({
     Key key,
     this.layoutType,
     this.floatingLayoutContainerHeight,
     this.floatingLayoutContainerWidth,
+    this.enableActiveSpeaker,
   }) : super(key: key);
 
   @override
@@ -137,8 +139,6 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   Widget viewFloat() {
     final minViews = _getMinViews();
     final maxViews = _getMaxViews();
-    print("min views length = ${minViews.length}");
-    print("max views length = ${maxViews.length}");
 
     return minViews.length + maxViews.length > 1 &&
             globals.users.value.length > 0

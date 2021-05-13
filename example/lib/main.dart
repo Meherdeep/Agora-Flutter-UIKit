@@ -15,11 +15,12 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     AgoraFlutterUIKit(
-      appId: '<---Add your App Id here--->',
+      appId: '22824201a5dc45dbab44a08328774be3',
       enabledPermission: [
-        EnabledPermission.camera,
-        EnabledPermission.microphone
+        Permission.camera,
+        Permission.microphone,
       ],
+      userRole: ClientRole.Broadcaster,
       channelName: 'test',
     );
   }
@@ -37,6 +38,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               AgoraVideoViewer(
                 layoutType: Layout.Floating,
+                // enableActiveSpeaker: true,
               ),
               AgoraVideoButtons()
             ],
