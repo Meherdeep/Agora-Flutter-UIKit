@@ -1,3 +1,4 @@
+import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
 import 'package:agora_flutter_uikit/global/global_variable.dart';
 import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
@@ -64,9 +65,9 @@ class AgoraEvents extends StoreModule {
           print(info);
         });
       },
-      audioVolumeIndication: (speakers, totalVolume) {
-        print("Speakers: $speakers with total volume : $totalVolume");
-      },
+      // audioVolumeIndication: (speakers, totalVolume) {
+      //   print("Speakers: $speakers with total volume : $totalVolume");
+      // },
       // activeSpeaker: (uid) {
       //   print("Active speaker = $uid");
       //   setState(() {

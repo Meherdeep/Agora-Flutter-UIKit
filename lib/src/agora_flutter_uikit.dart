@@ -31,29 +31,33 @@ class AgoraFlutterUIKit {
     ChannelProfile channelProfile,
     ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
+    bool setCameraAutoFocusFaceModeEnabled,
   }) {
-    handleAllPermissions(enabledPermission);
     _initAgoraRtcEngine(
       appId: appId,
       channelName: channelName,
+      enabledPermission: enabledPermission,
       tempToken: token,
       tokenUrl: tokenUrl,
       areaCode: areaCode,
       channelProfile: channelProfile,
       userRole: userRole,
       videoEncoderConfiguration: videoEncoderConfiguration,
+      setCameraAutoFocusFaceModeEnabled: setCameraAutoFocusFaceModeEnabled,
     );
   }
 
   Future<void> _initAgoraRtcEngine({
     @required String appId,
     @required String channelName,
+    List<Permission> enabledPermission,
     String tempToken,
     String tokenUrl,
     AreaCode areaCode,
     ChannelProfile channelProfile,
     ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
+    bool setCameraAutoFocusFaceModeEnabled,
   }) async {
     try {
       globals.engine = await RtcEngine.createWithConfig(
@@ -62,7 +66,7 @@ class AgoraFlutterUIKit {
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
-    await globals.engine.enableVideo();
+    await enabledPermission.request();
     AgoraEvents(store, globals.engine, channelName, tokenUrl);
     if (tokenUrl != null) {
       AgoraTokens(store: store, channelName: channelName, baseUrl: tokenUrl);
@@ -85,6 +89,13 @@ class AgoraFlutterUIKit {
           .setVideoEncoderConfiguration(videoEncoderConfiguration);
     }
 
+    if (setCameraAutoFocusFaceModeEnabled != null) {
+      await globals.engine
+          .setCameraAutoFocusFaceModeEnabled(setCameraAutoFocusFaceModeEnabled);
+    }
+
+    await globals.engine.enableVideo();
+
     if (tempToken != null) {
       await globals.engine.joinChannel(tempToken, channelName, null, 0);
     } else {
@@ -96,11 +107,5 @@ class AgoraFlutterUIKit {
         await globals.engine.joinChannel(null, channelName, null, 0);
       }
     }
-  }
-
-  /// @name handleAllPermissions
-  /// @description Function to request permission for the specified permissions (Audio, Video etc.)
-  static Future<void> handleAllPermissions(List<Permission> permissions) async {
-    await permissions.request();
   }
 }
