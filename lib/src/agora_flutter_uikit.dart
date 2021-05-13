@@ -24,6 +24,7 @@ class AgoraFlutterUIKit {
   AgoraFlutterUIKit({
     @required String appId,
     @required String channelName,
+    int uid,
     AreaCode areaCode,
     String token,
     String tokenUrl,
@@ -32,10 +33,17 @@ class AgoraFlutterUIKit {
     ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
     bool setCameraAutoFocusFaceModeEnabled,
+    bool enableDualStreamMode,
+    StreamFallbackOptions localPublishFallbackOption,
+    StreamFallbackOptions remoteSubscribeFallbackOption,
+    AudioProfile audioProfile,
+    AudioScenario audioScenario,
+    BeautyOptions setBeautyEffectOptions,
   }) {
     _initAgoraRtcEngine(
       appId: appId,
       channelName: channelName,
+      uid: uid,
       enabledPermission: enabledPermission,
       tempToken: token,
       tokenUrl: tokenUrl,
@@ -44,13 +52,20 @@ class AgoraFlutterUIKit {
       userRole: userRole,
       videoEncoderConfiguration: videoEncoderConfiguration,
       setCameraAutoFocusFaceModeEnabled: setCameraAutoFocusFaceModeEnabled,
+      enableDualStreamMode: enableDualStreamMode,
+      localPublishFallbackOption: localPublishFallbackOption,
+      remoteSubscribeFallbackOption: remoteSubscribeFallbackOption,
+      audioProfile: audioProfile,
+      audioScenario: audioScenario,
+      setBeautyEffectOptions: setBeautyEffectOptions,
     );
   }
 
   Future<void> _initAgoraRtcEngine({
     @required String appId,
     @required String channelName,
-    List<Permission> enabledPermission,
+    int uid,
+    @required List<Permission> enabledPermission,
     String tempToken,
     String tokenUrl,
     AreaCode areaCode,
@@ -58,6 +73,12 @@ class AgoraFlutterUIKit {
     ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
     bool setCameraAutoFocusFaceModeEnabled,
+    bool enableDualStreamMode,
+    StreamFallbackOptions localPublishFallbackOption,
+    StreamFallbackOptions remoteSubscribeFallbackOption,
+    AudioProfile audioProfile,
+    AudioScenario audioScenario,
+    BeautyOptions setBeautyEffectOptions,
   }) async {
     try {
       globals.engine = await RtcEngine.createWithConfig(
@@ -94,17 +115,39 @@ class AgoraFlutterUIKit {
           .setCameraAutoFocusFaceModeEnabled(setCameraAutoFocusFaceModeEnabled);
     }
 
+    await globals.engine.setAudioProfile(audioProfile ?? AudioProfile.Default,
+        audioScenario ?? AudioScenario.Default);
+
     await globals.engine.enableVideo();
 
+    if (setBeautyEffectOptions != null) {
+      globals.engine.setBeautyEffectOptions(true, setBeautyEffectOptions);
+    }
+
+    if (enableDualStreamMode != null) {
+      globals.engine.enableDualStreamMode(enableDualStreamMode);
+    }
+
+    if (localPublishFallbackOption != null) {
+      globals.engine.setLocalPublishFallbackOption(localPublishFallbackOption);
+    }
+
+    if (remoteSubscribeFallbackOption != null) {
+      globals.engine
+          .setRemoteSubscribeFallbackOption(remoteSubscribeFallbackOption);
+    }
+
     if (tempToken != null) {
-      await globals.engine.joinChannel(tempToken, channelName, null, 0);
+      await globals.engine
+          .joinChannel(tempToken, channelName, null, uid != null ? uid : 0);
     } else {
       if (tokenUrl != null) {
         await store.getModule<AgoraTokens>().getToken(tokenUrl, channelName);
         await globals.engine.joinChannel(
             globals.token.value, channelName, null, globals.uid.value);
       } else {
-        await globals.engine.joinChannel(null, channelName, null, 0);
+        await globals.engine
+            .joinChannel(null, channelName, null, uid != null ? uid : 0);
       }
     }
   }
