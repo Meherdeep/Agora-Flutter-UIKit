@@ -32,7 +32,7 @@ class AgoraFlutterUIKit {
     ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
   }) {
-    handleCameraAndMicPermission(enabledPermission);
+    handleAllPermissions(enabledPermission);
     _initAgoraRtcEngine(
       appId: appId,
       channelName: channelName,
@@ -56,15 +56,9 @@ class AgoraFlutterUIKit {
     VideoEncoderConfiguration videoEncoderConfiguration,
   }) async {
     try {
-      if (areaCode != null) {
-        globals.engine = await RtcEngine.createWithConfig(
-          RtcEngineConfig(appId, areaCode: areaCode),
-        );
-      } else {
-        globals.engine = await RtcEngine.createWithConfig(
-          RtcEngineConfig(appId),
-        );
-      }
+      globals.engine = await RtcEngine.createWithConfig(
+        RtcEngineConfig(appId, areaCode: areaCode ?? AreaCode.GLOB),
+      );
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
@@ -73,20 +67,11 @@ class AgoraFlutterUIKit {
     if (tokenUrl != null) {
       AgoraTokens(store: store, channelName: channelName, baseUrl: tokenUrl);
     }
-    if (channelProfile != null) {
-      if (channelProfile == ChannelProfile.Communication) {
-        await globals.engine.setChannelProfile(ChannelProfile.Communication);
-      } else {
-        await globals.engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
-      }
-    } else {
-      await globals.engine.setChannelProfile(ChannelProfile.Communication);
-    }
-    if (userRole == ClientRole.Broadcaster || userRole == ClientRole.Audience) {
+    await globals.engine
+        .setChannelProfile(channelProfile ?? ChannelProfile.Communication);
+    if (userRole != null) {
       if (channelProfile == ChannelProfile.LiveBroadcasting) {
-        await globals.engine.setClientRole(userRole == ClientRole.Broadcaster
-            ? ClientRole.Broadcaster
-            : ClientRole.Audience);
+        await globals.engine.setClientRole(userRole);
       } else {
         print("You can set the user role only for live broadcasting mode");
       }
@@ -99,6 +84,7 @@ class AgoraFlutterUIKit {
       await globals.engine
           .setVideoEncoderConfiguration(videoEncoderConfiguration);
     }
+
     if (tempToken != null) {
       await globals.engine.joinChannel(tempToken, channelName, null, 0);
     } else {
@@ -112,10 +98,9 @@ class AgoraFlutterUIKit {
     }
   }
 
-  /// @name handleCameraAndMicPermission
-  /// @description Function to request permission for Audio, video and Local Storage
-  static Future<void> handleCameraAndMicPermission(
-      List<Permission> permissions) async {
+  /// @name handleAllPermissions
+  /// @description Function to request permission for the specified permissions (Audio, Video etc.)
+  static Future<void> handleAllPermissions(List<Permission> permissions) async {
     await permissions.request();
   }
 }
