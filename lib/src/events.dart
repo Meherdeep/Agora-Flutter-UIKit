@@ -1,4 +1,4 @@
-import 'package:agora_flutter_uikit/global/global_variable.dart';
+import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter_super_state/flutter_super_state.dart';
@@ -22,19 +22,19 @@ class AgoraEvents extends StoreModule {
         setState(() {
           final info = 'onJoinChannel: $channel, uid: $uid';
           print(info);
-          maxUid.value = uid;
-          localUid.value = uid;
+          globals.maxUid.value = uid;
+          globals.localUid.value = uid;
         });
       },
       leaveChannel: (stats) {
         setState(() {
-          users.value = [];
+          globals.users.value = [];
         });
       },
       userJoined: (uid, elapsed) {
         setState(() {
           final info = 'userJoined: $uid';
-          users.value = [...users.value, uid];
+          globals.users.value = [...globals.users.value, uid];
           print(info);
         });
       },
@@ -43,14 +43,14 @@ class AgoraEvents extends StoreModule {
           final info = 'userOffline: $uid , reason: $reason';
           print(info);
           var tempList = <dynamic>[];
-          tempList = users.value;
+          tempList = globals.users.value;
           tempList.remove(uid);
-          users.value = [...tempList];
-          if (maxUid.value == uid) {
+          globals.users.value = [...tempList];
+          if (globals.maxUid.value == uid) {
             var temp2List = <dynamic>[];
-            temp2List = users.value;
-            temp2List.remove(localUid.value);
-            maxUid.value = localUid.value;
+            temp2List = globals.users.value;
+            temp2List.remove(globals.localUid.value);
+            globals.maxUid.value = globals.localUid.value;
           }
         });
       },
@@ -64,14 +64,21 @@ class AgoraEvents extends StoreModule {
           print(info);
         });
       },
-      audioVolumeIndication: (speakers, totalVolume) {
-        print("Speakers: $speakers with total volume : $totalVolume");
-      },
       activeSpeaker: (uid) {
         print("Active speaker = $uid");
-        setState(() {
-          speakerUid.value = uid;
-        });
+        if (globals.isActiveSpeakerEnabled) {
+          setState(() {
+            globals.speakerUid.value = uid;
+            final int temp = globals.maxUid.value;
+            globals.maxUid.value = globals.speakerUid.value;
+            var tempList = <dynamic>[];
+            tempList = globals.users.value;
+            tempList
+                .removeWhere((element) => element == globals.speakerUid.value);
+            globals.users.value = [...tempList];
+            globals.users.value = [...globals.users.value, temp];
+          });
+        }
       },
     ));
   }

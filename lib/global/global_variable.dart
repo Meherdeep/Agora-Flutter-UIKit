@@ -18,3 +18,5 @@ ValueNotifier<int> speakerUid = ValueNotifier(0);
 ValueNotifier<int> maxUid = ValueNotifier(0);
 
 ValueNotifier<int> localUid = ValueNotifier(0);
+
+bool isActiveSpeakerEnabled = false;
