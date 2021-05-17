@@ -64,9 +64,46 @@ class AgoraEvents extends StoreModule {
           print(info);
         });
       },
+      remoteVideoStateChanged: (uid, state, reason, elapsed) {
+        print("REMOTE VIDEO MUTED FOR USER : $uid , state: $state");
+        if (state == VideoRemoteState.Stopped) {
+          setState(() {
+            globals.videoDisabledUsers.value = [
+              ...globals.videoDisabledUsers.value,
+              uid
+            ];
+          });
+        } else if (state == VideoRemoteState.Decoding ||
+            reason == VideoRemoteStateReason.RemoteUnmuted) {
+          if (globals.videoDisabledUsers.value.contains(uid)) {
+            setState(() {
+              var tempList = [];
+              tempList = globals.videoDisabledUsers.value;
+              tempList.remove(uid);
+              globals.videoDisabledUsers.value = [...tempList];
+            });
+          }
+        }
+      },
+      remoteAudioStateChanged: (uid, state, reason, elapsed) {
+        print("REMOTE AUDIO MUTED FOR USER : $uid , state: $state");
+        if (state == AudioRemoteState.Stopped) {
+          setState(() {
+            globals.mutedUsers.value = [...globals.mutedUsers.value, uid];
+          });
+        } else if (state == AudioRemoteState.Decoding &&
+            globals.mutedUsers.value.contains(uid)) {
+          setState(() {
+            var tempList = <dynamic>[];
+            tempList = globals.mutedUsers.value;
+            tempList.removeWhere((element) => element == uid);
+            globals.mutedUsers.value = [...tempList];
+          });
+        }
+      },
       activeSpeaker: (uid) {
         print("Active speaker = $uid");
-        if (globals.isActiveSpeakerEnabled) {
+        if (globals.isActiveSpeakerEnabled && globals.isVideoUnPinned) {
           setState(() {
             globals.speakerUid.value = uid;
             final int temp = globals.maxUid.value;
