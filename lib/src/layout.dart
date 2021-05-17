@@ -64,20 +64,6 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     return list;
   }
 
-  List<Widget> _getMaxViews() {
-    final List<StatefulWidget> list = [];
-    list.add(RtcLocalView.SurfaceView());
-    return list;
-  }
-
-  /// Helper function to get list of native views
-  List<Widget> _getMinViews() {
-    final List<StatefulWidget> list = [];
-    globals.users.value
-        .forEach((uid) => list.add(RtcRemoteView.SurfaceView(uid: uid)));
-    return list;
-  }
-
   Widget _getLocalViews() {
     return RtcLocalView.SurfaceView();
   }
@@ -149,11 +135,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
 
   // Floating Video Layout
   Widget viewFloat() {
-    final minViews = _getMinViews();
-    final maxViews = _getMaxViews();
-
-    return minViews.length + maxViews.length > 1 &&
-            globals.users.value.length > 0
+    return globals.users.value.length > 0
         ? Column(
             children: [
               Container(
@@ -181,7 +163,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                   globals.maxUid.value =
                                       globals.users.value[index];
                                   globals.users.value.removeAt(index);
-                                  globals.users.value.add(temp);
+                                  globals.users.value.insert(index, temp);
                                 },
                               );
                             }
@@ -207,7 +189,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                         padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
                         child: Column(
                           children: [
-                            _videoView(maxViews[0]),
+                            _videoView(_getLocalViews()),
                           ],
                         ),
                       ),
@@ -235,25 +217,38 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     return ValueListenableBuilder(
       valueListenable: globals.users,
       builder: (BuildContext context, dynamic value, Widget child) {
-        return GestureDetector(
-          child: Center(
-            child: widget.layoutType == null
-                ? viewGrid()
-                : widget.layoutType == Layout.Grid
-                    ? viewGrid()
-                    : widget.layoutType == Layout.Floating
-                        ? viewFloat()
-                        : viewGrid(),
-          ),
-          onTap: () {
-            setState(() {
-              globals.isButtonVisible.value = !globals.isButtonVisible.value;
-            });
-            print(
-                "globals.isButtonVisible.value : ${globals.isButtonVisible.value}");
+        return ValueListenableBuilder(
+          valueListenable: globals.mutedUsers,
+          builder: (context, value, child) {
+            return ValueListenableBuilder(
+              valueListenable: globals.videoDisabledUsers,
+              builder: (context, value, child) {
+                return GestureDetector(
+                  child: Center(
+                    child: widget.layoutType == null
+                        ? viewGrid()
+                        : widget.layoutType == Layout.Grid
+                            ? viewGrid()
+                            : widget.layoutType == Layout.Floating
+                                ? viewFloat()
+                                : viewGrid(),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      globals.isButtonVisible.value =
+                          !globals.isButtonVisible.value;
+                    });
+                    print(
+                        "globals.isButtonVisible.value : ${globals.isButtonVisible.value}");
+                  },
+                );
+              },
+            );
           },
         );
       },
     );
   }
 }
+
+//
