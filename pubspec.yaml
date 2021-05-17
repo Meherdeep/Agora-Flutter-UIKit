@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   agora_rtc_engine: ^3.2.1
   permission_handler: ^5.0.1
-  flutter_super_state: ^0.2.0
   http: ^0.13.1
   
 
