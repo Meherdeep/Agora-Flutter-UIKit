@@ -15,7 +15,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     AgoraFlutterUIKit(
-      appId: '<----APP ID---->',
+      appId: '<---App id--->',
       enabledPermission: [
         Permission.camera,
         Permission.microphone,

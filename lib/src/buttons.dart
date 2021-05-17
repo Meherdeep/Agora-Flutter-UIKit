@@ -192,6 +192,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   void _onToggleMute() {
     setState(() {
       muted = !muted;
+      globals.isLocalUserMuted.value = !globals.isLocalUserMuted.value;
     });
     globals.engine.muteLocalAudioStream(muted);
   }
@@ -199,6 +200,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   void _onToggleCamera() {
     setState(() {
       disabledVideo = !disabledVideo;
+      globals.isLocalVideoDisabled.value = !globals.isLocalVideoDisabled.value;
     });
     globals.engine.muteLocalVideoStream(disabledVideo);
     if (disabledVideo) {

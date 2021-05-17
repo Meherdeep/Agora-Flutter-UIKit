@@ -26,3 +26,7 @@ ValueNotifier<int> localUid = ValueNotifier(0);
 bool isActiveSpeakerEnabled = false;
 
 bool isVideoUnPinned = true;
+
+ValueNotifier<bool> isLocalUserMuted = ValueNotifier(false);
+
+ValueNotifier<bool> isLocalVideoDisabled = ValueNotifier(false);
