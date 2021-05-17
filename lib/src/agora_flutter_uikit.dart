@@ -5,10 +5,11 @@ import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_super_state/flutter_super_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:agora_flutter_uikit/src/events.dart';
+
+AgoraTokens tokens;
 
 class AgoraFlutterUIKit {
   static const MethodChannel _channel =
@@ -18,8 +19,6 @@ class AgoraFlutterUIKit {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
-
-  final store = Store();
 
   AgoraFlutterUIKit({
     @required String appId,
@@ -88,9 +87,10 @@ class AgoraFlutterUIKit {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
     await enabledPermission.request();
-    AgoraEvents(store, globals.engine, channelName, tokenUrl);
+    AgoraEvents events = AgoraEvents(globals.engine, channelName, tokenUrl);
+
     if (tokenUrl != null) {
-      AgoraTokens(store: store, channelName: channelName, baseUrl: tokenUrl);
+      tokens = AgoraTokens(channelName: channelName, baseUrl: tokenUrl);
     }
     await globals.engine
         .setChannelProfile(channelProfile ?? ChannelProfile.Communication);
@@ -102,9 +102,7 @@ class AgoraFlutterUIKit {
       }
     }
     await globals.engine.enableAudioVolumeIndication(200, 3, true);
-    store
-        .getModule<AgoraEvents>()
-        .addAgoraEventHandlers(globals.engine, channelName, tokenUrl);
+    events.addAgoraEventHandlers(globals.engine, channelName, tokenUrl);
     if (videoEncoderConfiguration != null) {
       await globals.engine
           .setVideoEncoderConfiguration(videoEncoderConfiguration);
@@ -142,7 +140,7 @@ class AgoraFlutterUIKit {
           .joinChannel(tempToken, channelName, null, uid != null ? uid : 0);
     } else {
       if (tokenUrl != null) {
-        await store.getModule<AgoraTokens>().getToken(tokenUrl, channelName);
+        await tokens.getToken(tokenUrl, channelName);
         await globals.engine.joinChannel(
             globals.token.value, channelName, null, globals.uid.value);
       } else {

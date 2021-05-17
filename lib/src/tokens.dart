@@ -1,15 +1,14 @@
 import 'dart:convert';
 
 import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
-import 'package:flutter_super_state/flutter_super_state.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AgoraTokens extends StoreModule {
+class AgoraTokens extends ValueNotifier<AgoraTokens> {
   AgoraTokens({
-    Store store,
     String baseUrl,
     String channelName,
-  }) : super(store) {
+  }) : super(null) {
     getToken(baseUrl, channelName);
   }
 
@@ -18,10 +17,8 @@ class AgoraTokens extends StoreModule {
         await http.get(Uri.parse('$baseUrl/api/get/rtc/$channelName'));
     if (response.statusCode == 200) {
       print(response.body);
-      setState(() {
-        globals.token.value = jsonDecode(response.body)['rtc_token'];
-        globals.uid.value = jsonDecode(response.body)['uid'];
-      });
+      globals.token.value = jsonDecode(response.body)['rtc_token'];
+      globals.uid.value = jsonDecode(response.body)['uid'];
       print('Token : ${globals.token.value}');
       print('UID : ${globals.uid.value}');
     } else {
