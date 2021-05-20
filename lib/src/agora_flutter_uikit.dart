@@ -38,7 +38,6 @@ class AgoraFlutterUIKit {
     AudioProfile audioProfile,
     AudioScenario audioScenario,
     BeautyOptions setBeautyEffectOptions,
-    bool enableDeepLearningDenoise,
     bool setCameraTorchOn,
     bool muteAllRemoteVideoStreams,
     bool muteAllRemoteAudioStreams,
@@ -61,7 +60,6 @@ class AgoraFlutterUIKit {
       audioProfile: audioProfile,
       audioScenario: audioScenario,
       setBeautyEffectOptions: setBeautyEffectOptions,
-      enableDeepLearningDenoise: enableDeepLearningDenoise,
       setCameraTorchOn: setCameraTorchOn,
       muteAllRemoteVideoStreams: muteAllRemoteVideoStreams,
       muteAllRemoteAudioStreams: muteAllRemoteAudioStreams,
@@ -86,7 +84,6 @@ class AgoraFlutterUIKit {
     AudioProfile audioProfile,
     AudioScenario audioScenario,
     BeautyOptions setBeautyEffectOptions,
-    bool enableDeepLearningDenoise,
     bool setCameraTorchOn,
     bool muteAllRemoteVideoStreams,
     bool muteAllRemoteAudioStreams,
@@ -156,9 +153,6 @@ class AgoraFlutterUIKit {
       await globals.engine
           .setRemoteSubscribeFallbackOption(remoteSubscribeFallbackOption);
     }
-
-    await globals.engine
-        .enableDeepLearningDenoise(enableDeepLearningDenoise ?? true);
 
     if (tokenUrl != null) {
       await tokens.getToken(tokenUrl, channelName);
