@@ -30,16 +30,12 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Agora Flutter UIKit'),
+          centerTitle: true,
         ),
         body: SafeArea(
           child: Stack(
-            children: [
-              AgoraVideoViewer(
-                layoutType: Layout.Floating,
-              ),
-              AgoraVideoButtons()
-            ],
+            children: [AgoraVideoViewer(), AgoraVideoButtons()],
           ),
         ),
       ),
