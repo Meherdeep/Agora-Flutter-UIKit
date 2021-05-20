@@ -38,6 +38,8 @@ class AgoraFlutterUIKit {
     AudioProfile audioProfile,
     AudioScenario audioScenario,
     BeautyOptions setBeautyEffectOptions,
+    bool enableDeepLearningDenoise,
+    bool setCameraTorchOn,
   }) {
     _initAgoraRtcEngine(
       appId: appId,
@@ -57,6 +59,8 @@ class AgoraFlutterUIKit {
       audioProfile: audioProfile,
       audioScenario: audioScenario,
       setBeautyEffectOptions: setBeautyEffectOptions,
+      enableDeepLearningDenoise: enableDeepLearningDenoise,
+      setCameraTorchOn: setCameraTorchOn,
     );
   }
 
@@ -78,6 +82,8 @@ class AgoraFlutterUIKit {
     AudioProfile audioProfile,
     AudioScenario audioScenario,
     BeautyOptions setBeautyEffectOptions,
+    bool enableDeepLearningDenoise,
+    bool setCameraTorchOn,
   }) async {
     try {
       globals.engine = await RtcEngine.createWithConfig(
@@ -86,6 +92,7 @@ class AgoraFlutterUIKit {
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
+
     await enabledPermission.request();
     AgoraEvents events = AgoraEvents(globals.engine, channelName, tokenUrl);
 
@@ -94,6 +101,7 @@ class AgoraFlutterUIKit {
     }
     await globals.engine
         .setChannelProfile(channelProfile ?? ChannelProfile.Communication);
+
     if (userRole != null) {
       if (channelProfile == ChannelProfile.LiveBroadcasting) {
         await globals.engine.setClientRole(userRole);
@@ -102,16 +110,18 @@ class AgoraFlutterUIKit {
       }
     }
     await globals.engine.enableAudioVolumeIndication(200, 3, true);
+
     events.addAgoraEventHandlers(globals.engine, channelName, tokenUrl);
+
     if (videoEncoderConfiguration != null) {
       await globals.engine
           .setVideoEncoderConfiguration(videoEncoderConfiguration);
     }
 
-    if (setCameraAutoFocusFaceModeEnabled != null) {
-      await globals.engine
-          .setCameraAutoFocusFaceModeEnabled(setCameraAutoFocusFaceModeEnabled);
-    }
+    await globals.engine.setCameraAutoFocusFaceModeEnabled(
+        setCameraAutoFocusFaceModeEnabled ?? false);
+
+    await globals.engine.setCameraTorchOn(setCameraTorchOn ?? false);
 
     await globals.engine.setAudioProfile(audioProfile ?? AudioProfile.Default,
         audioScenario ?? AudioScenario.Default);
@@ -122,31 +132,28 @@ class AgoraFlutterUIKit {
       globals.engine.setBeautyEffectOptions(true, setBeautyEffectOptions);
     }
 
-    if (enableDualStreamMode != null) {
-      globals.engine.enableDualStreamMode(enableDualStreamMode);
-    }
+    await globals.engine.enableDualStreamMode(enableDualStreamMode ?? false);
 
     if (localPublishFallbackOption != null) {
-      globals.engine.setLocalPublishFallbackOption(localPublishFallbackOption);
+      await globals.engine
+          .setLocalPublishFallbackOption(localPublishFallbackOption);
     }
 
     if (remoteSubscribeFallbackOption != null) {
-      globals.engine
+      await globals.engine
           .setRemoteSubscribeFallbackOption(remoteSubscribeFallbackOption);
     }
 
-    if (tempToken != null) {
-      await globals.engine
-          .joinChannel(tempToken, channelName, null, uid != null ? uid : 0);
+    await globals.engine
+        .enableDeepLearningDenoise(enableDeepLearningDenoise ?? true);
+
+    if (tokenUrl != null) {
+      await tokens.getToken(tokenUrl, channelName);
+      await globals.engine.joinChannel(
+          globals.token.value, channelName, null, globals.uid.value);
     } else {
-      if (tokenUrl != null) {
-        await tokens.getToken(tokenUrl, channelName);
-        await globals.engine.joinChannel(
-            globals.token.value, channelName, null, globals.uid.value);
-      } else {
-        await globals.engine
-            .joinChannel(null, channelName, null, uid != null ? uid : 0);
-      }
+      await globals.engine
+          .joinChannel(tempToken ?? null, channelName, null, uid ?? 0);
     }
   }
 }

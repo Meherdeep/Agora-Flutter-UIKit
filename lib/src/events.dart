@@ -84,7 +84,7 @@ class AgoraEvents extends ValueNotifier<AgoraEvents> {
       },
       activeSpeaker: (uid) {
         print("Active speaker = $uid");
-        if (globals.isActiveSpeakerEnabled && globals.isVideoUnPinned) {
+        if (globals.isActiveSpeakerEnabled) {
           globals.speakerUid.value = uid;
           final int temp = globals.maxUid.value;
           globals.maxUid.value = globals.speakerUid.value;
@@ -94,6 +94,8 @@ class AgoraEvents extends ValueNotifier<AgoraEvents> {
               .removeWhere((element) => element == globals.speakerUid.value);
           globals.users.value = [...tempList];
           globals.users.value = [...globals.users.value, temp];
+        } else {
+          print("Unpin the video first to renable active speaker");
         }
       },
     ));
