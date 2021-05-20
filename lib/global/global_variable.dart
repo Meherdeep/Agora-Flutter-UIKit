@@ -30,3 +30,5 @@ bool isActiveSpeakerEnabled = true;
 ValueNotifier<bool> isLocalUserMuted = ValueNotifier(false);
 
 ValueNotifier<bool> isLocalVideoDisabled = ValueNotifier(false);
+
+ValueNotifier<ClientRole> clientRole = ValueNotifier(ClientRole.Broadcaster);
