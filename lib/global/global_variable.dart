@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 ValueNotifier<List<dynamic>> users = ValueNotifier([]);
 
+ValueNotifier<List<dynamic>> remoteUsers = ValueNotifier([]);
+
 ValueNotifier<List<dynamic>> mutedUsers = ValueNotifier([]);
 
 ValueNotifier<List<dynamic>> videoDisabledUsers = ValueNotifier([]);
@@ -23,9 +25,7 @@ ValueNotifier<int> maxUid = ValueNotifier(0);
 
 ValueNotifier<int> localUid = ValueNotifier(0);
 
-bool isActiveSpeakerEnabled = false;
-
-bool isVideoUnPinned = true;
+bool isActiveSpeakerEnabled = true;
 
 ValueNotifier<bool> isLocalUserMuted = ValueNotifier(false);
 

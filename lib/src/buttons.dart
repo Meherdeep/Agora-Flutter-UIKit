@@ -203,11 +203,6 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
       globals.isLocalVideoDisabled.value = !globals.isLocalVideoDisabled.value;
     });
     globals.engine.muteLocalVideoStream(disabledVideo);
-    if (disabledVideo) {
-      globals.engine.disableVideo();
-    } else {
-      globals.engine.enableVideo();
-    }
   }
 
   void _onSwitchCamera() {

@@ -9,15 +9,25 @@ class AgoraVideoViewer extends StatefulWidget {
   final Layout layoutType;
   final double floatingLayoutContainerHeight;
   final double floatingLayoutContainerWidth;
+  final EdgeInsets floatingLayoutMainViewPadding;
+  final EdgeInsets floatingLayoutSubViewPadding;
   final bool enableActiveSpeaker;
+  final Widget disabledVideoWidget;
+  final bool showRemoteAVState;
+  final bool showLocalAVState;
 
-  const AgoraVideoViewer({
-    Key key,
-    this.layoutType,
-    this.floatingLayoutContainerHeight,
-    this.floatingLayoutContainerWidth,
-    this.enableActiveSpeaker,
-  }) : super(key: key);
+  const AgoraVideoViewer(
+      {Key key,
+      this.layoutType,
+      this.floatingLayoutContainerHeight,
+      this.floatingLayoutContainerWidth,
+      this.floatingLayoutMainViewPadding,
+      this.floatingLayoutSubViewPadding,
+      this.enableActiveSpeaker,
+      this.disabledVideoWidget,
+      this.showRemoteAVState,
+      this.showLocalAVState})
+      : super(key: key);
 
   @override
   _AgoraVideoViewerState createState() => _AgoraVideoViewerState();
@@ -29,13 +39,11 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
 
   @override
   void initState() {
-    widget.enableActiveSpeaker == true
-        ? setState(() {
-            globals.isActiveSpeakerEnabled = true;
-          })
-        : setState(() {
-            globals.isActiveSpeakerEnabled = false;
-          });
+    setState(() {
+      widget.enableActiveSpeaker != null
+          ? globals.isActiveSpeakerEnabled = widget.enableActiveSpeaker
+          : globals.isActiveSpeakerEnabled = true;
+    });
     super.initState();
   }
 
@@ -139,9 +147,10 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         ? Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.2,
+                height: widget.floatingLayoutContainerHeight == null
+                    ? MediaQuery.of(context).size.height * 0.2
+                    : widget.floatingLayoutContainerHeight,
                 width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.all(3),
                 alignment: Alignment.topLeft,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -149,39 +158,65 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       key: Key('$index'),
-                      padding: const EdgeInsets.only(right: 3.0),
+                      padding: widget.floatingLayoutSubViewPadding == null
+                          ? const EdgeInsets.fromLTRB(3, 3, 0, 3)
+                          : widget.floatingLayoutSubViewPadding,
                       child: Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        width: MediaQuery.of(context).size.width / 3,
+                        width: widget.floatingLayoutContainerWidth == null
+                            ? MediaQuery.of(context).size.width / 3
+                            : widget.floatingLayoutContainerWidth,
                         child: Column(
                           children: [
                             globals.users.value[index] == globals.localUid.value
                                 ? Expanded(
-                                    child: Stack(
-                                    children: [
-                                      Column(
+                                    child: Container(
+                                      color: Colors.black,
+                                      child: Stack(
                                         children: [
-                                          _videoView(_getLocalViews()),
-                                        ],
-                                      ),
-                                      Positioned.fill(
-                                          child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8),
-                                          child: GestureDetector(
-                                            onTap: () async {
-                                              await _pinView(index);
-                                            },
-                                            child: Icon(
-                                              Icons.push_pin,
-                                              color: Colors.black,
+                                          !globals.isLocalVideoDisabled.value
+                                              ? Column(
+                                                  children: [
+                                                    _videoView(
+                                                        _getLocalViews()),
+                                                  ],
+                                                )
+                                              : widget.disabledVideoWidget ==
+                                                      null
+                                                  ? disabledVideoWidget()
+                                                  : widget.disabledVideoWidget,
+                                          Positioned.fill(
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8),
+                                                child: GestureDetector(
+                                                  onTap: () async {
+                                                    await _pinView(index);
+                                                  },
+                                                  child: Container(
+                                                    height: 24,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Image.network(
+                                                      'https://i.ibb.co/JrJ7R3w/unpin-icon.png',
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      )),
-                                    ],
-                                  ))
+                                          widget.showLocalAVState == null ||
+                                                  widget.showLocalAVState
+                                              ? localAVStateWidget()
+                                              : Container()
+                                        ],
+                                      ),
+                                    ),
+                                  )
                                 : globals.videoDisabledUsers.value
                                         .contains(globals.users.value[index])
                                     ? Expanded(
@@ -190,129 +225,40 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                             Container(
                                               color: Colors.black,
                                             ),
-                                            Center(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Image.network(
-                                                    'https://raw.githubusercontent.com/Meherdeep/Agora-Android-UiKit-Toolkit/main/1.png?token=AHKSCQLOWPCIQ6NE6MNR76DAVQORM'),
-                                              ),
-                                            ),
+                                            widget.disabledVideoWidget == null
+                                                ? disabledVideoWidget()
+                                                : widget.disabledVideoWidget,
                                             Positioned.fill(
                                               child: Align(
-                                                alignment:
-                                                    Alignment.bottomRight,
+                                                alignment: Alignment.topLeft,
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: globals
-                                                                  .videoDisabledUsers
-                                                                  .value
-                                                                  .contains(globals
-                                                                          .users
-                                                                          .value[
-                                                                      index])
-                                                              ? Colors.blue
-                                                              : Colors.white,
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                        child: globals
-                                                                .videoDisabledUsers
-                                                                .value
-                                                                .contains(globals
-                                                                        .users
-                                                                        .value[
-                                                                    index])
-                                                            ? Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .videocam_off,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  size: 15,
-                                                                ),
-                                                              )
-                                                            : Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .videocam,
-                                                                  color: Colors
-                                                                      .blue,
-                                                                  size: 15,
-                                                                ),
-                                                              ),
+                                                      const EdgeInsets.all(8),
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      await _pinView(index);
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        shape: BoxShape.circle,
                                                       ),
-                                                      SizedBox(
-                                                        width: 5,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              3.0),
+                                                      child: Icon(
+                                                        Icons.push_pin_rounded,
+                                                        color: Colors.blue,
                                                       ),
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: globals
-                                                                  .mutedUsers
-                                                                  .value
-                                                                  .contains(globals
-                                                                          .users
-                                                                          .value[
-                                                                      index])
-                                                              ? Colors.blue
-                                                              : Colors.white,
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                        child: globals
-                                                                .mutedUsers
-                                                                .value
-                                                                .contains(globals
-                                                                        .users
-                                                                        .value[
-                                                                    index])
-                                                            ? Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons.mic_off,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  size: 15,
-                                                                ),
-                                                              )
-                                                            : Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons.mic,
-                                                                  color: Colors
-                                                                      .blue,
-                                                                  size: 15,
-                                                                ),
-                                                              ),
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
+                                            widget.showRemoteAVState == null ||
+                                                    widget.showRemoteAVState
+                                                ? remoteAVStateWidget(index)
+                                                : Container()
                                           ],
                                         ),
                                       )
@@ -327,137 +273,36 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                               ],
                                             ),
                                             Positioned.fill(
-                                                child: Align(
-                                              alignment: Alignment.topLeft,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: GestureDetector(
-                                                  onTap: () async {
-                                                    await _pinView(index);
-                                                  },
-                                                  child: Icon(
-                                                    Icons.push_pin,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            )),
-                                            Positioned.fill(
                                               child: Align(
-                                                alignment:
-                                                    Alignment.bottomRight,
+                                                alignment: Alignment.topLeft,
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: globals
-                                                                  .videoDisabledUsers
-                                                                  .value
-                                                                  .contains(globals
-                                                                          .users
-                                                                          .value[
-                                                                      index])
-                                                              ? Colors.blue
-                                                              : Colors.white,
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                        child: globals
-                                                                .videoDisabledUsers
-                                                                .value
-                                                                .contains(globals
-                                                                        .users
-                                                                        .value[
-                                                                    index])
-                                                            ? Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .videocam_off,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  size: 15,
-                                                                ),
-                                                              )
-                                                            : Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .videocam,
-                                                                  color: Colors
-                                                                      .blue,
-                                                                  size: 15,
-                                                                ),
-                                                              ),
+                                                      const EdgeInsets.all(8),
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      await _pinView(index);
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        shape: BoxShape.circle,
                                                       ),
-                                                      SizedBox(
-                                                        width: 5,
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              3.0),
+                                                      child: Icon(
+                                                        Icons.push_pin_rounded,
+                                                        color: Colors.blue,
                                                       ),
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: globals
-                                                                  .mutedUsers
-                                                                  .value
-                                                                  .contains(globals
-                                                                          .users
-                                                                          .value[
-                                                                      index])
-                                                              ? Colors.blue
-                                                              : Colors.white,
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                        child: globals
-                                                                .mutedUsers
-                                                                .value
-                                                                .contains(globals
-                                                                        .users
-                                                                        .value[
-                                                                    index])
-                                                            ? Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons.mic_off,
-                                                                  color: Colors
-                                                                      .white,
-                                                                  size: 15,
-                                                                ),
-                                                              )
-                                                            : Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        3.0),
-                                                                child: Icon(
-                                                                  Icons.mic,
-                                                                  color: Colors
-                                                                      .blue,
-                                                                  size: 15,
-                                                                ),
-                                                              ),
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
+                                            widget.showRemoteAVState == null ||
+                                                    widget.showRemoteAVState
+                                                ? remoteAVStateWidget(index)
+                                                : Container()
                                           ],
                                         ),
                                       ),
@@ -471,21 +316,36 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
               globals.maxUid.value == globals.localUid.value
                   ? Expanded(
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
-                        child: Column(
-                          children: [
-                            _videoView(_getLocalViews()),
-                          ],
-                        ),
+                        padding: widget.floatingLayoutMainViewPadding == null
+                            ? EdgeInsets.fromLTRB(3, 0, 3, 3)
+                            : widget.floatingLayoutMainViewPadding,
+                        child: globals.isLocalVideoDisabled.value
+                            ? widget.disabledVideoWidget == null
+                                ? disabledVideoWidget()
+                                : widget.disabledVideoWidget
+                            : Column(
+                                children: [
+                                  _videoView(_getLocalViews()),
+                                ],
+                              ),
                       ),
                     )
                   : Expanded(
                       child: Container(
-                        child: Column(
-                          children: [
-                            _videoView(_getRemoteViews(globals.maxUid.value))
-                          ],
-                        ),
+                        padding: widget.floatingLayoutMainViewPadding == null
+                            ? EdgeInsets.fromLTRB(3, 0, 3, 3)
+                            : widget.floatingLayoutMainViewPadding,
+                        child: globals.videoDisabledUsers.value
+                                .contains(globals.maxUid.value)
+                            ? widget.disabledVideoWidget == null
+                                ? disabledVideoWidget()
+                                : widget.disabledVideoWidget
+                            : Column(
+                                children: [
+                                  _videoView(
+                                      _getRemoteViews(globals.maxUid.value))
+                                ],
+                              ),
                       ),
                     ),
             ],
@@ -497,17 +357,168 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           );
   }
 
+  Widget localAVStateWidget() {
+    return Positioned.fill(
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: globals.isLocalVideoDisabled.value
+                    ? Colors.blue
+                    : Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: globals.isLocalVideoDisabled.value
+                  ? Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Icon(
+                        Icons.videocam_off,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Icon(
+                        Icons.videocam,
+                        color: Colors.blue,
+                        size: 15,
+                      ),
+                    ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color:
+                    globals.isLocalUserMuted.value ? Colors.blue : Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: globals.isLocalUserMuted.value
+                  ? Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Icon(
+                        Icons.mic_off,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.blue,
+                        size: 15,
+                      ),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget remoteAVStateWidget(int index) {
+    return Positioned.fill(
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: globals.videoDisabledUsers.value
+                          .contains(globals.users.value[index])
+                      ? Colors.blue
+                      : Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: globals.videoDisabledUsers.value
+                        .contains(globals.users.value[index])
+                    ? Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          Icons.videocam_off,
+                          color: Colors.white,
+                          size: 15,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          Icons.videocam,
+                          color: Colors.blue,
+                          size: 15,
+                        ),
+                      ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: globals.mutedUsers.value
+                          .contains(globals.users.value[index])
+                      ? Colors.blue
+                      : Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: globals.mutedUsers.value
+                        .contains(globals.users.value[index])
+                    ? Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          Icons.mic_off,
+                          color: Colors.white,
+                          size: 15,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.blue,
+                          size: 15,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget disabledVideoWidget() {
+    return Container(
+      color: Colors.black,
+      padding: const EdgeInsets.all(8.0),
+      child: Image.network(
+        'https://i.ibb.co/q5RysSV/image.png',
+      ),
+    );
+  }
+
   Future<void> _pinView(int index) async {
-    if (!globals.isActiveSpeakerEnabled) {
-      setState(
-        () {
-          final int temp = globals.maxUid.value;
-          globals.maxUid.value = globals.users.value[index];
-          globals.users.value.removeAt(index);
-          globals.users.value.insert(index, temp);
-        },
-      );
-    }
+    setState(
+      () {
+        if (globals.users.value[index] == globals.localUid.value) {
+          globals.isActiveSpeakerEnabled = true;
+        } else {
+          globals.isActiveSpeakerEnabled = false;
+        }
+        final int temp = globals.maxUid.value;
+        globals.maxUid.value = globals.users.value[index];
+        globals.users.value.removeAt(index);
+        globals.users.value.insert(index, temp);
+      },
+    );
   }
 
   @override
@@ -521,23 +532,33 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
             return ValueListenableBuilder(
               valueListenable: globals.videoDisabledUsers,
               builder: (context, value, child) {
-                return GestureDetector(
-                  child: Center(
-                    child: widget.layoutType == null
-                        ? viewGrid()
-                        : widget.layoutType == Layout.Grid
-                            ? viewGrid()
-                            : widget.layoutType == Layout.Floating
-                                ? viewFloat()
-                                : viewGrid(),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      globals.isButtonVisible.value =
-                          !globals.isButtonVisible.value;
-                    });
-                    print(
-                        "globals.isButtonVisible.value : ${globals.isButtonVisible.value}");
+                return ValueListenableBuilder(
+                  valueListenable: globals.isLocalUserMuted,
+                  builder: (context, value, child) {
+                    return ValueListenableBuilder(
+                      valueListenable: globals.isLocalVideoDisabled,
+                      builder: (context, value, child) {
+                        return GestureDetector(
+                          child: Center(
+                            child: widget.layoutType == null
+                                ? viewGrid()
+                                : widget.layoutType == Layout.Grid
+                                    ? viewGrid()
+                                    : widget.layoutType == Layout.Floating
+                                        ? viewFloat()
+                                        : viewGrid(),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              globals.isButtonVisible.value =
+                                  !globals.isButtonVisible.value;
+                            });
+                            print(
+                                "globals.isButtonVisible.value : ${globals.isButtonVisible.value}");
+                          },
+                        );
+                      },
+                    );
                   },
                 );
               },
@@ -548,5 +569,3 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     );
   }
 }
-
-//
