@@ -1,3 +1,4 @@
+import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
 import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
@@ -56,24 +57,19 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    list.add(
-      RtcLocalView.SurfaceView(
-        zOrderMediaOverlay: true,
-      ),
-    );
-    globals.users.value.forEach(
-      (uid) => list.add(
-        RtcRemoteView.SurfaceView(
-          uid: uid,
-          zOrderMediaOverlay: true,
-        ),
-      ),
-    );
+    if (globals.clientRole.value == ClientRole.Broadcaster) {
+      list.add(RtcLocalView.SurfaceView());
+    }
+    ;
+    globals.users.value
+        .forEach((uid) => list.add(RtcRemoteView.SurfaceView(uid: uid)));
     return list;
   }
 
   Widget _getLocalViews() {
-    return RtcLocalView.SurfaceView();
+    return globals.clientRole.value == ClientRole.Broadcaster
+        ? RtcLocalView.SurfaceView()
+        : null;
   }
 
   Widget _getRemoteViews(int uid) {
@@ -101,7 +97,15 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   Widget viewGrid() {
     final views = _getRenderViews();
     print("VIEWS LENGTH = ${views.length}");
-    if (views.length == 1) {
+    if (views.length == 0) {
+      return Expanded(
+        child: Container(
+          child: Center(
+            child: Text('Waiting for the host to join'),
+          ),
+        ),
+      );
+    } else if (views.length == 1) {
       return Container(
         child: Column(
           children: <Widget>[_videoView(views[0])],
@@ -173,6 +177,14 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                       color: Colors.black,
                                       child: Stack(
                                         children: [
+                                          Center(
+                                            child: Text(
+                                              'Local User',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
                                           !globals.isLocalVideoDisabled.value
                                               ? Column(
                                                   children: [
@@ -323,9 +335,22 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                             ? widget.disabledVideoWidget == null
                                 ? disabledVideoWidget()
                                 : widget.disabledVideoWidget
-                            : Column(
+                            : Stack(
                                 children: [
-                                  _videoView(_getLocalViews()),
+                                  Container(
+                                    color: Colors.black,
+                                    child: Center(
+                                      child: Text(
+                                        'Local User',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                  Column(
+                                    children: [
+                                      _videoView(_getLocalViews()),
+                                    ],
+                                  ),
                                 ],
                               ),
                       ),
@@ -350,11 +375,26 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                     ),
             ],
           )
-        : Container(
-            child: Column(
-              children: <Widget>[_videoView(_getLocalViews())],
-            ),
-          );
+        : globals.clientRole.value == ClientRole.Broadcaster
+            ? Container(
+                child: Column(
+                  children: <Widget>[_videoView(_getLocalViews())],
+                ),
+              )
+            : Column(
+                children: [
+                  Expanded(
+                      child: Container(
+                    color: Colors.white,
+                    child: Center(
+                      child: Text(
+                        'Waiting for the host to join.',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  )),
+                ],
+              );
   }
 
   Widget localAVStateWidget() {

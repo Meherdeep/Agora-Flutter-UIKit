@@ -40,6 +40,8 @@ class AgoraFlutterUIKit {
     BeautyOptions setBeautyEffectOptions,
     bool enableDeepLearningDenoise,
     bool setCameraTorchOn,
+    bool muteAllRemoteVideoStreams,
+    bool muteAllRemoteAudioStreams,
   }) {
     _initAgoraRtcEngine(
       appId: appId,
@@ -61,6 +63,8 @@ class AgoraFlutterUIKit {
       setBeautyEffectOptions: setBeautyEffectOptions,
       enableDeepLearningDenoise: enableDeepLearningDenoise,
       setCameraTorchOn: setCameraTorchOn,
+      muteAllRemoteVideoStreams: muteAllRemoteVideoStreams,
+      muteAllRemoteAudioStreams: muteAllRemoteAudioStreams,
     );
   }
 
@@ -84,6 +88,8 @@ class AgoraFlutterUIKit {
     BeautyOptions setBeautyEffectOptions,
     bool enableDeepLearningDenoise,
     bool setCameraTorchOn,
+    bool muteAllRemoteVideoStreams,
+    bool muteAllRemoteAudioStreams,
   }) async {
     try {
       globals.engine = await RtcEngine.createWithConfig(
@@ -104,6 +110,7 @@ class AgoraFlutterUIKit {
 
     if (userRole != null) {
       if (channelProfile == ChannelProfile.LiveBroadcasting) {
+        globals.clientRole.value = userRole;
         await globals.engine.setClientRole(userRole);
       } else {
         print("You can set the user role only for live broadcasting mode");
@@ -127,6 +134,12 @@ class AgoraFlutterUIKit {
         audioScenario ?? AudioScenario.Default);
 
     await globals.engine.enableVideo();
+
+    await globals.engine
+        .muteAllRemoteVideoStreams(muteAllRemoteVideoStreams ?? false);
+
+    await globals.engine
+        .muteAllRemoteAudioStreams(muteAllRemoteAudioStreams ?? false);
 
     if (setBeautyEffectOptions != null) {
       globals.engine.setBeautyEffectOptions(true, setBeautyEffectOptions);
