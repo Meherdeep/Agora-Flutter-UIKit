@@ -60,7 +60,6 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     if (globals.clientRole.value == ClientRole.Broadcaster) {
       list.add(RtcLocalView.SurfaceView());
     }
-    ;
     globals.users.value
         .forEach((uid) => list.add(RtcRemoteView.SurfaceView(uid: uid)));
     return list;
@@ -100,8 +99,12 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     if (views.length == 0) {
       return Expanded(
         child: Container(
+          color: Colors.white,
           child: Center(
-            child: Text('Waiting for the host to join'),
+            child: Text(
+              'Waiting for the host to join',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ),
       );

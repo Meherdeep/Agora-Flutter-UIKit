@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
+import 'package:agora_flutter_uikit/src/connection_data.dart';
 import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,7 @@ class AgoraFlutterUIKit {
   }
 
   AgoraFlutterUIKit({
-    @required String appId,
-    @required String channelName,
-    int uid,
-    AreaCode areaCode,
-    String token,
-    String tokenUrl,
+    AgoraConnectionData agoraConnectionData,
     List<Permission> enabledPermission,
     ChannelProfile channelProfile,
     ClientRole userRole,
@@ -43,13 +39,8 @@ class AgoraFlutterUIKit {
     bool muteAllRemoteAudioStreams,
   }) {
     _initAgoraRtcEngine(
-      appId: appId,
-      channelName: channelName,
-      uid: uid,
+      agoraConnectionData: agoraConnectionData,
       enabledPermission: enabledPermission,
-      tempToken: token,
-      tokenUrl: tokenUrl,
-      areaCode: areaCode,
       channelProfile: channelProfile,
       userRole: userRole,
       videoEncoderConfiguration: videoEncoderConfiguration,
@@ -64,16 +55,12 @@ class AgoraFlutterUIKit {
       muteAllRemoteVideoStreams: muteAllRemoteVideoStreams,
       muteAllRemoteAudioStreams: muteAllRemoteAudioStreams,
     );
+    print('APP ID: ${agoraConnectionData.appId}');
   }
 
   Future<void> _initAgoraRtcEngine({
-    @required String appId,
-    @required String channelName,
-    int uid,
+    AgoraConnectionData agoraConnectionData,
     @required List<Permission> enabledPermission,
-    String tempToken,
-    String tokenUrl,
-    AreaCode areaCode,
     ChannelProfile channelProfile,
     ClientRole userRole,
     VideoEncoderConfiguration videoEncoderConfiguration,
@@ -90,17 +77,21 @@ class AgoraFlutterUIKit {
   }) async {
     try {
       globals.engine = await RtcEngine.createWithConfig(
-        RtcEngineConfig(appId, areaCode: areaCode ?? AreaCode.GLOB),
+        RtcEngineConfig(agoraConnectionData.appId,
+            areaCode: agoraConnectionData.areaCode ?? AreaCode.GLOB),
       );
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
 
     await enabledPermission.request();
-    AgoraEvents events = AgoraEvents(globals.engine, channelName, tokenUrl);
+    AgoraEvents events = AgoraEvents(globals.engine,
+        agoraConnectionData.channelName, agoraConnectionData.tokenUrl);
 
-    if (tokenUrl != null) {
-      tokens = AgoraTokens(channelName: channelName, baseUrl: tokenUrl);
+    if (agoraConnectionData.tokenUrl != null) {
+      tokens = AgoraTokens(
+          channelName: agoraConnectionData.channelName,
+          baseUrl: agoraConnectionData.tokenUrl);
     }
     await globals.engine
         .setChannelProfile(channelProfile ?? ChannelProfile.Communication);
@@ -115,17 +106,18 @@ class AgoraFlutterUIKit {
     }
     await globals.engine.enableAudioVolumeIndication(200, 3, true);
 
-    events.addAgoraEventHandlers(globals.engine, channelName, tokenUrl);
+    events.addAgoraEventHandlers(globals.engine,
+        agoraConnectionData.channelName, agoraConnectionData.tokenUrl);
 
     if (videoEncoderConfiguration != null) {
       await globals.engine
           .setVideoEncoderConfiguration(videoEncoderConfiguration);
     }
 
-    await globals.engine.setCameraAutoFocusFaceModeEnabled(
+    globals.engine.setCameraAutoFocusFaceModeEnabled(
         setCameraAutoFocusFaceModeEnabled ?? false);
 
-    await globals.engine.setCameraTorchOn(setCameraTorchOn ?? false);
+    globals.engine.setCameraTorchOn(setCameraTorchOn ?? false);
 
     await globals.engine.setAudioProfile(audioProfile ?? AudioProfile.Default,
         audioScenario ?? AudioScenario.Default);
@@ -154,13 +146,14 @@ class AgoraFlutterUIKit {
           .setRemoteSubscribeFallbackOption(remoteSubscribeFallbackOption);
     }
 
-    if (tokenUrl != null) {
-      await tokens.getToken(tokenUrl, channelName);
-      await globals.engine.joinChannel(
-          globals.token.value, channelName, null, globals.uid.value);
+    if (agoraConnectionData.tokenUrl != null) {
+      await tokens.getToken(
+          agoraConnectionData.tokenUrl, agoraConnectionData.channelName);
+      await globals.engine.joinChannel(globals.token.value,
+          agoraConnectionData.channelName, null, globals.uid.value);
     } else {
-      await globals.engine
-          .joinChannel(tempToken ?? null, channelName, null, uid ?? 0);
+      await globals.engine.joinChannel(agoraConnectionData.tempToken ?? null,
+          agoraConnectionData.channelName, null, agoraConnectionData.uid ?? 0);
     }
   }
 }
