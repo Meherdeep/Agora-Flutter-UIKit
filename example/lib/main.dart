@@ -15,12 +15,14 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     AgoraFlutterUIKit(
-      appId: '<---App Id--->',
+      agoraConnectionData:
+          AgoraConnectionData(appId: '<---App Id--->', channelName: 'test'),
       enabledPermission: [
         Permission.camera,
         Permission.microphone,
       ],
-      channelName: 'test',
+      channelProfile: ChannelProfile.LiveBroadcasting,
+      userRole: ClientRole.Broadcaster,
     );
   }
 
