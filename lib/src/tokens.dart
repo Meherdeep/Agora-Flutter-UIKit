@@ -8,19 +8,20 @@ class AgoraTokens extends ValueNotifier<AgoraTokens> {
   AgoraTokens({
     String baseUrl,
     String channelName,
+    int uid,
   }) : super(null) {
-    getToken(baseUrl, channelName);
+    getToken(baseUrl, channelName, uid);
   }
 
-  Future<void> getToken(String baseUrl, String channelName) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/api/get/rtc/$channelName'));
+  Future<void> getToken(String baseUrl, String channelName, int uid) async {
+    uid == null ? uid = 0 : uid = uid;
+
+    final response = await http
+        .get(Uri.parse('$baseUrl/rtc/$channelName/publisher/uid/$uid'));
     if (response.statusCode == 200) {
       print(response.body);
-      globals.token.value = jsonDecode(response.body)['rtc_token'];
-      globals.uid.value = jsonDecode(response.body)['uid'];
+      globals.token.value = jsonDecode(response.body)['rtcToken'];
       print('Token : ${globals.token.value}');
-      print('UID : ${globals.uid.value}');
     } else {
       print(response.reasonPhrase);
       print('Failed to generate the token : ${response.statusCode}');
