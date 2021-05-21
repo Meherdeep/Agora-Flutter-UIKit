@@ -38,14 +38,13 @@ class AgoraVideoButtons extends StatefulWidget {
 class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   bool muted = false;
   bool disabledVideo = false;
+  List<Widget> buttonsEnabled = [];
 
   @override
   void initState() {
     super.initState();
     Future.delayed(
-      widget.autoHideButtonTime == null
-          ? const Duration(seconds: 5)
-          : Duration(seconds: widget.autoHideButtonTime),
+      Duration(seconds: widget.autoHideButtonTime ?? 5),
       () {
         if (this.mounted) {
           setState(() {
@@ -60,9 +59,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
           globals.visible.value = !globals.visible.value;
         });
         Future.delayed(
-          widget.autoHideButtonTime == null
-              ? const Duration(seconds: 5)
-              : Duration(seconds: widget.autoHideButtonTime),
+          Duration(seconds: widget.autoHideButtonTime ?? 5),
           () {
             setState(() {
               globals.visible.value = !globals.visible.value;
@@ -73,9 +70,26 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
         );
       }
     });
+
+    Map buttonMap = <BuiltInButtons, Widget>{
+      BuiltInButtons.ToggleMic: muteMicButton(),
+      BuiltInButtons.CallEnd: disconnectCallButton(),
+      BuiltInButtons.SwitchCamera: switchCameraButton(),
+      BuiltInButtons.ToggleCamera: disableVideoButton(),
+    };
+
+    if (widget.enabledButtons != null) {
+      for (var i = 0; i < widget.enabledButtons.length; i++) {
+        for (var j = 0; j < buttonMap.length; j++) {
+          if (buttonMap.keys.toList()[j] == widget.enabledButtons[i]) {
+            buttonsEnabled.add(buttonMap.values.toList()[j]);
+          }
+        }
+      }
+    }
   }
 
-  Widget toolbar() {
+  Widget toolbar(List<Widget> buttonList) {
     return Container(
       alignment: Alignment.bottomCenter,
       padding: widget.bottomPadding == null
@@ -90,18 +104,27 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
           alignment: widget.buttonAlignment == null
               ? Alignment.bottomCenter
               : widget.buttonAlignment,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              muteMicButton(),
-              disconnectCallButton(),
-              switchCameraButton(),
-              disableVideoButton(),
-              if (widget.extraButtons != null)
-                for (var i = 0; i < widget.extraButtons.length; i++)
-                  widget.extraButtons[i]
-            ],
-          ),
+          child: widget.enabledButtons == null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    muteMicButton(),
+                    disconnectCallButton(),
+                    switchCameraButton(),
+                    disableVideoButton(),
+                    if (widget.extraButtons != null)
+                      for (var i = 0; i < widget.extraButtons.length; i++)
+                        widget.extraButtons[i]
+                  ],
+                )
+              : Row(
+                  children: [
+                    for (var i = 0; i < buttonList.length; i++) buttonList[i],
+                    if (widget.extraButtons != null)
+                      for (var i = 0; i < widget.extraButtons.length; i++)
+                        widget.extraButtons[i]
+                  ],
+                ),
         ),
       ),
     );
@@ -215,9 +238,10 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
         ? widget.autoHideButtons
             ? Visibility(
                 visible: globals.visible.value,
-                child: toolbar(),
+                child: toolbar(
+                    widget.enabledButtons == null ? null : buttonsEnabled),
               )
-            : toolbar()
-        : toolbar();
+            : toolbar(widget.enabledButtons == null ? null : buttonsEnabled)
+        : toolbar(widget.enabledButtons == null ? null : buttonsEnabled);
   }
 }
