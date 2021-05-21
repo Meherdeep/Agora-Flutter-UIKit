@@ -17,8 +17,6 @@ RtcEngine engine;
 
 ValueNotifier<String> token = ValueNotifier(null);
 
-ValueNotifier<int> uid = ValueNotifier(0);
-
 ValueNotifier<int> speakerUid = ValueNotifier(0);
 
 ValueNotifier<int> maxUid = ValueNotifier(0);

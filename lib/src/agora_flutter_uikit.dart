@@ -85,8 +85,12 @@ class AgoraFlutterUIKit {
     }
 
     await enabledPermission.request();
-    AgoraEvents events = AgoraEvents(globals.engine,
-        agoraConnectionData.channelName, agoraConnectionData.tokenUrl);
+    AgoraEvents events = AgoraEvents(
+      globals.engine,
+      agoraConnectionData.channelName,
+      agoraConnectionData.tokenUrl,
+      agoraConnectionData.uid,
+    );
 
     if (agoraConnectionData.tokenUrl != null) {
       tokens = AgoraTokens(
@@ -106,8 +110,12 @@ class AgoraFlutterUIKit {
     }
     await globals.engine.enableAudioVolumeIndication(200, 3, true);
 
-    events.addAgoraEventHandlers(globals.engine,
-        agoraConnectionData.channelName, agoraConnectionData.tokenUrl);
+    events.addAgoraEventHandlers(
+      globals.engine,
+      agoraConnectionData.channelName,
+      agoraConnectionData.tokenUrl,
+      agoraConnectionData.uid,
+    );
 
     if (videoEncoderConfiguration != null) {
       await globals.engine
@@ -147,10 +155,10 @@ class AgoraFlutterUIKit {
     }
 
     if (agoraConnectionData.tokenUrl != null) {
-      await tokens.getToken(
-          agoraConnectionData.tokenUrl, agoraConnectionData.channelName);
+      await tokens.getToken(agoraConnectionData.tokenUrl,
+          agoraConnectionData.channelName, agoraConnectionData.uid);
       await globals.engine.joinChannel(globals.token.value,
-          agoraConnectionData.channelName, null, globals.uid.value);
+          agoraConnectionData.channelName, null, agoraConnectionData.uid ?? 0);
     } else {
       await globals.engine.joinChannel(agoraConnectionData.tempToken ?? null,
           agoraConnectionData.channelName, null, agoraConnectionData.uid ?? 0);

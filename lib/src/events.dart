@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'agora_flutter_uikit.dart';
 
 class AgoraEvents extends ValueNotifier<AgoraEvents> {
-  AgoraEvents(RtcEngine engine, String channelName, String baseUrl)
+  AgoraEvents(RtcEngine engine, String channelName, String baseUrl, int uid)
       : super(null) {
-    addAgoraEventHandlers(engine, channelName, baseUrl);
+    addAgoraEventHandlers(engine, channelName, baseUrl, uid);
   }
 
   void addAgoraEventHandlers(
-      RtcEngine engine, String channelName, String baseUrl) {
+      RtcEngine engine, String channelName, String baseUrl, int uid) {
     engine.setEventHandler(RtcEngineEventHandler(
       error: (code) {
         final info = 'onError: $code';
@@ -46,7 +46,11 @@ class AgoraEvents extends ValueNotifier<AgoraEvents> {
         }
       },
       tokenPrivilegeWillExpire: (token) async {
-        await tokens.getToken(baseUrl, channelName);
+        await tokens.getToken(
+          baseUrl,
+          channelName,
+          uid,
+        );
         await engine.renewToken(token);
       },
       firstRemoteVideoFrame: (uid, width, height, elapsed) {
