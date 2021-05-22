@@ -10,7 +10,7 @@ class AgoraVideoButtons extends StatefulWidget {
   // The default auto hide time = 5 seconds
   final int autoHideButtonTime;
   // Adds a vertical padding to the set of button
-  final double bottomPadding;
+  final double verticalButtonPadding;
   final Alignment buttonAlignment;
   final Widget disconnectButtonChild;
   final Widget muteButtonChild;
@@ -23,7 +23,7 @@ class AgoraVideoButtons extends StatefulWidget {
       this.extraButtons,
       this.autoHideButtons,
       this.autoHideButtonTime,
-      this.bottomPadding,
+      this.verticalButtonPadding,
       this.buttonAlignment,
       this.disconnectButtonChild,
       this.muteButtonChild,
@@ -92,18 +92,16 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   Widget toolbar(List<Widget> buttonList) {
     return Container(
       alignment: Alignment.bottomCenter,
-      padding: widget.bottomPadding == null
+      padding: widget.verticalButtonPadding == null
           ? const EdgeInsets.symmetric(vertical: 48)
           : EdgeInsets.symmetric(
-              vertical: widget.bottomPadding,
+              vertical: widget.verticalButtonPadding,
             ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: BouncingScrollPhysics(),
         child: Align(
-          alignment: widget.buttonAlignment == null
-              ? Alignment.bottomCenter
-              : widget.buttonAlignment,
+          alignment: widget.buttonAlignment ?? Alignment.bottomCenter,
           child: widget.enabledButtons == null
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -212,7 +210,11 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     Navigator.pop(context);
   }
 
-  void _onToggleMute() {
+  void _onToggleMute() async {
+    var status = await Permission.microphone.status;
+    if (muted && status.isDenied) {
+      await Permission.microphone.request();
+    }
     setState(() {
       muted = !muted;
       globals.isLocalUserMuted.value = !globals.isLocalUserMuted.value;
@@ -220,7 +222,11 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     globals.engine.muteLocalAudioStream(muted);
   }
 
-  void _onToggleCamera() {
+  void _onToggleCamera() async {
+    var status = await Permission.camera.status;
+    if (disabledVideo && status.isDenied) {
+      await Permission.camera.request();
+    }
     setState(() {
       disabledVideo = !disabledVideo;
       globals.isLocalVideoDisabled.value = !globals.isLocalVideoDisabled.value;
@@ -228,7 +234,11 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     globals.engine.muteLocalVideoStream(disabledVideo);
   }
 
-  void _onSwitchCamera() {
+  void _onSwitchCamera() async {
+    var status = await Permission.camera.status;
+    if (status.isDenied) {
+      await Permission.camera.request();
+    }
     globals.engine.switchCamera();
   }
 
