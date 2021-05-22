@@ -85,6 +85,7 @@ class AgoraFlutterUIKit {
     }
 
     await enabledPermission.request();
+
     AgoraEvents events = AgoraEvents(
       globals.engine,
       agoraConnectionData.channelName,

@@ -16,19 +16,21 @@ class AgoraVideoViewer extends StatefulWidget {
   final Widget disabledVideoWidget;
   final bool showRemoteAVState;
   final bool showLocalAVState;
+  final bool showNumberOfUsers;
 
-  const AgoraVideoViewer(
-      {Key key,
-      this.layoutType,
-      this.floatingLayoutContainerHeight,
-      this.floatingLayoutContainerWidth,
-      this.floatingLayoutMainViewPadding,
-      this.floatingLayoutSubViewPadding,
-      this.enableActiveSpeaker,
-      this.disabledVideoWidget,
-      this.showRemoteAVState,
-      this.showLocalAVState})
-      : super(key: key);
+  const AgoraVideoViewer({
+    Key key,
+    this.layoutType,
+    this.floatingLayoutContainerHeight,
+    this.floatingLayoutContainerWidth,
+    this.floatingLayoutMainViewPadding,
+    this.floatingLayoutSubViewPadding,
+    this.enableActiveSpeaker,
+    this.disabledVideoWidget,
+    this.showRemoteAVState,
+    this.showLocalAVState,
+    this.showNumberOfUsers,
+  }) : super(key: key);
 
   @override
   _AgoraVideoViewerState createState() => _AgoraVideoViewerState();
@@ -154,9 +156,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         ? Column(
             children: [
               Container(
-                height: widget.floatingLayoutContainerHeight == null
-                    ? MediaQuery.of(context).size.height * 0.2
-                    : widget.floatingLayoutContainerHeight,
+                height: widget.floatingLayoutContainerHeight ??
+                    MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width,
                 alignment: Alignment.topLeft,
                 child: ListView.builder(
@@ -195,10 +196,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                                         _getLocalViews()),
                                                   ],
                                                 )
-                                              : widget.disabledVideoWidget ==
-                                                      null
-                                                  ? disabledVideoWidget()
-                                                  : widget.disabledVideoWidget,
+                                              : widget.disabledVideoWidget ??
+                                                  disabledVideoWidget(),
                                           Positioned.fill(
                                             child: Align(
                                               alignment: Alignment.topLeft,
@@ -240,9 +239,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                             Container(
                                               color: Colors.black,
                                             ),
-                                            widget.disabledVideoWidget == null
-                                                ? disabledVideoWidget()
-                                                : widget.disabledVideoWidget,
+                                            widget.disabledVideoWidget ??
+                                                disabledVideoWidget(),
                                             Positioned.fill(
                                               child: Align(
                                                 alignment: Alignment.topLeft,
@@ -335,9 +333,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                             ? EdgeInsets.fromLTRB(3, 0, 3, 3)
                             : widget.floatingLayoutMainViewPadding,
                         child: globals.isLocalVideoDisabled.value
-                            ? widget.disabledVideoWidget == null
-                                ? disabledVideoWidget()
-                                : widget.disabledVideoWidget
+                            ? widget.disabledVideoWidget ??
+                                disabledVideoWidget()
                             : Stack(
                                 children: [
                                   Container(
@@ -365,9 +362,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                             : widget.floatingLayoutMainViewPadding,
                         child: globals.videoDisabledUsers.value
                                 .contains(globals.maxUid.value)
-                            ? widget.disabledVideoWidget == null
-                                ? disabledVideoWidget()
-                                : widget.disabledVideoWidget
+                            ? widget.disabledVideoWidget ??
+                                disabledVideoWidget()
                             : Column(
                                 children: [
                                   _videoView(
@@ -379,11 +375,16 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
             ],
           )
         : globals.clientRole.value == ClientRole.Broadcaster
-            ? Container(
-                child: Column(
-                  children: <Widget>[_videoView(_getLocalViews())],
-                ),
-              )
+            ? globals.isLocalVideoDisabled.value
+                ? widget.disabledVideoWidget ??
+                    Column(
+                      children: [Expanded(child: disabledVideoWidget())],
+                    )
+                : Container(
+                    child: Column(
+                      children: <Widget>[_videoView(_getLocalViews())],
+                    ),
+                  )
             : Column(
                 children: [
                   Expanded(
@@ -539,11 +540,41 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   }
 
   Widget disabledVideoWidget() {
-    return Container(
-      color: Colors.black,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Container(
+            color: Colors.black,
+            padding: const EdgeInsets.all(8.0),
+            child: Image.network(
+              'https://i.ibb.co/q5RysSV/image.png',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget numberOfUsersWidget() {
+    return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Image.network(
-        'https://i.ibb.co/q5RysSV/image.png',
+      child: Container(
+        color: Colors.black54,
+        padding: const EdgeInsets.all(3),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.remove_red_eye_outlined,
+              color: Colors.white,
+            ),
+            Text(
+              ' ${globals.users.value.length + 1}',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -584,12 +615,55 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                         return GestureDetector(
                           child: Center(
                             child: widget.layoutType == null
-                                ? viewGrid()
-                                : widget.layoutType == Layout.Grid
-                                    ? viewGrid()
-                                    : widget.layoutType == Layout.Floating
-                                        ? viewFloat()
-                                        : viewGrid(),
+                                ? Stack(
+                                    children: [
+                                      viewGrid(),
+                                      widget.showNumberOfUsers == null ||
+                                              widget.showNumberOfUsers == false
+                                          ? Container()
+                                          : Positioned.fill(
+                                              child: Align(
+                                                alignment: Alignment.topRight,
+                                                child: numberOfUsersWidget(),
+                                              ),
+                                            ),
+                                    ],
+                                  )
+                                : widget.layoutType == Layout.Floating
+                                    ? Stack(
+                                        children: [
+                                          viewFloat(),
+                                          widget.showNumberOfUsers == null ||
+                                                  widget.showNumberOfUsers ==
+                                                      false
+                                              ? Container()
+                                              : Positioned.fill(
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child:
+                                                        numberOfUsersWidget(),
+                                                  ),
+                                                ),
+                                        ],
+                                      )
+                                    : Stack(
+                                        children: [
+                                          viewGrid(),
+                                          widget.showNumberOfUsers == null ||
+                                                  widget.showNumberOfUsers ==
+                                                      false
+                                              ? Container()
+                                              : Positioned.fill(
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.topRight,
+                                                    child:
+                                                        numberOfUsersWidget(),
+                                                  ),
+                                                ),
+                                        ],
+                                      ),
                           ),
                           onTap: () {
                             setState(() {
