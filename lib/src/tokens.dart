@@ -4,16 +4,16 @@ import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AgoraTokens extends ValueNotifier<AgoraTokens> {
+class AgoraTokens extends ValueNotifier<AgoraTokens?> {
   AgoraTokens({
-    String baseUrl,
-    String channelName,
-    int uid,
+    String? baseUrl,
+    String? channelName,
+    int? uid,
   }) : super(null) {
     getToken(baseUrl, channelName, uid);
   }
 
-  Future<void> getToken(String baseUrl, String channelName, int uid) async {
+  Future<void> getToken(String? baseUrl, String? channelName, int? uid) async {
     uid == null ? uid = 0 : uid = uid;
 
     final response = await http

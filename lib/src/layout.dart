@@ -7,19 +7,19 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'enums.dart';
 
 class AgoraVideoViewer extends StatefulWidget {
-  final Layout layoutType;
-  final double floatingLayoutContainerHeight;
-  final double floatingLayoutContainerWidth;
-  final EdgeInsets floatingLayoutMainViewPadding;
-  final EdgeInsets floatingLayoutSubViewPadding;
-  final bool enableActiveSpeaker;
-  final Widget disabledVideoWidget;
-  final bool showRemoteAVState;
-  final bool showLocalAVState;
-  final bool showNumberOfUsers;
+  final Layout? layoutType;
+  final double? floatingLayoutContainerHeight;
+  final double? floatingLayoutContainerWidth;
+  final EdgeInsets? floatingLayoutMainViewPadding;
+  final EdgeInsets? floatingLayoutSubViewPadding;
+  final bool? enableActiveSpeaker;
+  final Widget? disabledVideoWidget;
+  final bool? showRemoteAVState;
+  final bool? showLocalAVState;
+  final bool? showNumberOfUsers;
 
   const AgoraVideoViewer({
-    Key key,
+    Key? key,
     this.layoutType,
     this.floatingLayoutContainerHeight,
     this.floatingLayoutContainerWidth,
@@ -67,7 +67,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     return list;
   }
 
-  Widget _getLocalViews() {
+  Widget? _getLocalViews() {
     return globals.clientRole.value == ClientRole.Broadcaster
         ? RtcLocalView.SurfaceView()
         : null;
@@ -166,13 +166,11 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       key: Key('$index'),
-                      padding: widget.floatingLayoutSubViewPadding == null
-                          ? const EdgeInsets.fromLTRB(3, 3, 0, 3)
-                          : widget.floatingLayoutSubViewPadding,
+                      padding: widget.floatingLayoutSubViewPadding ??
+                          const EdgeInsets.fromLTRB(3, 3, 0, 3),
                       child: Container(
-                        width: widget.floatingLayoutContainerWidth == null
-                            ? MediaQuery.of(context).size.width / 3
-                            : widget.floatingLayoutContainerWidth,
+                        width: widget.floatingLayoutContainerWidth ??
+                            MediaQuery.of(context).size.width / 3,
                         child: Column(
                           children: [
                             globals.users.value[index] == globals.localUid.value
@@ -224,7 +222,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                             ),
                                           ),
                                           widget.showLocalAVState == null ||
-                                                  widget.showLocalAVState
+                                                  widget.showLocalAVState!
                                               ? localAVStateWidget()
                                               : Container()
                                         ],
@@ -269,7 +267,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                               ),
                                             ),
                                             widget.showRemoteAVState == null ||
-                                                    widget.showRemoteAVState
+                                                    widget.showRemoteAVState!
                                                 ? remoteAVStateWidget(index)
                                                 : Container()
                                           ],
@@ -313,7 +311,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                               ),
                                             ),
                                             widget.showRemoteAVState == null ||
-                                                    widget.showRemoteAVState
+                                                    widget.showRemoteAVState!
                                                 ? remoteAVStateWidget(index)
                                                 : Container()
                                           ],
@@ -329,9 +327,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
               globals.maxUid.value == globals.localUid.value
                   ? Expanded(
                       child: Container(
-                        padding: widget.floatingLayoutMainViewPadding == null
-                            ? EdgeInsets.fromLTRB(3, 0, 3, 3)
-                            : widget.floatingLayoutMainViewPadding,
+                        padding: widget.floatingLayoutMainViewPadding ??
+                            EdgeInsets.fromLTRB(3, 0, 3, 3),
                         child: globals.isLocalVideoDisabled.value
                             ? widget.disabledVideoWidget ??
                                 disabledVideoWidget()
@@ -357,9 +354,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                     )
                   : Expanded(
                       child: Container(
-                        padding: widget.floatingLayoutMainViewPadding == null
-                            ? EdgeInsets.fromLTRB(3, 0, 3, 3)
-                            : widget.floatingLayoutMainViewPadding,
+                        padding: widget.floatingLayoutMainViewPadding ??
+                            const EdgeInsets.fromLTRB(3, 0, 3, 3),
                         child: globals.videoDisabledUsers.value
                                 .contains(globals.maxUid.value)
                             ? widget.disabledVideoWidget ??
@@ -599,19 +595,19 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: globals.users,
-      builder: (BuildContext context, dynamic value, Widget child) {
+      builder: (BuildContext context, dynamic value, Widget? child) {
         return ValueListenableBuilder(
           valueListenable: globals.mutedUsers,
-          builder: (context, value, child) {
+          builder: (context, dynamic value, child) {
             return ValueListenableBuilder(
               valueListenable: globals.videoDisabledUsers,
-              builder: (context, value, child) {
+              builder: (context, dynamic value, child) {
                 return ValueListenableBuilder(
                   valueListenable: globals.isLocalUserMuted,
-                  builder: (context, value, child) {
+                  builder: (context, dynamic value, child) {
                     return ValueListenableBuilder(
                       valueListenable: globals.isLocalVideoDisabled,
-                      builder: (context, value, child) {
+                      builder: (context, dynamic value, child) {
                         return GestureDetector(
                           child: Center(
                             child: widget.layoutType == null

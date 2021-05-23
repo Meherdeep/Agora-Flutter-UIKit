@@ -4,21 +4,21 @@ import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
 import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 
 class AgoraVideoButtons extends StatefulWidget {
-  final List<BuiltInButtons> enabledButtons;
-  final List<Widget> extraButtons;
-  final bool autoHideButtons;
+  final List<BuiltInButtons>? enabledButtons;
+  final List<Widget>? extraButtons;
+  final bool? autoHideButtons;
   // The default auto hide time = 5 seconds
-  final int autoHideButtonTime;
+  final int? autoHideButtonTime;
   // Adds a vertical padding to the set of button
-  final double verticalButtonPadding;
-  final Alignment buttonAlignment;
-  final Widget disconnectButtonChild;
-  final Widget muteButtonChild;
-  final Widget switchCameraButtonChild;
-  final Widget disableVideoButtonChild;
+  final double? verticalButtonPadding;
+  final Alignment? buttonAlignment;
+  final Widget? disconnectButtonChild;
+  final Widget? muteButtonChild;
+  final Widget? switchCameraButtonChild;
+  final Widget? disableVideoButtonChild;
 
   const AgoraVideoButtons(
-      {Key key,
+      {Key? key,
       this.enabledButtons,
       this.extraButtons,
       this.autoHideButtons,
@@ -79,9 +79,9 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     };
 
     if (widget.enabledButtons != null) {
-      for (var i = 0; i < widget.enabledButtons.length; i++) {
+      for (var i = 0; i < widget.enabledButtons!.length; i++) {
         for (var j = 0; j < buttonMap.length; j++) {
-          if (buttonMap.keys.toList()[j] == widget.enabledButtons[i]) {
+          if (buttonMap.keys.toList()[j] == widget.enabledButtons![i]) {
             buttonsEnabled.add(buttonMap.values.toList()[j]);
           }
         }
@@ -89,13 +89,13 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     }
   }
 
-  Widget toolbar(List<Widget> buttonList) {
+  Widget toolbar(List<Widget>? buttonList) {
     return Container(
       alignment: Alignment.bottomCenter,
       padding: widget.verticalButtonPadding == null
           ? const EdgeInsets.symmetric(vertical: 48)
           : EdgeInsets.symmetric(
-              vertical: widget.verticalButtonPadding,
+              vertical: widget.verticalButtonPadding!,
             ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -111,16 +111,16 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
                     switchCameraButton(),
                     disableVideoButton(),
                     if (widget.extraButtons != null)
-                      for (var i = 0; i < widget.extraButtons.length; i++)
-                        widget.extraButtons[i]
+                      for (var i = 0; i < widget.extraButtons!.length; i++)
+                        widget.extraButtons![i]
                   ],
                 )
               : Row(
                   children: [
-                    for (var i = 0; i < buttonList.length; i++) buttonList[i],
+                    for (var i = 0; i < buttonList!.length; i++) buttonList[i],
                     if (widget.extraButtons != null)
-                      for (var i = 0; i < widget.extraButtons.length; i++)
-                        widget.extraButtons[i]
+                      for (var i = 0; i < widget.extraButtons!.length; i++)
+                        widget.extraButtons![i]
                   ],
                 ),
         ),
@@ -245,7 +245,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   @override
   Widget build(BuildContext context) {
     return widget.autoHideButtons != null
-        ? widget.autoHideButtons
+        ? widget.autoHideButtons!
             ? Visibility(
                 visible: globals.visible.value,
                 child: toolbar(

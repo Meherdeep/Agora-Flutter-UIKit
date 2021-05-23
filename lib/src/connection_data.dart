@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 class AgoraConnectionData {
   String appId;
   String channelName;
-  int uid;
-  AreaCode areaCode;
-  String tokenUrl;
-  String tempToken;
+  int? uid;
+  AreaCode? areaCode;
+  String? tokenUrl;
+  String? tempToken;
 
   AgoraConnectionData({
-    @required this.appId,
-    @required this.channelName,
+    required this.appId,
+    required this.channelName,
     this.uid,
     this.areaCode,
     this.tokenUrl,
