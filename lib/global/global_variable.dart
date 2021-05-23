@@ -13,9 +13,9 @@ ValueNotifier<bool> isButtonVisible = ValueNotifier(false);
 
 ValueNotifier<bool> visible = ValueNotifier(true);
 
-RtcEngine engine;
+late RtcEngine engine;
 
-ValueNotifier<String> token = ValueNotifier(null);
+ValueNotifier<String?> token = ValueNotifier(null);
 
 ValueNotifier<int> speakerUid = ValueNotifier(0);
 
@@ -23,7 +23,7 @@ ValueNotifier<int> maxUid = ValueNotifier(0);
 
 ValueNotifier<int> localUid = ValueNotifier(0);
 
-bool isActiveSpeakerEnabled = true;
+bool? isActiveSpeakerEnabled = true;
 
 ValueNotifier<bool> isLocalUserMuted = ValueNotifier(false);
 

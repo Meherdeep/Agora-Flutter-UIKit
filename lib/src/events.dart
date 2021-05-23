@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 import 'agora_flutter_uikit.dart';
 
-class AgoraEvents extends ValueNotifier<AgoraEvents> {
-  AgoraEvents(RtcEngine engine, String channelName, String baseUrl, int uid)
+class AgoraEvents extends ValueNotifier<AgoraEvents?> {
+  AgoraEvents(RtcEngine engine, String channelName, String? baseUrl, int? uid)
       : super(null) {
     addAgoraEventHandlers(engine, channelName, baseUrl, uid);
   }
 
   void addAgoraEventHandlers(
-      RtcEngine engine, String channelName, String baseUrl, int uid) {
+      RtcEngine engine, String channelName, String? baseUrl, int? uid) {
     engine.setEventHandler(RtcEngineEventHandler(
       error: (code) {
         final info = 'onError: $code';
@@ -88,7 +88,7 @@ class AgoraEvents extends ValueNotifier<AgoraEvents> {
       },
       activeSpeaker: (uid) {
         print("Active speaker = $uid");
-        if (globals.isActiveSpeakerEnabled) {
+        if (globals.isActiveSpeakerEnabled!) {
           globals.speakerUid.value = uid;
           final int temp = globals.maxUid.value;
           globals.maxUid.value = globals.speakerUid.value;

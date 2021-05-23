@@ -10,33 +10,33 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:agora_flutter_uikit/src/events.dart';
 
-AgoraTokens tokens;
+late AgoraTokens tokens;
 
 class AgoraFlutterUIKit {
   static const MethodChannel _channel =
       const MethodChannel('agora_flutter_uikit');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
+  static Future<String?> get platformVersion async {
+    final String? version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
   AgoraFlutterUIKit({
-    AgoraConnectionData agoraConnectionData,
-    List<Permission> enabledPermission,
-    ChannelProfile channelProfile,
-    ClientRole userRole,
-    VideoEncoderConfiguration videoEncoderConfiguration,
-    bool setCameraAutoFocusFaceModeEnabled,
-    bool enableDualStreamMode,
-    StreamFallbackOptions localPublishFallbackOption,
-    StreamFallbackOptions remoteSubscribeFallbackOption,
-    AudioProfile audioProfile,
-    AudioScenario audioScenario,
-    BeautyOptions setBeautyEffectOptions,
-    bool setCameraTorchOn,
-    bool muteAllRemoteVideoStreams,
-    bool muteAllRemoteAudioStreams,
+    required AgoraConnectionData agoraConnectionData,
+    required List<Permission> enabledPermission,
+    ChannelProfile? channelProfile,
+    ClientRole? userRole,
+    VideoEncoderConfiguration? videoEncoderConfiguration,
+    bool? setCameraAutoFocusFaceModeEnabled,
+    bool? enableDualStreamMode,
+    StreamFallbackOptions? localPublishFallbackOption,
+    StreamFallbackOptions? remoteSubscribeFallbackOption,
+    AudioProfile? audioProfile,
+    AudioScenario? audioScenario,
+    BeautyOptions? setBeautyEffectOptions,
+    bool? setCameraTorchOn,
+    bool? muteAllRemoteVideoStreams,
+    bool? muteAllRemoteAudioStreams,
   }) {
     _initAgoraRtcEngine(
       agoraConnectionData: agoraConnectionData,
@@ -59,21 +59,21 @@ class AgoraFlutterUIKit {
   }
 
   Future<void> _initAgoraRtcEngine({
-    AgoraConnectionData agoraConnectionData,
-    @required List<Permission> enabledPermission,
-    ChannelProfile channelProfile,
-    ClientRole userRole,
-    VideoEncoderConfiguration videoEncoderConfiguration,
-    bool setCameraAutoFocusFaceModeEnabled,
-    bool enableDualStreamMode,
-    StreamFallbackOptions localPublishFallbackOption,
-    StreamFallbackOptions remoteSubscribeFallbackOption,
-    AudioProfile audioProfile,
-    AudioScenario audioScenario,
-    BeautyOptions setBeautyEffectOptions,
-    bool setCameraTorchOn,
-    bool muteAllRemoteVideoStreams,
-    bool muteAllRemoteAudioStreams,
+    required AgoraConnectionData agoraConnectionData,
+    required List<Permission> enabledPermission,
+    ChannelProfile? channelProfile,
+    ClientRole? userRole,
+    VideoEncoderConfiguration? videoEncoderConfiguration,
+    bool? setCameraAutoFocusFaceModeEnabled,
+    bool? enableDualStreamMode,
+    StreamFallbackOptions? localPublishFallbackOption,
+    StreamFallbackOptions? remoteSubscribeFallbackOption,
+    AudioProfile? audioProfile,
+    AudioScenario? audioScenario,
+    BeautyOptions? setBeautyEffectOptions,
+    bool? setCameraTorchOn,
+    bool? muteAllRemoteVideoStreams,
+    bool? muteAllRemoteAudioStreams,
   }) async {
     try {
       globals.engine = await RtcEngine.createWithConfig(
