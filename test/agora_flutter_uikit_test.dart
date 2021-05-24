@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(await AgoraFlutterUIKit.platformVersion, '42');
+    expect(await AgoraClient.platformVersion, '42');
   });
 }

@@ -1,4 +1,4 @@
-export 'src/agora_flutter_uikit.dart' show AgoraFlutterUIKit;
+export 'src/agora_client.dart' show AgoraClient;
 export 'src/layout.dart' show AgoraVideoViewer;
 export 'src/buttons.dart' show AgoraVideoButtons;
 export 'package:permission_handler/permission_handler.dart';

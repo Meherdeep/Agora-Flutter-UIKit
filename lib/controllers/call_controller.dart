@@ -1,22 +1,53 @@
 import 'package:agora_flutter_uikit/models/call_settings.dart';
 import 'package:agora_flutter_uikit/models/call_user.dart';
+import 'package:agora_flutter_uikit/models/engine_settings.dart';
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
-
-CallController callController = CallController();
 
 class CallController extends ValueNotifier<CallSettings> {
   CallController() : super(CallSettings(users: []));
 
-  CallSettings copyWith({List<CallUser>? users}) {
-    return CallSettings(users: users ?? value.users);
+  void initializeEngine(String appId) async {
+    value = value.copyWith(
+      engineSettings: EngineSettings(
+        engine: await RtcEngine.createWithConfig(RtcEngineConfig(appId)),
+        appId: appId,
+      ),
+    );
+  }
+
+  void createEvents() async {
+    value.engineSettings?.engine.setEventHandler(RtcEngineEventHandler(
+      error: (code) {
+        final info = 'onError: $code';
+        print(info);
+      },
+      joinChannelSuccess: (channel, uid, elapsed) {
+        final info = 'onJoinChannel: $channel, uid: $uid';
+        print(info);
+      },
+      leaveChannel: (stats) {
+        clearUsers();
+      },
+      userJoined: (uid, elapsed) {
+        final info = 'userJoined: $uid';
+        print(info);
+        addUser(callUser: CallUser(uid: uid, remote: false, muted: false, videoDisabled: false));
+      },
+      userOffline: (uid, reason) {
+        final info = 'userOffline: $uid , reason: $reason';
+        print(info);
+        removeUser(uid: uid);
+      },
+    ));
   }
 
   void addUser({required CallUser callUser}) {
-    value = copyWith(users: [...value.users, callUser]);
+    value = value.copyWith(users: [...value.users, callUser]);
   }
 
   void clearUsers() {
-    value = copyWith(users: []);
+    value = value.copyWith(users: []);
   }
 
   void removeUser({required int uid}) {
@@ -27,6 +58,12 @@ class CallController extends ValueNotifier<CallSettings> {
         tempList.remove(tempList[i]);
       }
     }
-    value = copyWith(users: tempList);
+    value = value.copyWith(users: tempList);
+  }
+
+  void endCall() {
+    value.engineSettings?.engine.leaveChannel();
+    value.engineSettings?.engine.destroy();
+    dispose();
   }
 }

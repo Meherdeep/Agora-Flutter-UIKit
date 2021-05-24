@@ -5,4 +5,14 @@ class EngineSettings {
   final String appId;
 
   EngineSettings({required this.engine, required this.appId});
+
+  EngineSettings copyWith({
+    RtcEngine? engine,
+    String? appId,
+  }) {
+    return EngineSettings(
+      engine: engine ?? this.engine,
+      appId: appId ?? this.appId,
+    );
+  }
 }

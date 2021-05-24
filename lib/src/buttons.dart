@@ -1,9 +1,10 @@
-import 'package:agora_flutter_uikit/controllers/engine_controller.dart';
+import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 
 class AgoraVideoButtons extends StatefulWidget {
+  final AgoraClient client;
   const AgoraVideoButtons({
+    required this.client,
     Key? key,
   }) : super(key: key);
 
@@ -18,14 +19,6 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   @override
   void initState() {
     super.initState();
-
-    globals.isButtonVisible.addListener(() {
-      if (globals.isButtonVisible.value) {
-        setState(() {
-          globals.visible.value = !globals.visible.value;
-        });
-      }
-    });
   }
 
   Widget toolbar() {
@@ -107,30 +100,29 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     );
   }
 
-  void _onCallEnd(BuildContext context) async {
-    await engineController.value?.engine.leaveChannel();
-    await engineController.value?.engine.destroy();
+  void _onCallEnd(BuildContext context) {
+    widget.client.callController.endCall();
     Navigator.pop(context);
   }
 
   void _onToggleMute() {
-    setState(() {
-      muted = !muted;
-      globals.isLocalUserMuted.value = !globals.isLocalUserMuted.value;
-    });
-    engineController.value?.engine.muteLocalAudioStream(muted);
+    // setState(() {
+    //   muted = !muted;
+    //   globals.isLocalUserMuted.value = !globals.isLocalUserMuted.value;
+    // });
+    // engineController.value?.engine.muteLocalAudioStream(muted);
   }
 
   void _onToggleCamera() {
-    setState(() {
-      disabledVideo = !disabledVideo;
-      globals.isLocalVideoDisabled.value = !globals.isLocalVideoDisabled.value;
-    });
-    engineController.value?.engine.muteLocalVideoStream(disabledVideo);
+    // setState(() {
+    //   disabledVideo = !disabledVideo;
+    //   globals.isLocalVideoDisabled.value = !globals.isLocalVideoDisabled.value;
+    // });
+    // engineController.value?.engine.muteLocalVideoStream(disabledVideo);
   }
 
   void _onSwitchCamera() {
-    engineController.value?.engine.switchCamera();
+    // engineController.value?.engine.switchCamera();
   }
 
   @override
