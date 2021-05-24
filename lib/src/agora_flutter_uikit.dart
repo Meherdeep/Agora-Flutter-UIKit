@@ -1,20 +1,14 @@
 import 'dart:async';
 
-import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
-import 'package:agora_flutter_uikit/src/connection_data.dart';
-import 'package:agora_flutter_uikit/src/tokens.dart';
+import 'package:agora_flutter_uikit/controllers/call_controller.dart';
+import 'package:agora_flutter_uikit/controllers/engine_controller.dart';
+import 'package:agora_flutter_uikit/models/call_user.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:agora_flutter_uikit/src/events.dart';
-
-AgoraTokens tokens;
-
 class AgoraFlutterUIKit {
-  static const MethodChannel _channel =
-      const MethodChannel('agora_flutter_uikit');
+  static const MethodChannel _channel = const MethodChannel('agora_flutter_uikit');
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -22,138 +16,57 @@ class AgoraFlutterUIKit {
   }
 
   AgoraFlutterUIKit({
-    AgoraConnectionData agoraConnectionData,
-    List<Permission> enabledPermission,
-    ChannelProfile channelProfile,
-    ClientRole userRole,
-    VideoEncoderConfiguration videoEncoderConfiguration,
-    bool setCameraAutoFocusFaceModeEnabled,
-    bool enableDualStreamMode,
-    StreamFallbackOptions localPublishFallbackOption,
-    StreamFallbackOptions remoteSubscribeFallbackOption,
-    AudioProfile audioProfile,
-    AudioScenario audioScenario,
-    BeautyOptions setBeautyEffectOptions,
-    bool setCameraTorchOn,
-    bool muteAllRemoteVideoStreams,
-    bool muteAllRemoteAudioStreams,
+    required String appId,
+    required List<Permission> enabledPermission,
   }) {
     _initAgoraRtcEngine(
-      agoraConnectionData: agoraConnectionData,
+      appId: appId,
       enabledPermission: enabledPermission,
-      channelProfile: channelProfile,
-      userRole: userRole,
-      videoEncoderConfiguration: videoEncoderConfiguration,
-      setCameraAutoFocusFaceModeEnabled: setCameraAutoFocusFaceModeEnabled,
-      enableDualStreamMode: enableDualStreamMode,
-      localPublishFallbackOption: localPublishFallbackOption,
-      remoteSubscribeFallbackOption: remoteSubscribeFallbackOption,
-      audioProfile: audioProfile,
-      audioScenario: audioScenario,
-      setBeautyEffectOptions: setBeautyEffectOptions,
-      setCameraTorchOn: setCameraTorchOn,
-      muteAllRemoteVideoStreams: muteAllRemoteVideoStreams,
-      muteAllRemoteAudioStreams: muteAllRemoteAudioStreams,
     );
-    print('APP ID: ${agoraConnectionData.appId}');
+    print('APP ID: $appId');
   }
 
   Future<void> _initAgoraRtcEngine({
-    AgoraConnectionData agoraConnectionData,
-    @required List<Permission> enabledPermission,
-    ChannelProfile channelProfile,
-    ClientRole userRole,
-    VideoEncoderConfiguration videoEncoderConfiguration,
-    bool setCameraAutoFocusFaceModeEnabled,
-    bool enableDualStreamMode,
-    StreamFallbackOptions localPublishFallbackOption,
-    StreamFallbackOptions remoteSubscribeFallbackOption,
-    AudioProfile audioProfile,
-    AudioScenario audioScenario,
-    BeautyOptions setBeautyEffectOptions,
-    bool setCameraTorchOn,
-    bool muteAllRemoteVideoStreams,
-    bool muteAllRemoteAudioStreams,
+    required String appId,
+    required List<Permission> enabledPermission,
   }) async {
     try {
-      globals.engine = await RtcEngine.createWithConfig(
-        RtcEngineConfig(agoraConnectionData.appId,
-            areaCode: agoraConnectionData.areaCode ?? AreaCode.GLOB),
-      );
+      engineController.initializeEngine(appId);
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
 
     await enabledPermission.request();
-    AgoraEvents events = AgoraEvents(globals.engine,
-        agoraConnectionData.channelName, agoraConnectionData.tokenUrl);
 
-    if (agoraConnectionData.tokenUrl != null) {
-      tokens = AgoraTokens(
-          channelName: agoraConnectionData.channelName,
-          baseUrl: agoraConnectionData.tokenUrl);
-    }
-    await globals.engine
-        .setChannelProfile(channelProfile ?? ChannelProfile.Communication);
+    await engineController.value?.engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
 
-    if (userRole != null) {
-      if (channelProfile == ChannelProfile.LiveBroadcasting) {
-        globals.clientRole.value = userRole;
-        await globals.engine.setClientRole(userRole);
-      } else {
-        print("You can set the user role only for live broadcasting mode");
-      }
-    }
-    await globals.engine.enableAudioVolumeIndication(200, 3, true);
+    await engineController.value?.engine.setClientRole(ClientRole.Broadcaster);
 
-    events.addAgoraEventHandlers(globals.engine,
-        agoraConnectionData.channelName, agoraConnectionData.tokenUrl);
+    engineController.value?.engine.setEventHandler(RtcEngineEventHandler(
+      error: (code) {
+        final info = 'onError: $code';
+        print(info);
+      },
+      joinChannelSuccess: (channel, uid, elapsed) {
+        final info = 'onJoinChannel: $channel, uid: $uid';
+        print(info);
+      },
+      leaveChannel: (stats) {
+        callController.clearUsers();
+      },
+      userJoined: (uid, elapsed) {
+        final info = 'userJoined: $uid';
+        print(info);
+        callController.addUser(callUser: CallUser(uid: uid, remote: false, muted: false, videoDisabled: false));
+      },
+      userOffline: (uid, reason) {
+        final info = 'userOffline: $uid , reason: $reason';
+        print(info);
+        callController.removeUser(uid: uid);
+      },
+    ));
 
-    if (videoEncoderConfiguration != null) {
-      await globals.engine
-          .setVideoEncoderConfiguration(videoEncoderConfiguration);
-    }
-
-    globals.engine.setCameraAutoFocusFaceModeEnabled(
-        setCameraAutoFocusFaceModeEnabled ?? false);
-
-    globals.engine.setCameraTorchOn(setCameraTorchOn ?? false);
-
-    await globals.engine.setAudioProfile(audioProfile ?? AudioProfile.Default,
-        audioScenario ?? AudioScenario.Default);
-
-    await globals.engine.enableVideo();
-
-    await globals.engine
-        .muteAllRemoteVideoStreams(muteAllRemoteVideoStreams ?? false);
-
-    await globals.engine
-        .muteAllRemoteAudioStreams(muteAllRemoteAudioStreams ?? false);
-
-    if (setBeautyEffectOptions != null) {
-      globals.engine.setBeautyEffectOptions(true, setBeautyEffectOptions);
-    }
-
-    await globals.engine.enableDualStreamMode(enableDualStreamMode ?? false);
-
-    if (localPublishFallbackOption != null) {
-      await globals.engine
-          .setLocalPublishFallbackOption(localPublishFallbackOption);
-    }
-
-    if (remoteSubscribeFallbackOption != null) {
-      await globals.engine
-          .setRemoteSubscribeFallbackOption(remoteSubscribeFallbackOption);
-    }
-
-    if (agoraConnectionData.tokenUrl != null) {
-      await tokens.getToken(
-          agoraConnectionData.tokenUrl, agoraConnectionData.channelName);
-      await globals.engine.joinChannel(globals.token.value,
-          agoraConnectionData.channelName, null, globals.uid.value);
-    } else {
-      await globals.engine.joinChannel(agoraConnectionData.tempToken ?? null,
-          agoraConnectionData.channelName, null, agoraConnectionData.uid ?? 0);
-    }
+    await engineController.value?.engine.enableVideo();
+    engineController.value?.engine.joinChannel(null, "tadas", null, 0);
   }
 }

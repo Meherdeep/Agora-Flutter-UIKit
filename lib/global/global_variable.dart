@@ -13,10 +13,6 @@ ValueNotifier<bool> isButtonVisible = ValueNotifier(false);
 
 ValueNotifier<bool> visible = ValueNotifier(true);
 
-RtcEngine engine;
-
-ValueNotifier<String> token = ValueNotifier(null);
-
 ValueNotifier<int> uid = ValueNotifier(0);
 
 ValueNotifier<int> speakerUid = ValueNotifier(0);

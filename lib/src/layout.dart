@@ -1,5 +1,7 @@
 import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
+import 'package:agora_flutter_uikit/controllers/call_controller.dart';
 import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
+import 'package:agora_flutter_uikit/models/call_user.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
@@ -7,28 +9,9 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'enums.dart';
 
 class AgoraVideoViewer extends StatefulWidget {
-  final Layout layoutType;
-  final double floatingLayoutContainerHeight;
-  final double floatingLayoutContainerWidth;
-  final EdgeInsets floatingLayoutMainViewPadding;
-  final EdgeInsets floatingLayoutSubViewPadding;
-  final bool enableActiveSpeaker;
-  final Widget disabledVideoWidget;
-  final bool showRemoteAVState;
-  final bool showLocalAVState;
-
-  const AgoraVideoViewer(
-      {Key key,
-      this.layoutType,
-      this.floatingLayoutContainerHeight,
-      this.floatingLayoutContainerWidth,
-      this.floatingLayoutMainViewPadding,
-      this.floatingLayoutSubViewPadding,
-      this.enableActiveSpeaker,
-      this.disabledVideoWidget,
-      this.showRemoteAVState,
-      this.showLocalAVState})
-      : super(key: key);
+  const AgoraVideoViewer({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _AgoraVideoViewerState createState() => _AgoraVideoViewerState();
@@ -40,11 +23,6 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
 
   @override
   void initState() {
-    setState(() {
-      widget.enableActiveSpeaker != null
-          ? globals.isActiveSpeakerEnabled = widget.enableActiveSpeaker
-          : globals.isActiveSpeakerEnabled = true;
-    });
     super.initState();
   }
 
@@ -60,15 +38,12 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     if (globals.clientRole.value == ClientRole.Broadcaster) {
       list.add(RtcLocalView.SurfaceView());
     }
-    globals.users.value
-        .forEach((uid) => list.add(RtcRemoteView.SurfaceView(uid: uid)));
+    callController.value.users.forEach((CallUser user) => list.add(RtcRemoteView.SurfaceView(uid: user.uid)));
     return list;
   }
 
   Widget _getLocalViews() {
-    return globals.clientRole.value == ClientRole.Broadcaster
-        ? RtcLocalView.SurfaceView()
-        : null;
+    return RtcLocalView.SurfaceView();
   }
 
   Widget _getRemoteViews(int uid) {
@@ -138,9 +113,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         child: Column(
           children: <Widget>[
             for (int i = 0; i < views.length; i = i + 2)
-              i == (views.length - 1)
-                  ? _expandedVideoRow(views.sublist(i, i + 1))
-                  : _expandedVideoRow(views.sublist(i, i + 2)),
+              i == (views.length - 1) ? _expandedVideoRow(views.sublist(i, i + 1)) : _expandedVideoRow(views.sublist(i, i + 2)),
           ],
         ),
       );
@@ -154,9 +127,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         ? Column(
             children: [
               Container(
-                height: widget.floatingLayoutContainerHeight == null
-                    ? MediaQuery.of(context).size.height * 0.2
-                    : widget.floatingLayoutContainerHeight,
+                height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width,
                 alignment: Alignment.topLeft,
                 child: ListView.builder(
@@ -165,13 +136,9 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       key: Key('$index'),
-                      padding: widget.floatingLayoutSubViewPadding == null
-                          ? const EdgeInsets.fromLTRB(3, 3, 0, 3)
-                          : widget.floatingLayoutSubViewPadding,
+                      padding: const EdgeInsets.fromLTRB(3, 3, 0, 3),
                       child: Container(
-                        width: widget.floatingLayoutContainerWidth == null
-                            ? MediaQuery.of(context).size.width / 3
-                            : widget.floatingLayoutContainerWidth,
+                        width: MediaQuery.of(context).size.width / 3,
                         child: Column(
                           children: [
                             globals.users.value[index] == globals.localUid.value
@@ -188,23 +155,16 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                               ),
                                             ),
                                           ),
-                                          !globals.isLocalVideoDisabled.value
-                                              ? Column(
-                                                  children: [
-                                                    _videoView(
-                                                        _getLocalViews()),
-                                                  ],
-                                                )
-                                              : widget.disabledVideoWidget ==
-                                                      null
-                                                  ? disabledVideoWidget()
-                                                  : widget.disabledVideoWidget,
+                                          Column(
+                                            children: [
+                                              _videoView(_getLocalViews()),
+                                            ],
+                                          ),
                                           Positioned.fill(
                                             child: Align(
                                               alignment: Alignment.topLeft,
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
+                                                padding: const EdgeInsets.all(8),
                                                 child: GestureDetector(
                                                   onTap: () async {
                                                     await _pinView(index);
@@ -224,31 +184,22 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                               ),
                                             ),
                                           ),
-                                          widget.showLocalAVState == null ||
-                                                  widget.showLocalAVState
-                                              ? localAVStateWidget()
-                                              : Container()
                                         ],
                                       ),
                                     ),
                                   )
-                                : globals.videoDisabledUsers.value
-                                        .contains(globals.users.value[index])
+                                : globals.videoDisabledUsers.value.contains(globals.users.value[index])
                                     ? Expanded(
                                         child: Stack(
                                           children: [
                                             Container(
                                               color: Colors.black,
                                             ),
-                                            widget.disabledVideoWidget == null
-                                                ? disabledVideoWidget()
-                                                : widget.disabledVideoWidget,
                                             Positioned.fill(
                                               child: Align(
                                                 alignment: Alignment.topLeft,
                                                 child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
+                                                  padding: const EdgeInsets.all(8),
                                                   child: GestureDetector(
                                                     onTap: () async {
                                                       await _pinView(index);
@@ -258,9 +209,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                                         color: Colors.white,
                                                         shape: BoxShape.circle,
                                                       ),
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              3.0),
+                                                      padding: const EdgeInsets.all(3.0),
                                                       child: Icon(
                                                         Icons.push_pin_rounded,
                                                         color: Colors.blue,
@@ -270,10 +219,6 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                                 ),
                                               ),
                                             ),
-                                            widget.showRemoteAVState == null ||
-                                                    widget.showRemoteAVState
-                                                ? remoteAVStateWidget(index)
-                                                : Container()
                                           ],
                                         ),
                                       )
@@ -282,17 +227,14 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                           children: [
                                             Column(
                                               children: [
-                                                _videoView(_getRemoteViews(
-                                                    globals
-                                                        .users.value[index])),
+                                                _videoView(_getRemoteViews(globals.users.value[index])),
                                               ],
                                             ),
                                             Positioned.fill(
                                               child: Align(
                                                 alignment: Alignment.topLeft,
                                                 child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
+                                                  padding: const EdgeInsets.all(8),
                                                   child: GestureDetector(
                                                     onTap: () async {
                                                       await _pinView(index);
@@ -302,9 +244,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                                         color: Colors.white,
                                                         shape: BoxShape.circle,
                                                       ),
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              3.0),
+                                                      padding: const EdgeInsets.all(3.0),
                                                       child: Icon(
                                                         Icons.push_pin_rounded,
                                                         color: Colors.blue,
@@ -314,10 +254,6 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
                                                 ),
                                               ),
                                             ),
-                                            widget.showRemoteAVState == null ||
-                                                    widget.showRemoteAVState
-                                                ? remoteAVStateWidget(index)
-                                                : Container()
                                           ],
                                         ),
                                       ),
@@ -331,49 +267,33 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
               globals.maxUid.value == globals.localUid.value
                   ? Expanded(
                       child: Container(
-                        padding: widget.floatingLayoutMainViewPadding == null
-                            ? EdgeInsets.fromLTRB(3, 0, 3, 3)
-                            : widget.floatingLayoutMainViewPadding,
-                        child: globals.isLocalVideoDisabled.value
-                            ? widget.disabledVideoWidget == null
-                                ? disabledVideoWidget()
-                                : widget.disabledVideoWidget
-                            : Stack(
-                                children: [
-                                  Container(
-                                    color: Colors.black,
-                                    child: Center(
-                                      child: Text(
-                                        'Local User',
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                  Column(
-                                    children: [
-                                      _videoView(_getLocalViews()),
-                                    ],
-                                  ),
-                                ],
+                        padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: Colors.black,
+                              child: Center(
+                                child: Text(
+                                  'Local User',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
+                            ),
+                            Column(
+                              children: [
+                                _videoView(_getLocalViews()),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   : Expanded(
                       child: Container(
-                        padding: widget.floatingLayoutMainViewPadding == null
-                            ? EdgeInsets.fromLTRB(3, 0, 3, 3)
-                            : widget.floatingLayoutMainViewPadding,
-                        child: globals.videoDisabledUsers.value
-                                .contains(globals.maxUid.value)
-                            ? widget.disabledVideoWidget == null
-                                ? disabledVideoWidget()
-                                : widget.disabledVideoWidget
-                            : Column(
-                                children: [
-                                  _videoView(
-                                      _getRemoteViews(globals.maxUid.value))
-                                ],
-                              ),
+                        padding: EdgeInsets.fromLTRB(3, 0, 3, 3),
+                        child: Column(
+                          children: [_videoView(_getRemoteViews(globals.maxUid.value))],
+                        ),
                       ),
                     ),
             ],
@@ -409,9 +329,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: globals.isLocalVideoDisabled.value
-                    ? Colors.blue
-                    : Colors.white,
+                color: globals.isLocalVideoDisabled.value ? Colors.blue : Colors.white,
                 shape: BoxShape.circle,
               ),
               child: globals.isLocalVideoDisabled.value
@@ -437,8 +355,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
             ),
             Container(
               decoration: BoxDecoration(
-                color:
-                    globals.isLocalUserMuted.value ? Colors.blue : Colors.white,
+                color: globals.isLocalUserMuted.value ? Colors.blue : Colors.white,
                 shape: BoxShape.circle,
               ),
               child: globals.isLocalUserMuted.value
@@ -476,14 +393,10 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: globals.videoDisabledUsers.value
-                          .contains(globals.users.value[index])
-                      ? Colors.blue
-                      : Colors.white,
+                  color: globals.videoDisabledUsers.value.contains(globals.users.value[index]) ? Colors.blue : Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: globals.videoDisabledUsers.value
-                        .contains(globals.users.value[index])
+                child: globals.videoDisabledUsers.value.contains(globals.users.value[index])
                     ? Padding(
                         padding: const EdgeInsets.all(3.0),
                         child: Icon(
@@ -506,14 +419,10 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: globals.mutedUsers.value
-                          .contains(globals.users.value[index])
-                      ? Colors.blue
-                      : Colors.white,
+                  color: globals.mutedUsers.value.contains(globals.users.value[index]) ? Colors.blue : Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: globals.mutedUsers.value
-                        .contains(globals.users.value[index])
+                child: globals.mutedUsers.value.contains(globals.users.value[index])
                     ? Padding(
                         padding: const EdgeInsets.all(3.0),
                         child: Icon(
@@ -567,45 +476,15 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: globals.users,
-      builder: (BuildContext context, dynamic value, Widget child) {
-        return ValueListenableBuilder(
-          valueListenable: globals.mutedUsers,
-          builder: (context, value, child) {
-            return ValueListenableBuilder(
-              valueListenable: globals.videoDisabledUsers,
-              builder: (context, value, child) {
-                return ValueListenableBuilder(
-                  valueListenable: globals.isLocalUserMuted,
-                  builder: (context, value, child) {
-                    return ValueListenableBuilder(
-                      valueListenable: globals.isLocalVideoDisabled,
-                      builder: (context, value, child) {
-                        return GestureDetector(
-                          child: Center(
-                            child: widget.layoutType == null
-                                ? viewGrid()
-                                : widget.layoutType == Layout.Grid
-                                    ? viewGrid()
-                                    : widget.layoutType == Layout.Floating
-                                        ? viewFloat()
-                                        : viewGrid(),
-                          ),
-                          onTap: () {
-                            setState(() {
-                              globals.isButtonVisible.value =
-                                  !globals.isButtonVisible.value;
-                            });
-                            print(
-                                "globals.isButtonVisible.value : ${globals.isButtonVisible.value}");
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
+      valueListenable: callController,
+      builder: (context, counter, widget) {
+        return GestureDetector(
+          child: Center(child: viewGrid()),
+          onTap: () {
+            setState(() {
+              globals.isButtonVisible.value = !globals.isButtonVisible.value;
+            });
+            print("globals.isButtonVisible.value : ${globals.isButtonVisible.value}");
           },
         );
       },
