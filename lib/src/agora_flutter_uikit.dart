@@ -4,7 +4,6 @@ import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 import 'package:agora_flutter_uikit/src/connection_data.dart';
 import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -55,7 +54,6 @@ class AgoraFlutterUIKit {
       muteAllRemoteVideoStreams: muteAllRemoteVideoStreams,
       muteAllRemoteAudioStreams: muteAllRemoteAudioStreams,
     );
-    print('APP ID: ${agoraConnectionData.appId}');
   }
 
   Future<void> _initAgoraRtcEngine({
