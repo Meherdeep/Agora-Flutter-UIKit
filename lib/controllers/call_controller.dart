@@ -5,7 +5,7 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 
 class CallController extends ValueNotifier<CallSettings> {
-  CallController() : super(CallSettings(users: []));
+  CallController() : super(CallSettings(users: [], isLocalUserMuted: false));
 
   void initializeEngine(String appId) async {
     value = value.copyWith(
@@ -42,6 +42,11 @@ class CallController extends ValueNotifier<CallSettings> {
     ));
   }
 
+  void joinVideoChannel({required String channel}) async {
+    await value.engineSettings?.engine.enableVideo();
+    value.engineSettings?.engine.joinChannel(null, channel, null, 0);
+  }
+
   void addUser({required CallUser callUser}) {
     value = value.copyWith(users: [...value.users, callUser]);
   }
@@ -59,6 +64,11 @@ class CallController extends ValueNotifier<CallSettings> {
       }
     }
     value = value.copyWith(users: tempList);
+  }
+
+  void toggleMute() {
+    value = value.copyWith(isLocalUserMuted: !value.isLocalUserMuted);
+    value.engineSettings?.engine.muteLocalAudioStream(value.isLocalUserMuted);
   }
 
   void endCall() {

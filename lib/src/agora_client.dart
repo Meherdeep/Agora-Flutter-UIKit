@@ -12,8 +12,8 @@ class AgoraClient {
     return version;
   }
 
+  // This is our "state" object that the UI Kit works with
   final CallController _callController = CallController();
-
   CallController get callController {
     return _callController;
   }
@@ -43,7 +43,6 @@ class AgoraClient {
 
     _callController.createEvents();
 
-    await _callController.value.engineSettings?.engine.enableVideo();
-    _callController.value.engineSettings?.engine.joinChannel(null, "tadas", null, 0);
+    _callController.joinVideoChannel(channel: "tadas");
   }
 }

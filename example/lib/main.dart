@@ -31,12 +31,8 @@ class _MyAppState extends State<MyApp> {
         body: SafeArea(
           child: Stack(
             children: [
-              AgoraVideoViewer(
-                client: client,
-              ),
-              AgoraVideoButtons(
-                client: client,
-              )
+              AgoraVideoViewer(client: client),
+              AgoraVideoButtons(client: client),
             ],
           ),
         ),

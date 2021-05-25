@@ -13,7 +13,6 @@ class AgoraVideoButtons extends StatefulWidget {
 }
 
 class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
-  bool muted = false;
   bool disabledVideo = false;
 
   @override
@@ -46,15 +45,15 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
 
   Widget muteMicButton() {
     return RawMaterialButton(
-      onPressed: _onToggleMute,
+      onPressed: () => widget.client.callController.toggleMute(),
       child: Icon(
-        muted ? Icons.mic_off : Icons.mic,
-        color: muted ? Colors.white : Colors.blueAccent,
+        widget.client.callController.value.isLocalUserMuted ? Icons.mic_off : Icons.mic,
+        color: widget.client.callController.value.isLocalUserMuted ? Colors.white : Colors.blueAccent,
         size: 20.0,
       ),
       shape: CircleBorder(),
       elevation: 2.0,
-      fillColor: muted ? Colors.blueAccent : Colors.white,
+      fillColor: widget.client.callController.value.isLocalUserMuted ? Colors.blueAccent : Colors.white,
       padding: const EdgeInsets.all(12.0),
     );
   }
@@ -103,14 +102,6 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   void _onCallEnd(BuildContext context) {
     widget.client.callController.endCall();
     Navigator.pop(context);
-  }
-
-  void _onToggleMute() {
-    // setState(() {
-    //   muted = !muted;
-    //   globals.isLocalUserMuted.value = !globals.isLocalUserMuted.value;
-    // });
-    // engineController.value?.engine.muteLocalAudioStream(muted);
   }
 
   void _onToggleCamera() {
