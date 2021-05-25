@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:agora_flutter_uikit/global/global_variable.dart' as globals;
 import 'package:agora_flutter_uikit/src/connection_data.dart';
+import 'package:agora_flutter_uikit/src/settings.dart';
 import 'package:agora_flutter_uikit/src/tokens.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/services.dart';
@@ -23,55 +24,19 @@ class AgoraFlutterUIKit {
   AgoraFlutterUIKit({
     required AgoraConnectionData agoraConnectionData,
     required List<Permission> enabledPermission,
-    ChannelProfile? channelProfile,
-    ClientRole? userRole,
-    VideoEncoderConfiguration? videoEncoderConfiguration,
-    bool? setCameraAutoFocusFaceModeEnabled,
-    bool? enableDualStreamMode,
-    StreamFallbackOptions? localPublishFallbackOption,
-    StreamFallbackOptions? remoteSubscribeFallbackOption,
-    AudioProfile? audioProfile,
-    AudioScenario? audioScenario,
-    BeautyOptions? setBeautyEffectOptions,
-    bool? setCameraTorchOn,
-    bool? muteAllRemoteVideoStreams,
-    bool? muteAllRemoteAudioStreams,
+    AgoraSettings? agoraSettings,
   }) {
     _initAgoraRtcEngine(
       agoraConnectionData: agoraConnectionData,
       enabledPermission: enabledPermission,
-      channelProfile: channelProfile,
-      userRole: userRole,
-      videoEncoderConfiguration: videoEncoderConfiguration,
-      setCameraAutoFocusFaceModeEnabled: setCameraAutoFocusFaceModeEnabled,
-      enableDualStreamMode: enableDualStreamMode,
-      localPublishFallbackOption: localPublishFallbackOption,
-      remoteSubscribeFallbackOption: remoteSubscribeFallbackOption,
-      audioProfile: audioProfile,
-      audioScenario: audioScenario,
-      setBeautyEffectOptions: setBeautyEffectOptions,
-      setCameraTorchOn: setCameraTorchOn,
-      muteAllRemoteVideoStreams: muteAllRemoteVideoStreams,
-      muteAllRemoteAudioStreams: muteAllRemoteAudioStreams,
+      agoraSettings: agoraSettings,
     );
   }
 
   Future<void> _initAgoraRtcEngine({
     required AgoraConnectionData agoraConnectionData,
     required List<Permission> enabledPermission,
-    ChannelProfile? channelProfile,
-    ClientRole? userRole,
-    VideoEncoderConfiguration? videoEncoderConfiguration,
-    bool? setCameraAutoFocusFaceModeEnabled,
-    bool? enableDualStreamMode,
-    StreamFallbackOptions? localPublishFallbackOption,
-    StreamFallbackOptions? remoteSubscribeFallbackOption,
-    AudioProfile? audioProfile,
-    AudioScenario? audioScenario,
-    BeautyOptions? setBeautyEffectOptions,
-    bool? setCameraTorchOn,
-    bool? muteAllRemoteVideoStreams,
-    bool? muteAllRemoteAudioStreams,
+    AgoraSettings? agoraSettings,
   }) async {
     try {
       globals.engine = await RtcEngine.createWithConfig(
@@ -96,13 +61,14 @@ class AgoraFlutterUIKit {
           channelName: agoraConnectionData.channelName,
           baseUrl: agoraConnectionData.tokenUrl);
     }
-    await globals.engine
-        .setChannelProfile(channelProfile ?? ChannelProfile.Communication);
+    await globals.engine.setChannelProfile(
+        agoraSettings!.channelProfile ?? ChannelProfile.Communication);
 
-    if (userRole != null) {
-      if (channelProfile == ChannelProfile.LiveBroadcasting) {
-        globals.clientRole.value = userRole;
-        await globals.engine.setClientRole(userRole);
+    if (agoraSettings.userRole != null) {
+      if (agoraSettings.channelProfile == ChannelProfile.LiveBroadcasting) {
+        globals.clientRole.value = agoraSettings.userRole!;
+        print("USER ROLE: ${agoraSettings.userRole!}");
+        await globals.engine.setClientRole(agoraSettings.userRole!);
       } else {
         print("You can set the user role only for live broadcasting mode");
       }
@@ -116,41 +82,44 @@ class AgoraFlutterUIKit {
       agoraConnectionData.uid,
     );
 
-    if (videoEncoderConfiguration != null) {
-      await globals.engine
-          .setVideoEncoderConfiguration(videoEncoderConfiguration);
+    if (agoraSettings.videoEncoderConfiguration != null) {
+      await globals.engine.setVideoEncoderConfiguration(
+          agoraSettings.videoEncoderConfiguration!);
     }
 
     globals.engine.setCameraAutoFocusFaceModeEnabled(
-        setCameraAutoFocusFaceModeEnabled ?? false);
+        agoraSettings.setCameraAutoFocusFaceModeEnabled ?? false);
 
-    globals.engine.setCameraTorchOn(setCameraTorchOn ?? false);
+    globals.engine.setCameraTorchOn(agoraSettings.setCameraTorchOn ?? false);
 
-    await globals.engine.setAudioProfile(audioProfile ?? AudioProfile.Default,
-        audioScenario ?? AudioScenario.Default);
+    await globals.engine.setAudioProfile(
+        agoraSettings.audioProfile ?? AudioProfile.Default,
+        agoraSettings.audioScenario ?? AudioScenario.Default);
 
     await globals.engine.enableVideo();
 
-    await globals.engine
-        .muteAllRemoteVideoStreams(muteAllRemoteVideoStreams ?? false);
+    await globals.engine.muteAllRemoteVideoStreams(
+        agoraSettings.muteAllRemoteVideoStreams ?? false);
 
-    await globals.engine
-        .muteAllRemoteAudioStreams(muteAllRemoteAudioStreams ?? false);
+    await globals.engine.muteAllRemoteAudioStreams(
+        agoraSettings.muteAllRemoteAudioStreams ?? false);
 
-    if (setBeautyEffectOptions != null) {
-      globals.engine.setBeautyEffectOptions(true, setBeautyEffectOptions);
+    if (agoraSettings.setBeautyEffectOptions != null) {
+      globals.engine
+          .setBeautyEffectOptions(true, agoraSettings.setBeautyEffectOptions!);
     }
 
-    await globals.engine.enableDualStreamMode(enableDualStreamMode ?? false);
+    await globals.engine
+        .enableDualStreamMode(agoraSettings.enableDualStreamMode ?? false);
 
-    if (localPublishFallbackOption != null) {
-      await globals.engine
-          .setLocalPublishFallbackOption(localPublishFallbackOption);
+    if (agoraSettings.localPublishFallbackOption != null) {
+      await globals.engine.setLocalPublishFallbackOption(
+          agoraSettings.localPublishFallbackOption!);
     }
 
-    if (remoteSubscribeFallbackOption != null) {
-      await globals.engine
-          .setRemoteSubscribeFallbackOption(remoteSubscribeFallbackOption);
+    if (agoraSettings.remoteSubscribeFallbackOption != null) {
+      await globals.engine.setRemoteSubscribeFallbackOption(
+          agoraSettings.remoteSubscribeFallbackOption!);
     }
 
     if (agoraConnectionData.tokenUrl != null) {

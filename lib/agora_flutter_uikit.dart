@@ -9,3 +9,4 @@ export 'package:agora_flutter_uikit/src/connection_data.dart'
 export 'package:agora_rtc_engine/src/classes.dart'
     show VideoEncoderConfiguration;
 export 'global/global_variable.dart' show engine, users;
+export 'src/settings.dart' show AgoraSettings;

@@ -99,15 +99,21 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
     final views = _getRenderViews();
     print("VIEWS LENGTH = ${views.length}");
     if (views.length == 0) {
-      return Expanded(
-        child: Container(
-          color: Colors.white,
-          child: Center(
-            child: Text(
-              'Waiting for the host to join',
-              style: TextStyle(color: Colors.black),
+      return Container(
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                child: Center(
+                  child: Text(
+                    'Waiting for the host to join',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       );
     } else if (views.length == 1) {
