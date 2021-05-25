@@ -2,20 +2,20 @@ import 'package:agora_flutter_uikit/models/engine_settings.dart';
 
 import 'call_user.dart';
 
-class CallSettings {
-  final EngineSettings? engineSettings;
+class AgoraSettings {
+  final AgoraConnectionData? connectionData;
   final List<CallUser> users;
   final bool isLocalUserMuted;
 
-  CallSettings({required this.isLocalUserMuted, required this.users, this.engineSettings});
+  AgoraSettings({required this.isLocalUserMuted, required this.users, this.connectionData});
 
-  CallSettings copyWith({
-    EngineSettings? engineSettings,
+  AgoraSettings copyWith({
+    AgoraConnectionData? connectionData,
     List<CallUser>? users,
     bool? isLocalUserMuted,
   }) {
-    return CallSettings(
-      engineSettings: engineSettings ?? this.engineSettings,
+    return AgoraSettings(
+      connectionData: connectionData ?? this.connectionData,
       users: users ?? this.users,
       isLocalUserMuted: isLocalUserMuted ?? this.isLocalUserMuted,
     );

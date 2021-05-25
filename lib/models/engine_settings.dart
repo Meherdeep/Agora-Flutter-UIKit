@@ -1,16 +1,16 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
-class EngineSettings {
+class AgoraConnectionData {
   final RtcEngine engine;
   final String appId;
 
-  EngineSettings({required this.engine, required this.appId});
+  AgoraConnectionData({required this.engine, required this.appId});
 
-  EngineSettings copyWith({
+  AgoraConnectionData copyWith({
     RtcEngine? engine,
     String? appId,
   }) {
-    return EngineSettings(
+    return AgoraConnectionData(
       engine: engine ?? this.engine,
       appId: appId ?? this.appId,
     );

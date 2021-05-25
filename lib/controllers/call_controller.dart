@@ -1,15 +1,15 @@
-import 'package:agora_flutter_uikit/models/call_settings.dart';
+import 'package:agora_flutter_uikit/models/agora_settings.dart';
 import 'package:agora_flutter_uikit/models/call_user.dart';
 import 'package:agora_flutter_uikit/models/engine_settings.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 
-class CallController extends ValueNotifier<CallSettings> {
-  CallController() : super(CallSettings(users: [], isLocalUserMuted: false));
+class CallController extends ValueNotifier<AgoraSettings> {
+  CallController() : super(AgoraSettings(users: [], isLocalUserMuted: false));
 
   void initializeEngine(String appId) async {
     value = value.copyWith(
-      engineSettings: EngineSettings(
+      connectionData: AgoraConnectionData(
         engine: await RtcEngine.createWithConfig(RtcEngineConfig(appId)),
         appId: appId,
       ),
@@ -17,7 +17,7 @@ class CallController extends ValueNotifier<CallSettings> {
   }
 
   void createEvents() async {
-    value.engineSettings?.engine.setEventHandler(RtcEngineEventHandler(
+    value.connectionData?.engine.setEventHandler(RtcEngineEventHandler(
       error: (code) {
         final info = 'onError: $code';
         print(info);
@@ -43,8 +43,8 @@ class CallController extends ValueNotifier<CallSettings> {
   }
 
   void joinVideoChannel({required String channel}) async {
-    await value.engineSettings?.engine.enableVideo();
-    value.engineSettings?.engine.joinChannel(null, channel, null, 0);
+    await value.connectionData?.engine.enableVideo();
+    value.connectionData?.engine.joinChannel(null, channel, null, 0);
   }
 
   void addUser({required CallUser callUser}) {
@@ -68,12 +68,12 @@ class CallController extends ValueNotifier<CallSettings> {
 
   void toggleMute() {
     value = value.copyWith(isLocalUserMuted: !value.isLocalUserMuted);
-    value.engineSettings?.engine.muteLocalAudioStream(value.isLocalUserMuted);
+    value.connectionData?.engine.muteLocalAudioStream(value.isLocalUserMuted);
   }
 
   void endCall() {
-    value.engineSettings?.engine.leaveChannel();
-    value.engineSettings?.engine.destroy();
+    value.connectionData?.engine.leaveChannel();
+    value.connectionData?.engine.destroy();
     dispose();
   }
 }
