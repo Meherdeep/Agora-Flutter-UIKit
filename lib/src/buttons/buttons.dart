@@ -3,9 +3,32 @@ import 'package:flutter/material.dart';
 
 class AgoraVideoButtons extends StatefulWidget {
   final AgoraClient client;
+  final List<BuiltInButtons>? enabledButtons;
+  final List<Widget>? extraButtons;
+  final bool? autoHideButtons;
+  // The default auto hide time = 5 seconds
+  final int? autoHideButtonTime;
+  // Adds a vertical padding to the set of button
+  final double? verticalButtonPadding;
+  final Alignment? buttonAlignment;
+  final Widget? disconnectButtonChild;
+  final Widget? muteButtonChild;
+  final Widget? switchCameraButtonChild;
+  final Widget? disableVideoButtonChild;
+
   const AgoraVideoButtons({
-    required this.client,
     Key? key,
+    required this.client,
+    this.enabledButtons,
+    this.extraButtons,
+    this.autoHideButtons,
+    this.autoHideButtonTime,
+    this.verticalButtonPadding,
+    this.buttonAlignment,
+    this.disconnectButtonChild,
+    this.muteButtonChild,
+    this.switchCameraButtonChild,
+    this.disableVideoButtonChild,
   }) : super(key: key);
 
   @override
@@ -13,31 +36,72 @@ class AgoraVideoButtons extends StatefulWidget {
 }
 
 class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
-  bool disabledVideo = false;
+  List<Widget> buttonsEnabled = [];
 
   @override
   void initState() {
     super.initState();
+    Future.delayed(
+      Duration(seconds: widget.autoHideButtonTime ?? 5),
+      () {
+        if (this.mounted) {
+          setState(() {
+            widget.client.callController.toggleVisible();
+          });
+        }
+      },
+    );
+
+    Map buttonMap = <BuiltInButtons, Widget>{
+      BuiltInButtons.ToggleMic: muteMicButton(),
+      BuiltInButtons.CallEnd: disconnectCallButton(),
+      BuiltInButtons.SwitchCamera: switchCameraButton(),
+      BuiltInButtons.ToggleCamera: disableVideoButton(),
+    };
+
+    if (widget.enabledButtons != null) {
+      for (var i = 0; i < widget.enabledButtons!.length; i++) {
+        for (var j = 0; j < buttonMap.length; j++) {
+          if (buttonMap.keys.toList()[j] == widget.enabledButtons![i]) {
+            buttonsEnabled.add(buttonMap.values.toList()[j]);
+          }
+        }
+      }
+    }
   }
 
-  Widget toolbar() {
+  Widget toolbar(List<Widget>? buttonList) {
     return Container(
       alignment: Alignment.bottomCenter,
-      padding: const EdgeInsets.symmetric(vertical: 48),
+      padding: widget.verticalButtonPadding == null
+          ? const EdgeInsets.symmetric(vertical: 48)
+          : EdgeInsets.symmetric(
+              vertical: widget.verticalButtonPadding!,
+            ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         physics: BouncingScrollPhysics(),
         child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              muteMicButton(),
-              disconnectCallButton(),
-              switchCameraButton(),
-              disableVideoButton(),
-            ],
-          ),
+          alignment: widget.buttonAlignment ?? Alignment.bottomCenter,
+          child: widget.enabledButtons == null
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    muteMicButton(),
+                    disconnectCallButton(),
+                    switchCameraButton(),
+                    disableVideoButton(),
+                    if (widget.extraButtons != null)
+                      for (var i = 0; i < widget.extraButtons!.length; i++) widget.extraButtons![i]
+                  ],
+                )
+              : Row(
+                  children: [
+                    for (var i = 0; i < buttonList!.length; i++) buttonList[i],
+                    if (widget.extraButtons != null)
+                      for (var i = 0; i < widget.extraButtons!.length; i++) widget.extraButtons![i]
+                  ],
+                ),
         ),
       ),
     );
@@ -71,7 +135,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
 
   Widget switchCameraButton() {
     return RawMaterialButton(
-      onPressed: _onSwitchCamera,
+      onPressed: () => widget.client.callController.switchCamera(),
       child: Icon(
         Icons.switch_camera,
         color: Colors.blueAccent,
@@ -86,15 +150,15 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
 
   Widget disableVideoButton() {
     return RawMaterialButton(
-      onPressed: _onToggleCamera,
+      onPressed: () => widget.client.callController.toggleCamera(),
       child: Icon(
-        disabledVideo ? Icons.videocam_off : Icons.videocam,
-        color: disabledVideo ? Colors.white : Colors.blueAccent,
+        widget.client.callController.value.isLocalVideoDisabled ? Icons.videocam_off : Icons.videocam,
+        color: widget.client.callController.value.isLocalVideoDisabled ? Colors.white : Colors.blueAccent,
         size: 20.0,
       ),
       shape: CircleBorder(),
       elevation: 2.0,
-      fillColor: disabledVideo ? Colors.blueAccent : Colors.white,
+      fillColor: widget.client.callController.value.isLocalVideoDisabled ? Colors.blueAccent : Colors.white,
       padding: const EdgeInsets.all(12.0),
     );
   }
@@ -104,20 +168,19 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     Navigator.pop(context);
   }
 
-  void _onToggleCamera() {
-    // setState(() {
-    //   disabledVideo = !disabledVideo;
-    //   globals.isLocalVideoDisabled.value = !globals.isLocalVideoDisabled.value;
-    // });
-    // engineController.value?.engine.muteLocalVideoStream(disabledVideo);
-  }
-
-  void _onSwitchCamera() {
-    // engineController.value?.engine.switchCamera();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return toolbar();
+    return ValueListenableBuilder(
+        valueListenable: widget.client.callController,
+        builder: (context, counter, something) {
+          return widget.autoHideButtons != null
+              ? widget.autoHideButtons!
+                  ? Visibility(
+                      visible: widget.client.callController.value.visible,
+                      child: toolbar(widget.enabledButtons == null ? null : buttonsEnabled),
+                    )
+                  : toolbar(widget.enabledButtons == null ? null : buttonsEnabled)
+              : toolbar(widget.enabledButtons == null ? null : buttonsEnabled);
+        });
   }
 }

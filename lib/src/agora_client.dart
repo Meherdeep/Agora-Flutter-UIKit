@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:agora_flutter_uikit/controllers/call_controller.dart';
+import 'package:agora_flutter_uikit/controllers/session_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -13,8 +13,8 @@ class AgoraClient {
   }
 
   // This is our "state" object that the UI Kit works with
-  final CallController _callController = CallController();
-  CallController get callController {
+  final SessionController _callController = SessionController();
+  SessionController get callController {
     return _callController;
   }
 

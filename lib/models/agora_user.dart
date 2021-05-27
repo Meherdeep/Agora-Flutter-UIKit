@@ -1,18 +1,18 @@
-class CallUser {
+class AgoraUser {
   final int uid;
   final bool remote;
   final bool muted;
   final bool videoDisabled;
 
-  CallUser({required this.uid, required this.remote, required this.muted, required this.videoDisabled});
+  AgoraUser({required this.uid, required this.remote, required this.muted, required this.videoDisabled});
 
-  CallUser copyWith({
+  AgoraUser copyWith({
     int? uid,
     bool? remote,
     bool? muted,
     bool? videoDisabled,
   }) {
-    return CallUser(
+    return AgoraUser(
       uid: uid ?? this.uid,
       remote: remote ?? this.remote,
       muted: muted ?? this.muted,
