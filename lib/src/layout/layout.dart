@@ -1,8 +1,8 @@
 import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
 import 'package:agora_flutter_uikit/models/agora_user.dart';
 import 'package:flutter/material.dart';
-import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
-import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
+import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 
 class AgoraVideoViewer extends StatefulWidget {
   final AgoraClient client;
@@ -33,18 +33,18 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    list.add(RtcLocalView.SurfaceView());
+    list.add(rtc_local_view.SurfaceView());
 
-    widget.client.callController.value.users.forEach((AgoraUser user) => list.add(RtcRemoteView.SurfaceView(uid: user.uid)));
+    widget.client.callController.value.users.forEach((AgoraUser user) => list.add(rtc_remote_view.SurfaceView(uid: user.uid)));
     return list;
   }
 
   Widget _getLocalViews() {
-    return RtcLocalView.SurfaceView();
+    return rtc_local_view.SurfaceView();
   }
 
   Widget _getRemoteViews(int uid) {
-    return RtcRemoteView.SurfaceView(
+    return rtc_remote_view.SurfaceView(
       uid: uid,
     );
   }
@@ -68,7 +68,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   Widget viewGrid() {
     final views = _getRenderViews();
     print("VIEWS LENGTH = ${views.length}");
-    if (views.length == 0) {
+    if (views.isEmpty) {
       return Expanded(
         child: Container(
           color: Colors.white,

@@ -44,7 +44,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     Future.delayed(
       Duration(seconds: widget.autoHideButtonTime ?? 5),
       () {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             widget.client.callController.toggleVisible();
           });
@@ -53,10 +53,10 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
     );
 
     Map buttonMap = <BuiltInButtons, Widget>{
-      BuiltInButtons.ToggleMic: muteMicButton(),
-      BuiltInButtons.CallEnd: disconnectCallButton(),
-      BuiltInButtons.SwitchCamera: switchCameraButton(),
-      BuiltInButtons.ToggleCamera: disableVideoButton(),
+      BuiltInButtons.toggleMic: muteMicButton(),
+      BuiltInButtons.callEnd: disconnectCallButton(),
+      BuiltInButtons.switchCamera: switchCameraButton(),
+      BuiltInButtons.toggleCamera: disableVideoButton(),
     };
 
     if (widget.enabledButtons != null) {

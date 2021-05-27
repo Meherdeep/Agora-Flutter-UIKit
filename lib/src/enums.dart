@@ -1,2 +1,2 @@
-enum Layout { Grid, Floating }
-enum BuiltInButtons { CallEnd, SwitchCamera, ToggleCamera, ToggleMic }
+enum Layout { grid, floating }
+enum BuiltInButtons { callEnd, switchCamera, toggleCamera, toggleMic }

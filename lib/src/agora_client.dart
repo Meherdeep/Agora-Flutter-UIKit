@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AgoraClient {
-  static const MethodChannel _channel = const MethodChannel('agora_flutter_uikit');
+  static const MethodChannel _channel = MethodChannel('agora_flutter_uikit');
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
