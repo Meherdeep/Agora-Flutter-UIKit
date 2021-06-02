@@ -12,11 +12,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AgoraClient client = AgoraClient(
-    appId: "<----Insert App ID ---->",
+    appId: "<--Add your App Id here-->",
     enabledPermission: [
       Permission.camera,
       Permission.microphone,
     ],
+    channelName: 'test',
   );
 
   @override
@@ -31,7 +32,10 @@ class _MyAppState extends State<MyApp> {
         body: SafeArea(
           child: Stack(
             children: [
-              AgoraVideoViewer(client: client),
+              AgoraVideoViewer(
+                client: client,
+                layoutType: Layout.floating,
+              ),
               AgoraVideoButtons(client: client),
             ],
           ),
