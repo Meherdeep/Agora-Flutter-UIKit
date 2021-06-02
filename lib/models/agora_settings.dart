@@ -13,6 +13,7 @@ class AgoraSettings {
   final ClientRole clientRole;
   final int maxUid;
   final int localUid;
+  String? generatedToken;
 
   AgoraSettings({
     this.connectionData,
@@ -24,6 +25,7 @@ class AgoraSettings {
     required this.clientRole,
     required this.maxUid,
     required this.localUid,
+    this.generatedToken,
   });
 
   AgoraSettings copyWith({
@@ -36,6 +38,7 @@ class AgoraSettings {
     ClientRole? clientRole,
     int? maxUid,
     int? localUid,
+    String? generatedToken,
   }) {
     return AgoraSettings(
       connectionData: connectionData ?? this.connectionData,
@@ -47,6 +50,7 @@ class AgoraSettings {
       clientRole: clientRole ?? this.clientRole,
       maxUid: maxUid ?? this.maxUid,
       localUid: localUid ?? this.localUid,
+      generatedToken: generatedToken ?? this.generatedToken,
     );
   }
 }

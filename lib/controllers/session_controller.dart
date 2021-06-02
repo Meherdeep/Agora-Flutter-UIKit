@@ -1,23 +1,26 @@
+import 'dart:convert';
+
 import 'package:agora_flutter_uikit/models/agora_settings.dart';
 import 'package:agora_flutter_uikit/models/agora_user.dart';
 import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
 class SessionController extends ValueNotifier<AgoraSettings> {
   SessionController()
       : super(
           AgoraSettings(
-            users: [],
-            isLocalUserMuted: false,
-            isLocalVideoDisabled: false,
-            visible: true,
-            isButtonVisible: false,
-            clientRole: ClientRole.Broadcaster,
-            maxUid: 0,
-            localUid: 0,
-          ),
+              users: [],
+              isLocalUserMuted: false,
+              isLocalVideoDisabled: false,
+              visible: true,
+              isButtonVisible: false,
+              clientRole: ClientRole.Broadcaster,
+              maxUid: 0,
+              localUid: 0,
+              generatedToken: null),
         );
 
   void initializeEngine(
@@ -76,17 +79,33 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           checkForMaxUser(uid: uid);
           removeUser(uid: uid);
         },
+        tokenPrivilegeWillExpire: (token) async {
+          await getToken(
+            tokenUrl: value.connectionData!.tokenUrl,
+            channelName: value.connectionData!.channelName,
+            uid: value.connectionData!.uid,
+          );
+          await value.connectionData!.engine.renewToken(token);
+        },
       ),
     );
   }
 
   void joinVideoChannel() async {
     await value.connectionData?.engine.enableVideo();
+    if (value.connectionData!.tokenUrl != null) {
+      await getToken(
+        tokenUrl: value.connectionData!.tokenUrl,
+        channelName: value.connectionData!.channelName,
+        uid: value.connectionData!.uid,
+      );
+    }
     value.connectionData?.engine.joinChannel(
-        value.connectionData!.tempToken,
-        value.connectionData!.channelName,
-        null,
-        value.connectionData!.uid ?? 0);
+      value.connectionData!.tempToken ?? value.generatedToken,
+      value.connectionData!.channelName,
+      null,
+      value.connectionData!.uid ?? 0,
+    );
   }
 
   void addUser({required AgoraUser callUser}) {
@@ -163,5 +182,22 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       value = value.copyWith(maxUid: value.localUid);
     }
     removeUser(uid: value.localUid);
+  }
+
+  Future<void> getToken(
+      {String? tokenUrl, String? channelName, int? uid}) async {
+    uid = uid ?? 0;
+    final response = await http
+        .get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
+    if (response.statusCode == 200) {
+      print("TOKEN BODY " + response.body);
+      value =
+          value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
+      // jsonDecode(response.body)['rtcToken'];
+      print('Token : ${value.connectionData!.tempToken}');
+    } else {
+      print(response.reasonPhrase);
+      print('Failed to generate the token : ${response.statusCode}');
+    }
   }
 }
