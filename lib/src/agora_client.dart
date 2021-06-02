@@ -21,10 +21,12 @@ class AgoraClient {
   AgoraClient({
     required String appId,
     required List<Permission> enabledPermission,
+    required String channelName,
   }) {
     _initAgoraRtcEngine(
       appId: appId,
       enabledPermission: enabledPermission,
+      channelName: channelName,
     );
     print('APP ID: $appId');
   }
@@ -32,9 +34,10 @@ class AgoraClient {
   Future<void> _initAgoraRtcEngine({
     required String appId,
     required List<Permission> enabledPermission,
+    required String channelName,
   }) async {
     try {
-      _callController.initializeEngine(appId);
+      _callController.initializeEngine(appId, channelName);
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
@@ -43,6 +46,6 @@ class AgoraClient {
 
     _callController.createEvents();
 
-    _callController.joinVideoChannel(channel: "tadas");
+    _callController.joinVideoChannel(channel: channelName);
   }
 }

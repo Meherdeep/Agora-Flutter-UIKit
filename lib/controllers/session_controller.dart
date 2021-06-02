@@ -13,13 +13,17 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           isLocalVideoDisabled: false,
           visible: true,
           isButtonVisible: false,
+          clientRole: ClientRole.Broadcaster,
+          maxUid: 0,
+          localUid: 0,
         ));
 
-  void initializeEngine(String appId) async {
+  void initializeEngine(String appId, String channelName) async {
     value = value.copyWith(
       connectionData: AgoraConnectionData(
         engine: await RtcEngine.createWithConfig(RtcEngineConfig(appId)),
         appId: appId,
+        channelName: channelName,
       ),
     );
   }
@@ -33,6 +37,8 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       joinChannelSuccess: (channel, uid, elapsed) {
         final info = 'onJoinChannel: $channel, uid: $uid';
         print(info);
+        value = value.copyWith(localUid: uid);
+        value = value.copyWith(maxUid: uid);
       },
       leaveChannel: (stats) {
         clearUsers();
@@ -40,11 +46,20 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       userJoined: (uid, elapsed) {
         final info = 'userJoined: $uid';
         print(info);
-        addUser(callUser: AgoraUser(uid: uid, remote: false, muted: false, videoDisabled: false));
+        addUser(
+          callUser: AgoraUser(
+            uid: uid,
+            remote: false,
+            muted: false,
+            videoDisabled: false,
+            clientRole: ClientRole.Broadcaster,
+          ),
+        );
       },
       userOffline: (uid, reason) {
         final info = 'userOffline: $uid , reason: $reason';
         print(info);
+        checkForMaxUser(uid: uid);
         removeUser(uid: uid);
       },
     ));
@@ -89,7 +104,8 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       await Permission.camera.request();
     }
     value = value.copyWith(isLocalVideoDisabled: !(value.isLocalVideoDisabled));
-    value.connectionData?.engine.muteLocalVideoStream(value.isLocalVideoDisabled);
+    value.connectionData?.engine
+        .muteLocalVideoStream(value.isLocalVideoDisabled);
   }
 
   void switchCamera() async {
@@ -120,6 +136,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           value = value.copyWith(isButtonVisible: !(value.isButtonVisible));
         },
       );
+    }
+  }
+
+  void checkForMaxUser({int? uid}) {
+    if (uid == value.maxUid) {
+      value = value.copyWith(maxUid: 0);
     }
   }
 }
