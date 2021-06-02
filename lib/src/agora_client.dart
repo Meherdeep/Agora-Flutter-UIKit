@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:agora_flutter_uikit/controllers/session_controller.dart';
+import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -22,11 +24,19 @@ class AgoraClient {
     required String appId,
     required List<Permission> enabledPermission,
     required String channelName,
+    int? uid,
+    String? tempToken,
+    String? tokenUrl,
+    AreaCode? areaCode,
   }) {
     _initAgoraRtcEngine(
       appId: appId,
       enabledPermission: enabledPermission,
       channelName: channelName,
+      uid: uid,
+      tempToken: tempToken,
+      tokenUrl: tokenUrl,
+      areaCode: areaCode,
     );
     print('APP ID: $appId');
   }
@@ -35,9 +45,20 @@ class AgoraClient {
     required String appId,
     required List<Permission> enabledPermission,
     required String channelName,
+    int? uid,
+    String? tempToken,
+    String? tokenUrl,
+    AreaCode? areaCode,
   }) async {
     try {
-      _callController.initializeEngine(appId, channelName);
+      _callController.initializeEngine(
+        appId: appId,
+        channelName: channelName,
+        tempToken: tempToken,
+        tokenUrl: tokenUrl,
+        uid: uid,
+        areaCode: areaCode,
+      );
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");
     }
@@ -46,6 +67,6 @@ class AgoraClient {
 
     _callController.createEvents();
 
-    _callController.joinVideoChannel(channel: channelName);
+    _callController.joinVideoChannel();
   }
 }

@@ -7,67 +7,86 @@ import 'package:permission_handler/permission_handler.dart';
 
 class SessionController extends ValueNotifier<AgoraSettings> {
   SessionController()
-      : super(AgoraSettings(
-          users: [],
-          isLocalUserMuted: false,
-          isLocalVideoDisabled: false,
-          visible: true,
-          isButtonVisible: false,
-          clientRole: ClientRole.Broadcaster,
-          maxUid: 0,
-          localUid: 0,
-        ));
+      : super(
+          AgoraSettings(
+            users: [],
+            isLocalUserMuted: false,
+            isLocalVideoDisabled: false,
+            visible: true,
+            isButtonVisible: false,
+            clientRole: ClientRole.Broadcaster,
+            maxUid: 0,
+            localUid: 0,
+          ),
+        );
 
-  void initializeEngine(String appId, String channelName) async {
+  void initializeEngine(
+      {required String appId,
+      required String channelName,
+      AreaCode? areaCode,
+      String? tempToken,
+      String? tokenUrl,
+      int? uid}) async {
     value = value.copyWith(
       connectionData: AgoraConnectionData(
-        engine: await RtcEngine.createWithConfig(RtcEngineConfig(appId)),
+        engine: await RtcEngine.createWithConfig(
+            RtcEngineConfig(appId, areaCode: areaCode)),
         appId: appId,
         channelName: channelName,
+        tempToken: tempToken,
+        tokenUrl: tokenUrl,
+        uid: uid,
+        areaCode: areaCode,
       ),
     );
   }
 
   void createEvents() async {
-    value.connectionData?.engine.setEventHandler(RtcEngineEventHandler(
-      error: (code) {
-        final info = 'onError: $code';
-        print(info);
-      },
-      joinChannelSuccess: (channel, uid, elapsed) {
-        final info = 'onJoinChannel: $channel, uid: $uid';
-        print(info);
-        value = value.copyWith(localUid: uid);
-        value = value.copyWith(maxUid: uid);
-      },
-      leaveChannel: (stats) {
-        clearUsers();
-      },
-      userJoined: (uid, elapsed) {
-        final info = 'userJoined: $uid';
-        print(info);
-        addUser(
-          callUser: AgoraUser(
-            uid: uid,
-            remote: false,
-            muted: false,
-            videoDisabled: false,
-            clientRole: ClientRole.Broadcaster,
-          ),
-        );
-      },
-      userOffline: (uid, reason) {
-        final info = 'userOffline: $uid , reason: $reason';
-        print(info);
-        checkForMaxUser(uid: uid);
-        removeUser(uid: uid);
-      },
-    ));
+    value.connectionData?.engine.setEventHandler(
+      RtcEngineEventHandler(
+        error: (code) {
+          final info = 'onError: $code';
+          print(info);
+        },
+        joinChannelSuccess: (channel, uid, elapsed) {
+          final info = 'onJoinChannel: $channel, uid: $uid';
+          print(info);
+          value = value.copyWith(localUid: uid);
+          value = value.copyWith(maxUid: uid);
+        },
+        leaveChannel: (stats) {
+          clearUsers();
+        },
+        userJoined: (uid, elapsed) {
+          final info = 'userJoined: $uid';
+          print(info);
+          addUser(
+            callUser: AgoraUser(
+              uid: uid,
+              remote: false,
+              muted: false,
+              videoDisabled: false,
+              clientRole: ClientRole.Broadcaster,
+            ),
+          );
+        },
+        userOffline: (uid, reason) {
+          final info = 'userOffline: $uid , reason: $reason';
+          print(info);
+          checkForMaxUser(uid: uid);
+          removeUser(uid: uid);
+        },
+      ),
+    );
   }
 
-  void joinVideoChannel({required String channel}) async {
+  void joinVideoChannel() async {
     await value.connectionData?.engine.enableVideo();
-    value.connectionData?.engine.joinChannel(null, channel, null, 0);
+    value.connectionData?.engine.joinChannel(
+        value.connectionData!.tempToken,
+        value.connectionData!.channelName,
+        null,
+        value.connectionData!.uid ?? 0);
   }
 
   void addUser({required AgoraUser callUser}) {
@@ -141,7 +160,8 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   void checkForMaxUser({int? uid}) {
     if (uid == value.maxUid) {
-      value = value.copyWith(maxUid: 0);
+      value = value.copyWith(maxUid: value.localUid);
     }
+    removeUser(uid: value.localUid);
   }
 }

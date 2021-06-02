@@ -1,11 +1,8 @@
 import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
-import 'package:agora_flutter_uikit/models/agora_user.dart';
 import 'package:agora_flutter_uikit/src/layout/floating_layout.dart';
 import 'package:agora_flutter_uikit/src/layout/grid_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
-import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 
 class AgoraVideoViewer extends StatefulWidget {
   final AgoraClient client;
