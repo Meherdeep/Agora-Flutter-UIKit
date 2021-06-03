@@ -12,12 +12,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AgoraClient client = AgoraClient(
-    appId: "<--Add your App Id here-->",
+    agoraConnectionData: AgoraConnectionData(appId: "<----App ID--->", channelName: "test"),
     enabledPermission: [
       Permission.camera,
       Permission.microphone,
     ],
-    channelName: 'test',
   );
 
   @override

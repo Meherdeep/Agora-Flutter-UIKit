@@ -26,43 +26,23 @@ class AgoraClient {
   }
 
   AgoraClient({
-    required String appId,
+    required AgoraConnectionData agoraConnectionData,
     required List<Permission> enabledPermission,
-    required String channelName,
-    int? uid,
-    String? tempToken,
-    String? tokenUrl,
-    AreaCode? areaCode,
   }) {
     _initAgoraRtcEngine(
-      appId: appId,
+      agoraConnectionData: agoraConnectionData,
       enabledPermission: enabledPermission,
-      channelName: channelName,
-      uid: uid,
-      tempToken: tempToken,
-      tokenUrl: tokenUrl,
-      areaCode: areaCode,
     );
-    print('APP ID: $appId');
+    print('APP ID: $agoraConnectionData');
   }
 
   Future<void> _initAgoraRtcEngine({
-    required String appId,
+    required AgoraConnectionData agoraConnectionData,
     required List<Permission> enabledPermission,
-    required String channelName,
-    int? uid,
-    String? tempToken,
-    String? tokenUrl,
-    AreaCode? areaCode,
   }) async {
     try {
       _sessionController.initializeEngine(
-        appId: appId,
-        channelName: channelName,
-        tempToken: tempToken,
-        tokenUrl: tokenUrl,
-        uid: uid,
-        areaCode: areaCode,
+        agoraConnectionData: agoraConnectionData,
       );
     } catch (e) {
       print("Error occured while initializing Agora RtcEngine: $e");

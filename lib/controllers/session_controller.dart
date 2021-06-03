@@ -24,19 +24,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
               generatedToken: null),
         );
 
-  void initializeEngine(
-      {required String appId, required String channelName, AreaCode? areaCode, String? tempToken, String? tokenUrl, int? uid}) async {
+  void initializeEngine({required AgoraConnectionData agoraConnectionData}) async {
     value = value.copyWith(
-      engine: await RtcEngine.createWithConfig(RtcEngineConfig(appId, areaCode: areaCode)),
-      connectionData: AgoraConnectionData(
-        appId: appId,
-        channelName: channelName,
-        tempToken: tempToken,
-        tokenUrl: tokenUrl,
-        uid: uid,
-        areaCode: areaCode,
-      ),
-    );
+        engine: await RtcEngine.createWithConfig(RtcEngineConfig(agoraConnectionData.appId, areaCode: agoraConnectionData.areaCode)),
+        connectionData: agoraConnectionData);
   }
 
   void createEvents() async {
