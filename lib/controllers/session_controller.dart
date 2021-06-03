@@ -25,9 +25,15 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         );
 
   void initializeEngine(
-      {required String appId, required String channelName, AreaCode? areaCode, String? tempToken, String? tokenUrl, int? uid}) async {
+      {required String appId,
+      required String channelName,
+      AreaCode? areaCode,
+      String? tempToken,
+      String? tokenUrl,
+      int? uid}) async {
     value = value.copyWith(
-      engine: await RtcEngine.createWithConfig(RtcEngineConfig(appId, areaCode: areaCode)),
+      engine: await RtcEngine.createWithConfig(
+          RtcEngineConfig(appId, areaCode: areaCode)),
       connectionData: AgoraConnectionData(
         appId: appId,
         channelName: channelName,
@@ -81,6 +87,36 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             uid: value.connectionData!.uid,
           );
           await value.engine?.renewToken(token);
+        },
+        remoteVideoStateChanged: (uid, state, reason, elapsed) {
+          if (state == VideoRemoteState.Stopped) {
+            updateUserVideo(uid: uid, videoDisabled: true);
+          } else if (state == VideoRemoteState.Decoding &&
+              reason == VideoRemoteStateReason.RemoteUnmuted) {
+            updateUserVideo(uid: uid, videoDisabled: false);
+          }
+        },
+        remoteAudioStateChanged: (uid, state, reason, elapsed) {
+          if (state == AudioRemoteState.Stopped) {
+            updateUserAudio(uid: uid, muted: true);
+          } else if (state == AudioRemoteState.Decoding &&
+              reason == AudioRemoteStateReason.RemoteUnmuted) {
+            updateUserAudio(uid: uid, muted: false);
+          }
+        },
+        localAudioStateChanged: (state, error) {
+          if (state == AudioLocalState.Stopped) {
+            updateUserAudio(uid: value.localUid, muted: true);
+          } else if (state == AudioLocalState.Recording) {
+            updateUserAudio(uid: value.localUid, muted: false);
+          }
+        },
+        localVideoStateChanged: (localVideoState, error) {
+          if (localVideoState == LocalVideoStreamState.Stopped) {
+            updateUserVideo(uid: value.localUid, videoDisabled: true);
+          } else if (localVideoState == LocalVideoStreamState.Capturing) {
+            updateUserVideo(uid: value.localUid, videoDisabled: false);
+          }
         },
       ),
     );
@@ -178,12 +214,30 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     removeUser(uid: value.localUid);
   }
 
-  Future<void> getToken({String? tokenUrl, String? channelName, int? uid}) async {
+  void updateUserVideo({required int uid, required bool videoDisabled}) {
+    List<AgoraUser> tempList = value.users;
+    int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
+    tempList[indexOfUser] =
+        tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
+    value = value.copyWith(users: tempList);
+  }
+
+  void updateUserAudio({required int uid, required bool muted}) {
+    List<AgoraUser> tempList = value.users;
+    int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
+    tempList[indexOfUser] = tempList[indexOfUser].copyWith(muted: muted);
+    value = value.copyWith(users: tempList);
+  }
+
+  Future<void> getToken(
+      {String? tokenUrl, String? channelName, int? uid}) async {
     uid = uid ?? 0;
-    final response = await http.get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
+    final response = await http
+        .get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
     if (response.statusCode == 200) {
       print("TOKEN BODY " + response.body);
-      value = value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
+      value =
+          value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
       // jsonDecode(response.body)['rtcToken'];
       print('Token : ${value.connectionData!.tempToken}');
     } else {
