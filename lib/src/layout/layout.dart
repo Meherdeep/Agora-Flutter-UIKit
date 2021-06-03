@@ -7,10 +7,29 @@ import 'package:flutter/material.dart';
 class AgoraVideoViewer extends StatefulWidget {
   final AgoraClient client;
   final Layout layoutType;
+  final double? floatingLayoutContainerHeight;
+  final double? floatingLayoutContainerWidth;
+  final EdgeInsets? floatingLayoutMainViewPadding;
+  final EdgeInsets? floatingLayoutSubViewPadding;
+  final bool? enableActiveSpeaker;
+  final Widget? disabledVideoWidget;
+  final bool? showRemoteAVState;
+  final bool? showLocalAVState;
+  final bool? showNumberOfUsers;
+
   const AgoraVideoViewer({
+    Key? key,
     required this.client,
     this.layoutType = Layout.grid,
-    Key? key,
+    this.floatingLayoutContainerHeight,
+    this.floatingLayoutContainerWidth,
+    this.floatingLayoutMainViewPadding,
+    this.floatingLayoutSubViewPadding,
+    this.enableActiveSpeaker,
+    this.disabledVideoWidget,
+    this.showRemoteAVState,
+    this.showLocalAVState,
+    this.showNumberOfUsers,
   }) : super(key: key);
 
   @override
