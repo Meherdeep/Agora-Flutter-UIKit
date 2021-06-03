@@ -1,9 +1,11 @@
-import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
+
+import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
 
 import 'agora_user.dart';
 
 class AgoraSettings {
+  final RtcEngine? engine;
   final AgoraConnectionData? connectionData;
   final List<AgoraUser> users;
   final bool isLocalUserMuted;
@@ -16,6 +18,7 @@ class AgoraSettings {
   String? generatedToken;
 
   AgoraSettings({
+    this.engine,
     this.connectionData,
     required this.users,
     required this.isLocalUserMuted,
@@ -29,6 +32,7 @@ class AgoraSettings {
   });
 
   AgoraSettings copyWith({
+    RtcEngine? engine,
     AgoraConnectionData? connectionData,
     List<AgoraUser>? users,
     bool? isLocalUserMuted,
@@ -41,6 +45,7 @@ class AgoraSettings {
     String? generatedToken,
   }) {
     return AgoraSettings(
+      engine: engine ?? this.engine,
       connectionData: connectionData ?? this.connectionData,
       users: users ?? this.users,
       isLocalUserMuted: isLocalUserMuted ?? this.isLocalUserMuted,

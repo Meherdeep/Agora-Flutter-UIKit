@@ -17,8 +17,7 @@ class _GridLayoutState extends State<GridLayout> {
     final List<StatefulWidget> list = [];
     list.add(rtc_local_view.SurfaceView());
 
-    widget.client.callController.value.users.forEach((AgoraUser user) =>
-        list.add(rtc_remote_view.SurfaceView(uid: user.uid)));
+    widget.client.sessionController.value.users.forEach((AgoraUser user) => list.add(rtc_remote_view.SurfaceView(uid: user.uid)));
     return list;
   }
 
@@ -81,9 +80,7 @@ class _GridLayoutState extends State<GridLayout> {
         child: Column(
           children: <Widget>[
             for (int i = 0; i < views.length; i = i + 2)
-              i == (views.length - 1)
-                  ? _expandedVideoRow(views.sublist(i, i + 1))
-                  : _expandedVideoRow(views.sublist(i, i + 2)),
+              i == (views.length - 1) ? _expandedVideoRow(views.sublist(i, i + 1)) : _expandedVideoRow(views.sublist(i, i + 2)),
           ],
         ),
       );
@@ -94,7 +91,7 @@ class _GridLayoutState extends State<GridLayout> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: widget.client.callController,
+      valueListenable: widget.client.sessionController,
       builder: (context, counter, widget) {
         return GestureDetector(
           child: Center(child: viewGrid()),

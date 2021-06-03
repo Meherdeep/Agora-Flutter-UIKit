@@ -14,10 +14,15 @@ class AgoraClient {
     return version;
   }
 
+  Future<List<int>> get users async {
+    final List<int> version = _sessionController.value.users.map((e) => e.uid).toList();
+    return version;
+  }
+
   // This is our "state" object that the UI Kit works with
-  final SessionController _callController = SessionController();
-  SessionController get callController {
-    return _callController;
+  final SessionController _sessionController = SessionController();
+  SessionController get sessionController {
+    return _sessionController;
   }
 
   AgoraClient({
@@ -51,7 +56,7 @@ class AgoraClient {
     AreaCode? areaCode,
   }) async {
     try {
-      _callController.initializeEngine(
+      _sessionController.initializeEngine(
         appId: appId,
         channelName: channelName,
         tempToken: tempToken,
@@ -65,8 +70,8 @@ class AgoraClient {
 
     await enabledPermission.request();
 
-    _callController.createEvents();
+    _sessionController.createEvents();
 
-    _callController.joinVideoChannel();
+    _sessionController.joinVideoChannel();
   }
 }

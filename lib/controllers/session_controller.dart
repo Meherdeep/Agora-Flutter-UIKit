@@ -12,6 +12,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   SessionController()
       : super(
           AgoraSettings(
+              engine: null,
               users: [],
               isLocalUserMuted: false,
               isLocalVideoDisabled: false,
@@ -24,16 +25,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         );
 
   void initializeEngine(
-      {required String appId,
-      required String channelName,
-      AreaCode? areaCode,
-      String? tempToken,
-      String? tokenUrl,
-      int? uid}) async {
+      {required String appId, required String channelName, AreaCode? areaCode, String? tempToken, String? tokenUrl, int? uid}) async {
     value = value.copyWith(
+      engine: await RtcEngine.createWithConfig(RtcEngineConfig(appId, areaCode: areaCode)),
       connectionData: AgoraConnectionData(
-        engine: await RtcEngine.createWithConfig(
-            RtcEngineConfig(appId, areaCode: areaCode)),
         appId: appId,
         channelName: channelName,
         tempToken: tempToken,
@@ -45,7 +40,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   void createEvents() async {
-    value.connectionData?.engine.setEventHandler(
+    value.engine?.setEventHandler(
       RtcEngineEventHandler(
         error: (code) {
           final info = 'onError: $code';
@@ -85,14 +80,14 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             channelName: value.connectionData!.channelName,
             uid: value.connectionData!.uid,
           );
-          await value.connectionData!.engine.renewToken(token);
+          await value.engine?.renewToken(token);
         },
       ),
     );
   }
 
   void joinVideoChannel() async {
-    await value.connectionData?.engine.enableVideo();
+    await value.engine?.enableVideo();
     if (value.connectionData!.tokenUrl != null) {
       await getToken(
         tokenUrl: value.connectionData!.tokenUrl,
@@ -100,7 +95,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         uid: value.connectionData!.uid,
       );
     }
-    value.connectionData?.engine.joinChannel(
+    value.engine?.joinChannel(
       value.connectionData!.tempToken ?? value.generatedToken,
       value.connectionData!.channelName,
       null,
@@ -133,7 +128,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       await Permission.microphone.request();
     }
     value = value.copyWith(isLocalUserMuted: !(value.isLocalUserMuted));
-    value.connectionData?.engine.muteLocalAudioStream(value.isLocalUserMuted);
+    value.engine?.muteLocalAudioStream(value.isLocalUserMuted);
   }
 
   void toggleCamera() async {
@@ -142,8 +137,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       await Permission.camera.request();
     }
     value = value.copyWith(isLocalVideoDisabled: !(value.isLocalVideoDisabled));
-    value.connectionData?.engine
-        .muteLocalVideoStream(value.isLocalVideoDisabled);
+    value.engine?.muteLocalVideoStream(value.isLocalVideoDisabled);
   }
 
   void switchCamera() async {
@@ -151,12 +145,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     if (status.isDenied) {
       await Permission.camera.request();
     }
-    value.connectionData?.engine.switchCamera();
+    value.engine?.switchCamera();
   }
 
   void endCall() {
-    value.connectionData?.engine.leaveChannel();
-    value.connectionData?.engine.destroy();
+    value.engine?.leaveChannel();
+    value.engine?.destroy();
     dispose();
   }
 
@@ -184,15 +178,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     removeUser(uid: value.localUid);
   }
 
-  Future<void> getToken(
-      {String? tokenUrl, String? channelName, int? uid}) async {
+  Future<void> getToken({String? tokenUrl, String? channelName, int? uid}) async {
     uid = uid ?? 0;
-    final response = await http
-        .get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
+    final response = await http.get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
     if (response.statusCode == 200) {
       print("TOKEN BODY " + response.body);
-      value =
-          value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
+      value = value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
       // jsonDecode(response.body)['rtcToken'];
       print('Token : ${value.connectionData!.tempToken}');
     } else {

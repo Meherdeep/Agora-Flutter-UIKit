@@ -46,7 +46,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
       () {
         if (mounted) {
           setState(() {
-            widget.client.callController.toggleVisible();
+            widget.client.sessionController.toggleVisible();
           });
         }
       },
@@ -109,15 +109,15 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
 
   Widget muteMicButton() {
     return RawMaterialButton(
-      onPressed: () => widget.client.callController.toggleMute(),
+      onPressed: () => widget.client.sessionController.toggleMute(),
       child: Icon(
-        widget.client.callController.value.isLocalUserMuted ? Icons.mic_off : Icons.mic,
-        color: widget.client.callController.value.isLocalUserMuted ? Colors.white : Colors.blueAccent,
+        widget.client.sessionController.value.isLocalUserMuted ? Icons.mic_off : Icons.mic,
+        color: widget.client.sessionController.value.isLocalUserMuted ? Colors.white : Colors.blueAccent,
         size: 20.0,
       ),
       shape: CircleBorder(),
       elevation: 2.0,
-      fillColor: widget.client.callController.value.isLocalUserMuted ? Colors.blueAccent : Colors.white,
+      fillColor: widget.client.sessionController.value.isLocalUserMuted ? Colors.blueAccent : Colors.white,
       padding: const EdgeInsets.all(12.0),
     );
   }
@@ -135,7 +135,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
 
   Widget switchCameraButton() {
     return RawMaterialButton(
-      onPressed: () => widget.client.callController.switchCamera(),
+      onPressed: () => widget.client.sessionController.switchCamera(),
       child: Icon(
         Icons.switch_camera,
         color: Colors.blueAccent,
@@ -150,33 +150,33 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
 
   Widget disableVideoButton() {
     return RawMaterialButton(
-      onPressed: () => widget.client.callController.toggleCamera(),
+      onPressed: () => widget.client.sessionController.toggleCamera(),
       child: Icon(
-        widget.client.callController.value.isLocalVideoDisabled ? Icons.videocam_off : Icons.videocam,
-        color: widget.client.callController.value.isLocalVideoDisabled ? Colors.white : Colors.blueAccent,
+        widget.client.sessionController.value.isLocalVideoDisabled ? Icons.videocam_off : Icons.videocam,
+        color: widget.client.sessionController.value.isLocalVideoDisabled ? Colors.white : Colors.blueAccent,
         size: 20.0,
       ),
       shape: CircleBorder(),
       elevation: 2.0,
-      fillColor: widget.client.callController.value.isLocalVideoDisabled ? Colors.blueAccent : Colors.white,
+      fillColor: widget.client.sessionController.value.isLocalVideoDisabled ? Colors.blueAccent : Colors.white,
       padding: const EdgeInsets.all(12.0),
     );
   }
 
   void _onCallEnd(BuildContext context) {
-    widget.client.callController.endCall();
+    widget.client.sessionController.endCall();
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: widget.client.callController,
+        valueListenable: widget.client.sessionController,
         builder: (context, counter, something) {
           return widget.autoHideButtons != null
               ? widget.autoHideButtons!
                   ? Visibility(
-                      visible: widget.client.callController.value.visible,
+                      visible: widget.client.sessionController.value.visible,
                       child: toolbar(widget.enabledButtons == null ? null : buttonsEnabled),
                     )
                   : toolbar(widget.enabledButtons == null ? null : buttonsEnabled)

@@ -132,8 +132,8 @@ class _FloatingLayoutState extends State<FloatingLayout> {
   }
 
   Widget viewFloat() {
-    print("USERS LENGTH: ${widget.client.callController.value.users.length}");
-    return widget.client.callController.value.users.length > 0
+    print("USERS LENGTH: ${widget.client.sessionController.value.users.length}");
+    return widget.client.sessionController.value.users.length > 0
         ? Column(
             children: [
               Container(
@@ -142,11 +142,9 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                 alignment: Alignment.topLeft,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: widget.client.callController.value.users.length,
+                  itemCount: widget.client.sessionController.value.users.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return widget
-                                .client.callController.value.users[index].uid !=
-                            widget.client.callController.value.maxUid
+                    return widget.client.sessionController.value.users[index].uid != widget.client.sessionController.value.maxUid
                         ? Padding(
                             key: Key('$index'),
                             padding: const EdgeInsets.fromLTRB(3, 3, 0, 3),
@@ -154,10 +152,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                               width: MediaQuery.of(context).size.width / 3,
                               child: Column(
                                 children: [
-                                  widget.client.callController.value
-                                              .users[index].uid ==
-                                          widget.client.callController.value
-                                              .localUid
+                                  widget.client.sessionController.value.users[index].uid == widget.client.sessionController.value.localUid
                                       ? Expanded(
                                           child: Container(
                                             color: Colors.black,
@@ -171,37 +166,27 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                     ),
                                                   ),
                                                 ),
-                                                !widget
-                                                        .client
-                                                        .callController
-                                                        .value
-                                                        .isLocalVideoDisabled
+                                                !widget.client.sessionController.value.isLocalVideoDisabled
                                                     ? Column(
                                                         children: [
-                                                          _videoView(
-                                                              _getLocalViews()),
+                                                          _videoView(_getLocalViews()),
                                                         ],
                                                       )
                                                     : disabledVideoWidget(),
                                                 Positioned.fill(
                                                   child: Align(
-                                                    alignment:
-                                                        Alignment.topLeft,
+                                                    alignment: Alignment.topLeft,
                                                     child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8),
+                                                      padding: const EdgeInsets.all(8),
                                                       child: GestureDetector(
                                                         onTap: () async {
                                                           await _pinView(index);
                                                         },
                                                         child: Container(
                                                           height: 24,
-                                                          decoration:
-                                                              BoxDecoration(
+                                                          decoration: BoxDecoration(
                                                             color: Colors.blue,
-                                                            shape:
-                                                                BoxShape.circle,
+                                                            shape: BoxShape.circle,
                                                           ),
                                                           child: Image.network(
                                                             'https://i.ibb.co/JrJ7R3w/unpin-icon.png',
@@ -217,8 +202,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                             ),
                                           ),
                                         )
-                                      : widget.client.callController.value
-                                              .users[index].videoDisabled
+                                      : widget.client.sessionController.value.users[index].videoDisabled
                                           ? Expanded(
                                               child: Stack(
                                                 children: [
@@ -228,33 +212,22 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                   disabledVideoWidget(),
                                                   Positioned.fill(
                                                     child: Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
+                                                      alignment: Alignment.topLeft,
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8),
+                                                        padding: const EdgeInsets.all(8),
                                                         child: GestureDetector(
                                                           onTap: () async {
-                                                            await _pinView(
-                                                                index);
+                                                            await _pinView(index);
                                                           },
                                                           child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              shape: BoxShape
-                                                                  .circle,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              shape: BoxShape.circle,
                                                             ),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(3.0),
+                                                            padding: const EdgeInsets.all(3.0),
                                                             child: Icon(
-                                                              Icons
-                                                                  .push_pin_rounded,
-                                                              color:
-                                                                  Colors.blue,
+                                                              Icons.push_pin_rounded,
+                                                              color: Colors.blue,
                                                             ),
                                                           ),
                                                         ),
@@ -270,44 +243,27 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                 children: [
                                                   Column(
                                                     children: [
-                                                      _videoView(
-                                                          _getRemoteViews(widget
-                                                              .client
-                                                              .callController
-                                                              .value
-                                                              .users[index]
-                                                              .uid)),
+                                                      _videoView(_getRemoteViews(widget.client.sessionController.value.users[index].uid)),
                                                     ],
                                                   ),
                                                   Positioned.fill(
                                                     child: Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
+                                                      alignment: Alignment.topLeft,
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8),
+                                                        padding: const EdgeInsets.all(8),
                                                         child: GestureDetector(
                                                           onTap: () async {
-                                                            await _pinView(
-                                                                index);
+                                                            await _pinView(index);
                                                           },
                                                           child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              shape: BoxShape
-                                                                  .circle,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              shape: BoxShape.circle,
                                                             ),
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(3.0),
+                                                            padding: const EdgeInsets.all(3.0),
                                                             child: Icon(
-                                                              Icons
-                                                                  .push_pin_rounded,
-                                                              color:
-                                                                  Colors.blue,
+                                                              Icons.push_pin_rounded,
+                                                              color: Colors.blue,
                                                             ),
                                                           ),
                                                         ),
@@ -326,24 +282,19 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                   },
                 ),
               ),
-              widget.client.callController.value.maxUid !=
-                      widget.client.callController.value.localUid
+              widget.client.sessionController.value.maxUid != widget.client.sessionController.value.localUid
                   ? Expanded(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(3, 0, 3, 3),
                         child: Column(
-                          children: [
-                            _videoView(_getRemoteViews(
-                                widget.client.callController.value.maxUid))
-                          ],
+                          children: [_videoView(_getRemoteViews(widget.client.sessionController.value.maxUid))],
                         ),
                       ),
                     )
                   : Expanded(
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(3, 0, 3, 3),
-                        child: widget.client.callController.value
-                                .isLocalVideoDisabled
+                        child: widget.client.sessionController.value.isLocalVideoDisabled
                             ? disabledVideoWidget()
                             : Stack(
                                 children: [
@@ -367,9 +318,8 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                     ),
             ],
           )
-        : widget.client.callController.value.clientRole ==
-                ClientRole.Broadcaster
-            ? widget.client.callController.value.isLocalVideoDisabled
+        : widget.client.sessionController.value.clientRole == ClientRole.Broadcaster
+            ? widget.client.sessionController.value.isLocalVideoDisabled
                 ? Column(
                     children: [Expanded(child: disabledVideoWidget())],
                   )
@@ -398,26 +348,22 @@ class _FloatingLayoutState extends State<FloatingLayout> {
   Future<void> _pinView(int index) async {
     setState(
       () {
-        final int oldMaxUid = widget.client.callController.value.maxUid;
-        final int newMaxUid =
-            widget.client.callController.value.users[index].uid;
-        widget.client.callController.value =
-            widget.client.callController.value.copyWith(maxUid: newMaxUid);
+        final int oldMaxUid = widget.client.sessionController.value.maxUid;
+        final int newMaxUid = widget.client.sessionController.value.users[index].uid;
+        widget.client.sessionController.value = widget.client.sessionController.value.copyWith(maxUid: newMaxUid);
         List<AgoraUser> tempList = <AgoraUser>[];
-        tempList = widget.client.callController.value.users;
+        tempList = widget.client.sessionController.value.users;
         for (int i = 0; i < tempList.length; i++) {
           if (tempList[i].uid == newMaxUid) {
             tempList.remove(tempList[i]);
           }
         }
-        widget.client.callController.value =
-            widget.client.callController.value.copyWith(
+        widget.client.sessionController.value = widget.client.sessionController.value.copyWith(
           users: [
             ...tempList,
             AgoraUser(
                 uid: oldMaxUid,
-                remote:
-                    oldMaxUid == widget.client.callController.value.localUid,
+                remote: oldMaxUid == widget.client.sessionController.value.localUid,
                 muted: false,
                 videoDisabled: false,
                 clientRole: ClientRole.Broadcaster),
@@ -430,7 +376,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: widget.client.callController,
+      valueListenable: widget.client.sessionController,
       builder: (context, counter, widget) {
         return GestureDetector(
           child: Center(child: viewFloat()),

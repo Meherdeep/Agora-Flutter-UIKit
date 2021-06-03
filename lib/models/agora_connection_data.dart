@@ -1,7 +1,6 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
 class AgoraConnectionData {
-  final RtcEngine engine;
   final String appId;
   final String channelName;
   final int? uid;
@@ -10,7 +9,6 @@ class AgoraConnectionData {
   final AreaCode? areaCode;
 
   AgoraConnectionData({
-    required this.engine,
     required this.appId,
     required this.channelName,
     this.uid,
@@ -20,7 +18,6 @@ class AgoraConnectionData {
   });
 
   AgoraConnectionData copyWith({
-    RtcEngine? engine,
     String? appId,
     String? channelName,
     int? uid,
@@ -29,7 +26,6 @@ class AgoraConnectionData {
     AreaCode? areaCode,
   }) {
     return AgoraConnectionData(
-      engine: engine ?? this.engine,
       appId: appId ?? this.appId,
       channelName: channelName ?? this.channelName,
       uid: uid ?? this.uid,
