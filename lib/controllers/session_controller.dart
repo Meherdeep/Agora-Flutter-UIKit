@@ -24,9 +24,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
               generatedToken: null),
         );
 
-  void initializeEngine({required AgoraConnectionData agoraConnectionData}) async {
+  void initializeEngine(
+      {required AgoraConnectionData agoraConnectionData}) async {
     value = value.copyWith(
-        engine: await RtcEngine.createWithConfig(RtcEngineConfig(agoraConnectionData.appId, areaCode: agoraConnectionData.areaCode)),
+        engine: await RtcEngine.createWithConfig(RtcEngineConfig(
+            agoraConnectionData.appId,
+            areaCode: agoraConnectionData.areaCode)),
         connectionData: agoraConnectionData);
   }
 
@@ -76,14 +79,16 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         remoteVideoStateChanged: (uid, state, reason, elapsed) {
           if (state == VideoRemoteState.Stopped) {
             updateUserVideo(uid: uid, videoDisabled: true);
-          } else if (state == VideoRemoteState.Decoding && reason == VideoRemoteStateReason.RemoteUnmuted) {
+          } else if (state == VideoRemoteState.Decoding &&
+              reason == VideoRemoteStateReason.RemoteUnmuted) {
             updateUserVideo(uid: uid, videoDisabled: false);
           }
         },
         remoteAudioStateChanged: (uid, state, reason, elapsed) {
           if (state == AudioRemoteState.Stopped) {
             updateUserAudio(uid: uid, muted: true);
-          } else if (state == AudioRemoteState.Decoding && reason == AudioRemoteStateReason.RemoteUnmuted) {
+          } else if (state == AudioRemoteState.Decoding &&
+              reason == AudioRemoteStateReason.RemoteUnmuted) {
             updateUserAudio(uid: uid, muted: false);
           }
         },
@@ -200,7 +205,8 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   void updateUserVideo({required int uid, required bool videoDisabled}) {
     List<AgoraUser> tempList = value.users;
     int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
-    tempList[indexOfUser] = tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
+    tempList[indexOfUser] =
+        tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
     value = value.copyWith(users: tempList);
   }
 
@@ -211,13 +217,46 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value = value.copyWith(users: tempList);
   }
 
-  Future<void> getToken({String? tokenUrl, String? channelName, int? uid}) async {
+  void updateUserUid({required int oldUid, required newUid}) {
+    List<AgoraUser> tempList = value.users;
+    int indexOfUser = tempList.indexWhere((element) => element.uid == oldUid);
+    tempList[indexOfUser] = tempList[indexOfUser].copyWith(uid: newUid);
+    value = value.copyWith(users: tempList);
+  }
+
+  Future<void> swapUser({required int index}) async {
+    final int oldMaxUid = value.maxUid;
+    final int newMaxUid = value.users[index].uid;
+    value = value.copyWith(maxUid: newMaxUid);
+    List<AgoraUser> tempList = <AgoraUser>[];
+    tempList = value.users;
+    for (int i = 0; i < tempList.length; i++) {
+      if (tempList[i].uid == newMaxUid) {
+        tempList.remove(tempList[i]);
+      }
+    }
+    value = value.copyWith(
+      users: [
+        ...tempList,
+        AgoraUser(
+            uid: oldMaxUid,
+            remote: oldMaxUid == value.localUid,
+            muted: false,
+            videoDisabled: false,
+            clientRole: ClientRole.Broadcaster),
+      ],
+    );
+  }
+
+  Future<void> getToken(
+      {String? tokenUrl, String? channelName, int? uid}) async {
     uid = uid ?? 0;
-    final response = await http.get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
+    final response = await http
+        .get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
     if (response.statusCode == 200) {
       print("TOKEN BODY " + response.body);
-      value = value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
-      // jsonDecode(response.body)['rtcToken'];
+      value =
+          value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
       print('Token : ${value.connectionData!.tempToken}');
     } else {
       print(response.reasonPhrase);

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class RemoteAVState extends StatefulWidget {
+class UserAVStateWidget extends StatefulWidget {
   final bool videoDisabled;
   final bool muted;
 
-  const RemoteAVState({
+  const UserAVStateWidget({
     Key? key,
     required this.videoDisabled,
     required this.muted,
   }) : super(key: key);
 
   @override
-  _RemoteAVStateState createState() => _RemoteAVStateState();
+  _UserAVStateWidgetState createState() => _UserAVStateWidgetState();
 }
 
-class _RemoteAVStateState extends State<RemoteAVState> {
+class _UserAVStateWidgetState extends State<UserAVStateWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(

@@ -13,8 +13,7 @@ class AgoraVideoViewer extends StatefulWidget {
   final EdgeInsets? floatingLayoutSubViewPadding;
   final bool? enableActiveSpeaker;
   final Widget? disabledVideoWidget;
-  final bool? showRemoteAVState;
-  final bool? showLocalAVState;
+  final bool? showAVState;
   final bool? showNumberOfUsers;
 
   const AgoraVideoViewer({
@@ -27,8 +26,7 @@ class AgoraVideoViewer extends StatefulWidget {
     this.floatingLayoutSubViewPadding,
     this.enableActiveSpeaker,
     this.disabledVideoWidget,
-    this.showRemoteAVState,
-    this.showLocalAVState,
+    this.showAVState = false,
     this.showNumberOfUsers,
   }) : super(key: key);
 
@@ -55,6 +53,18 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         child: widget.layoutType == Layout.floating
             ? FloatingLayout(
                 client: widget.client,
+                disabledVideoWidget: widget.disabledVideoWidget,
+                enableActiveSpeaker: widget.enableActiveSpeaker,
+                floatingLayoutContainerHeight:
+                    widget.floatingLayoutContainerHeight,
+                floatingLayoutContainerWidth:
+                    widget.floatingLayoutContainerWidth,
+                floatingLayoutMainViewPadding:
+                    widget.floatingLayoutMainViewPadding,
+                floatingLayoutSubViewPadding:
+                    widget.floatingLayoutSubViewPadding,
+                showAVState: widget.showAVState,
+                showNumberOfUsers: widget.showNumberOfUsers,
               )
             : GridLayout(
                 client: widget.client,
