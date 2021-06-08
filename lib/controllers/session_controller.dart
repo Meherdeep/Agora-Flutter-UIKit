@@ -12,16 +12,19 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   SessionController()
       : super(
           AgoraSettings(
-              engine: null,
-              users: [],
-              isLocalUserMuted: false,
-              isLocalVideoDisabled: false,
-              visible: true,
-              isButtonVisible: false,
-              clientRole: ClientRole.Broadcaster,
-              maxUid: 0,
-              localUid: 0,
-              generatedToken: null),
+            engine: null,
+            users: [],
+            mainAgoraUser: null,
+            isLocalUserMuted: false,
+            isLocalVideoDisabled: false,
+            visible: true,
+            isButtonVisible: false,
+            clientRole: ClientRole.Broadcaster,
+            maxUid: 0,
+            localUid: 0,
+            generatedToken: null,
+            isActiveSpeakerDisabled: false,
+          ),
         );
 
   void initializeEngine(
@@ -45,6 +48,14 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           print(info);
           value = value.copyWith(localUid: uid);
           value = value.copyWith(maxUid: uid);
+          value = value.copyWith(
+              mainAgoraUser: AgoraUser(
+            uid: uid,
+            remote: false,
+            muted: value.isLocalUserMuted,
+            videoDisabled: value.isLocalVideoDisabled,
+            clientRole: value.clientRole,
+          ));
         },
         leaveChannel: (stats) {
           clearUsers();
@@ -55,7 +66,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           addUser(
             callUser: AgoraUser(
               uid: uid,
-              remote: false,
+              remote: true,
               muted: false,
               videoDisabled: false,
               clientRole: ClientRole.Broadcaster,
@@ -106,12 +117,20 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             updateUserVideo(uid: value.localUid, videoDisabled: false);
           }
         },
+        activeSpeaker: (uid) {
+          if (!value.isActiveSpeakerDisabled!) {
+            final int index =
+                value.users.indexWhere((element) => element.uid == uid);
+            swapUser(index: index);
+          }
+        },
       ),
     );
   }
 
   void joinVideoChannel() async {
     await value.engine?.enableVideo();
+    await value.engine?.enableAudioVolumeIndication(200, 3, true);
     if (value.connectionData!.tokenUrl != null) {
       await getToken(
         tokenUrl: value.connectionData!.tokenUrl,
@@ -217,35 +236,33 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value = value.copyWith(users: tempList);
   }
 
-  void updateUserUid({required int oldUid, required newUid}) {
-    List<AgoraUser> tempList = value.users;
-    int indexOfUser = tempList.indexWhere((element) => element.uid == oldUid);
-    tempList[indexOfUser] = tempList[indexOfUser].copyWith(uid: newUid);
-    value = value.copyWith(users: tempList);
-  }
-
   Future<void> swapUser({required int index}) async {
-    final int oldMaxUid = value.maxUid;
     final int newMaxUid = value.users[index].uid;
+    final AgoraUser tempAgoraUser = value.mainAgoraUser!;
+    final int xyz =
+        value.users.indexWhere((element) => element.uid == newMaxUid);
+    value = value.copyWith(mainAgoraUser: value.users[xyz]);
+    addUser(callUser: tempAgoraUser);
     value = value.copyWith(maxUid: newMaxUid);
-    List<AgoraUser> tempList = <AgoraUser>[];
-    tempList = value.users;
-    for (int i = 0; i < tempList.length; i++) {
-      if (tempList[i].uid == newMaxUid) {
-        tempList.remove(tempList[i]);
-      }
-    }
-    value = value.copyWith(
-      users: [
-        ...tempList,
-        AgoraUser(
-            uid: oldMaxUid,
-            remote: oldMaxUid == value.localUid,
-            muted: false,
-            videoDisabled: false,
-            clientRole: ClientRole.Broadcaster),
-      ],
-    );
+    removeUser(uid: newMaxUid);
+    // List<AgoraUser> tempList = <AgoraUser>[];
+    // tempList = value.users;
+    // for (int i = 0; i < tempList.length; i++) {
+    //   if (tempList[i].uid == newMaxUid) {
+    //     tempList.remove(tempList[i]);
+    //   }
+    // }
+    // value = value.copyWith(
+    //   users: [
+    //     ...tempList,
+    //     AgoraUser(
+    //         uid: oldMaxUid,
+    //         remote: oldMaxUid == value.localUid,
+    //         muted: false,
+    //         videoDisabled: false,
+    //         clientRole: ClientRole.Broadcaster),
+    //   ],
+    // );
   }
 
   Future<void> getToken(

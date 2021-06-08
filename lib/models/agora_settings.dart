@@ -8,6 +8,7 @@ class AgoraSettings {
   final RtcEngine? engine;
   final AgoraConnectionData? connectionData;
   final List<AgoraUser> users;
+  final AgoraUser? mainAgoraUser;
   final bool isLocalUserMuted;
   final bool isLocalVideoDisabled;
   final bool visible;
@@ -16,11 +17,13 @@ class AgoraSettings {
   final int maxUid;
   final int localUid;
   String? generatedToken;
+  bool? isActiveSpeakerDisabled;
 
   AgoraSettings({
     this.engine,
     this.connectionData,
     required this.users,
+    required this.mainAgoraUser,
     required this.isLocalUserMuted,
     required this.isLocalVideoDisabled,
     required this.visible,
@@ -29,25 +32,28 @@ class AgoraSettings {
     required this.maxUid,
     required this.localUid,
     this.generatedToken,
+    this.isActiveSpeakerDisabled,
   });
 
-  AgoraSettings copyWith({
-    RtcEngine? engine,
-    AgoraConnectionData? connectionData,
-    List<AgoraUser>? users,
-    bool? isLocalUserMuted,
-    bool? isLocalVideoDisabled,
-    bool? visible,
-    bool? isButtonVisible,
-    ClientRole? clientRole,
-    int? maxUid,
-    int? localUid,
-    String? generatedToken,
-  }) {
+  AgoraSettings copyWith(
+      {RtcEngine? engine,
+      AgoraConnectionData? connectionData,
+      List<AgoraUser>? users,
+      AgoraUser? mainAgoraUser,
+      bool? isLocalUserMuted,
+      bool? isLocalVideoDisabled,
+      bool? visible,
+      bool? isButtonVisible,
+      ClientRole? clientRole,
+      int? maxUid,
+      int? localUid,
+      String? generatedToken,
+      bool? isActiveSpeakerDisabled}) {
     return AgoraSettings(
       engine: engine ?? this.engine,
       connectionData: connectionData ?? this.connectionData,
       users: users ?? this.users,
+      mainAgoraUser: mainAgoraUser ?? this.mainAgoraUser,
       isLocalUserMuted: isLocalUserMuted ?? this.isLocalUserMuted,
       isLocalVideoDisabled: isLocalVideoDisabled ?? this.isLocalVideoDisabled,
       visible: visible ?? this.visible,
@@ -56,6 +62,8 @@ class AgoraSettings {
       maxUid: maxUid ?? this.maxUid,
       localUid: localUid ?? this.localUid,
       generatedToken: generatedToken ?? this.generatedToken,
+      isActiveSpeakerDisabled:
+          isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
     );
   }
 }
