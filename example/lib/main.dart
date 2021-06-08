@@ -12,11 +12,16 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AgoraClient client = AgoraClient(
-    agoraConnectionData: AgoraConnectionData(appId: "<----App ID--->", channelName: "test"),
+    agoraConnectionData: AgoraConnectionData(
+        appId: "<--Add your app id here-->", channelName: "test"),
     enabledPermission: [
       Permission.camera,
       Permission.microphone,
     ],
+    agoraChannelData: AgoraChannelData(
+      channelProfile: ChannelProfile.LiveBroadcasting,
+      clientRole: ClientRole.Broadcaster,
+    ),
   );
 
   @override
@@ -34,6 +39,7 @@ class _MyAppState extends State<MyApp> {
               AgoraVideoViewer(
                 client: client,
                 layoutType: Layout.floating,
+                showAVState: true,
               ),
               AgoraVideoButtons(client: client),
             ],

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:agora_flutter_uikit/models/agora_channel_data.dart';
 import 'package:agora_flutter_uikit/models/agora_settings.dart';
 import 'package:agora_flutter_uikit/models/agora_user.dart';
 import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
@@ -126,6 +127,56 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         },
       ),
     );
+  }
+
+  void setChannelProperties(AgoraChannelData agoraChannelData) async {
+    await value.engine?.setChannelProfile(
+        agoraChannelData.channelProfile ?? ChannelProfile.Communication);
+
+    if (agoraChannelData.channelProfile == ChannelProfile.LiveBroadcasting) {
+      await value.engine?.setClientRole(
+          agoraChannelData.clientRole ?? ClientRole.Broadcaster);
+    } else {
+      print('You can only set channel profile in case of Live Broadcasting');
+    }
+
+    await value.engine?.muteAllRemoteVideoStreams(
+        agoraChannelData.muteAllRemoteVideoStreams ?? false);
+
+    await value.engine?.muteAllRemoteAudioStreams(
+        agoraChannelData.muteAllRemoteAudioStreams ?? false);
+
+    if (agoraChannelData.setBeautyEffectOptions != null) {
+      value.engine?.setBeautyEffectOptions(
+          true, agoraChannelData.setBeautyEffectOptions!);
+    }
+
+    await value.engine
+        ?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
+
+    if (agoraChannelData.localPublishFallbackOption != null) {
+      await value.engine?.setLocalPublishFallbackOption(
+          agoraChannelData.localPublishFallbackOption!);
+    }
+
+    if (agoraChannelData.remoteSubscribeFallbackOption != null) {
+      await value.engine?.setRemoteSubscribeFallbackOption(
+          agoraChannelData.remoteSubscribeFallbackOption!);
+    }
+
+    if (agoraChannelData.videoEncoderConfiguration != null) {
+      await value.engine?.setVideoEncoderConfiguration(
+          agoraChannelData.videoEncoderConfiguration!);
+    }
+
+    value.engine?.setCameraAutoFocusFaceModeEnabled(
+        agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
+
+    value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn ?? false);
+
+    await value.engine?.setAudioProfile(
+        agoraChannelData.audioProfile ?? AudioProfile.Default,
+        agoraChannelData.audioScenario ?? AudioScenario.Default);
   }
 
   void joinVideoChannel() async {
