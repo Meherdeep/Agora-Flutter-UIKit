@@ -1,5 +1,3 @@
-import 'package:agora_rtc_engine/rtc_engine.dart';
-
 class AgoraFunctions {
   Function userJoined;
   AgoraFunctions({
