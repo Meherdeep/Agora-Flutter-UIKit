@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:agora_flutter_uikit/controllers/session_controller.dart';
 import 'package:agora_flutter_uikit/models/agora_channel_data.dart';
 import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
-import 'package:agora_flutter_uikit/models/agora_functions.dart';
+import 'package:agora_flutter_uikit/models/agora_event_handlers.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -16,7 +16,8 @@ class AgoraClient {
   }
 
   Future<List<int>> get users async {
-    final List<int> version = _sessionController.value.users.map((e) => e.uid).toList();
+    final List<int> version =
+        _sessionController.value.users.map((e) => e.uid).toList();
     return version;
   }
 
@@ -30,13 +31,13 @@ class AgoraClient {
     required AgoraConnectionData agoraConnectionData,
     required List<Permission> enabledPermission,
     AgoraChannelData? agoraChannelData,
-    AgoraFunctions? agoraFunctions,
+    AgoraEventHandlers? agoraEventHandlers,
   }) {
     _initAgoraRtcEngine(
       agoraConnectionData: agoraConnectionData,
       enabledPermission: enabledPermission,
       agoraChannelData: agoraChannelData,
-      agoraFunctions: agoraFunctions,
+      agoraEventHandlers: agoraEventHandlers,
     );
     print('APP ID: $agoraConnectionData');
   }
@@ -45,7 +46,7 @@ class AgoraClient {
     required AgoraConnectionData agoraConnectionData,
     required List<Permission> enabledPermission,
     AgoraChannelData? agoraChannelData,
-    AgoraFunctions? agoraFunctions,
+    AgoraEventHandlers? agoraEventHandlers,
   }) async {
     try {
       _sessionController.initializeEngine(
@@ -57,7 +58,7 @@ class AgoraClient {
 
     await enabledPermission.request();
 
-    _sessionController.createEvents(agoraFunctions);
+    _sessionController.createEvents(agoraEventHandlers);
 
     if (agoraChannelData != null) {
       _sessionController.setChannelProperties(agoraChannelData);

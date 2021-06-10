@@ -1,5 +1,4 @@
 import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
-import 'package:agora_flutter_uikit/controllers/session_controller.dart';
 import 'package:flutter/material.dart';
 
 class AgoraVideoButtons extends StatefulWidget {

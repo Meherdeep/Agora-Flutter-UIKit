@@ -42,7 +42,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
       widget.client.sessionController.value = widget
           .client.sessionController.value
           .copyWith(isActiveSpeakerDisabled: true);
-    } else {}
+    }
   }
 
   @override

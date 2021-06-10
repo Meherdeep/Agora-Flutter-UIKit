@@ -13,7 +13,7 @@ Instantly integrate Agora video calling or video streaming into your Flutter app
   
 ### Installation
 
-To a Flutter application, add the `agora_flutter_uikit` as a dependency inside your `pubspec.yaml` file.
+To a Flutter application, add the `agora_uikit` as a dependency inside your `pubspec.yaml` file.
 
 In your Android level `build.gradle` add this at the end of the repositories:  
 
@@ -64,13 +64,13 @@ Your application can still run the voice call when it is switched to the backgro
 final AgoraClient client = AgoraClient(
   agoraConnectionData: AgoraConnectionData(
     appId: "<--Add Your App Id Here-->",
-      channelName: "test",
-    ),
-    enabledPermission: [
-      Permission.camera,
-      Permission.microphone,
-    ],
-  );
+    channelName: "test",
+  ),
+  enabledPermission: [
+    Permission.camera,
+    Permission.microphone,
+  ],
+);
 
 @override
 Widget build(BuildContext context) {
