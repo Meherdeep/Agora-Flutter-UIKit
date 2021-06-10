@@ -381,10 +381,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
     return ValueListenableBuilder(
       valueListenable: widget.client.sessionController,
       builder: (context, counter, widget) {
-        return GestureDetector(
-          child: Center(child: viewFloat()),
-          onTap: () {},
-        );
+        return Center(child: viewFloat());
       },
     );
   }

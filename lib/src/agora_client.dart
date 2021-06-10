@@ -4,7 +4,6 @@ import 'package:agora_flutter_uikit/controllers/session_controller.dart';
 import 'package:agora_flutter_uikit/models/agora_channel_data.dart';
 import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
 import 'package:agora_flutter_uikit/models/agora_functions.dart';
-import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
