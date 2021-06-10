@@ -44,7 +44,8 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         error: (code) {
           final info = 'onError: $code';
           print(info);
-          agoraEventHandlers?.onError!(code);
+          var onErrorFun = agoraEventHandlers?.onError;
+          if (onErrorFun != null) onErrorFun(code);
         },
         joinChannelSuccess: (channel, uid, elapsed) {
           final info = 'onJoinChannel: $channel, uid: $uid';
@@ -59,11 +60,15 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             videoDisabled: value.isLocalVideoDisabled,
             clientRole: value.clientRole,
           ));
-          agoraEventHandlers?.joinChannelSuccess!(channel, uid, elapsed);
+          var joinChannelSuccessFun = agoraEventHandlers?.joinChannelSuccess;
+          if (joinChannelSuccessFun != null) {
+            joinChannelSuccessFun(channel, uid, elapsed);
+          }
         },
         leaveChannel: (stats) {
           clearUsers();
-          agoraEventHandlers?.leaveChannel!(stats);
+          var leaveChannelFun = agoraEventHandlers?.leaveChannel;
+          if (leaveChannelFun != null) leaveChannelFun(stats);
         },
         userJoined: (uid, elapsed) {
           final info = 'userJoined: $uid';
@@ -77,14 +82,16 @@ class SessionController extends ValueNotifier<AgoraSettings> {
               clientRole: ClientRole.Broadcaster,
             ),
           );
-          agoraEventHandlers?.userJoined!(uid, elapsed);
+          var userJoinedFun = agoraEventHandlers?.userJoined;
+          if (userJoinedFun != null) userJoinedFun(uid, elapsed);
         },
         userOffline: (uid, reason) {
           final info = 'userOffline: $uid , reason: $reason';
           print(info);
           checkForMaxUser(uid: uid);
           removeUser(uid: uid);
-          agoraEventHandlers?.userOffline!(uid, reason);
+          var userOfflineFun = agoraEventHandlers?.userOffline;
+          if (userOfflineFun != null) userOfflineFun(uid, reason);
         },
         tokenPrivilegeWillExpire: (token) async {
           await getToken(
@@ -93,7 +100,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             uid: value.connectionData!.uid,
           );
           await value.engine?.renewToken(token);
-          agoraEventHandlers?.tokenPrivilegeWillExpire!(token);
+          var tokenPrivilegeWillExpireFun =
+              agoraEventHandlers?.tokenPrivilegeWillExpire;
+          if (tokenPrivilegeWillExpireFun != null) {
+            tokenPrivilegeWillExpireFun(token);
+          }
         },
         remoteVideoStateChanged: (uid, state, reason, elapsed) {
           if (state == VideoRemoteState.Stopped) {
@@ -102,8 +113,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
               reason == VideoRemoteStateReason.RemoteUnmuted) {
             updateUserVideo(uid: uid, videoDisabled: false);
           }
-          agoraEventHandlers?.remoteVideoStateChanged!(
-              uid, state, reason, elapsed);
+          var remoteVideoStateChangedFun =
+              agoraEventHandlers?.remoteVideoStateChanged;
+          if (remoteVideoStateChangedFun != null) {
+            remoteVideoStateChangedFun(uid, state, reason, elapsed);
+          }
         },
         remoteAudioStateChanged: (uid, state, reason, elapsed) {
           if (state == AudioRemoteState.Stopped) {
@@ -112,8 +126,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
               reason == AudioRemoteStateReason.RemoteUnmuted) {
             updateUserAudio(uid: uid, muted: false);
           }
-          agoraEventHandlers?.remoteAudioStateChanged!(
-              uid, state, reason, elapsed);
+          var remoteAudioStateChangedFun =
+              agoraEventHandlers?.remoteAudioStateChanged;
+          if (remoteAudioStateChangedFun != null) {
+            remoteAudioStateChangedFun(uid, state, reason, elapsed);
+          }
         },
         localAudioStateChanged: (state, error) {
           if (state == AudioLocalState.Stopped) {
@@ -121,7 +138,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           } else if (state == AudioLocalState.Recording) {
             updateUserAudio(uid: value.localUid, muted: false);
           }
-          agoraEventHandlers?.localAudioStateChanged!(state, error);
+          var localAudioStateChangedFun =
+              agoraEventHandlers?.localAudioStateChanged;
+          if (localAudioStateChangedFun != null) {
+            localAudioStateChangedFun(state, error);
+          }
         },
         localVideoStateChanged: (localVideoState, error) {
           if (localVideoState == LocalVideoStreamState.Stopped) {
@@ -129,7 +150,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           } else if (localVideoState == LocalVideoStreamState.Capturing) {
             updateUserVideo(uid: value.localUid, videoDisabled: false);
           }
-          agoraEventHandlers?.localVideoStateChanged!(localVideoState, error);
+          var localVideoStateChangedFun =
+              agoraEventHandlers?.localVideoStateChanged;
+          if (localVideoStateChangedFun != null) {
+            localVideoStateChangedFun(localVideoState, error);
+          }
         },
         activeSpeaker: (uid) {
           if (!value.isActiveSpeakerDisabled!) {
@@ -137,7 +162,8 @@ class SessionController extends ValueNotifier<AgoraSettings> {
                 value.users.indexWhere((element) => element.uid == uid);
             swapUser(index: index);
           }
-          agoraEventHandlers?.activeSpeaker!(uid);
+          var activeSpeakerFun = agoraEventHandlers?.activeSpeaker;
+          if (activeSpeakerFun != null) activeSpeakerFun(uid);
         },
       ),
     );

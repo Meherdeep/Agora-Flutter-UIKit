@@ -39,7 +39,6 @@ class AgoraClient {
       agoraChannelData: agoraChannelData,
       agoraEventHandlers: agoraEventHandlers,
     );
-    print('APP ID: $agoraConnectionData');
   }
 
   Future<void> _initAgoraRtcEngine({
