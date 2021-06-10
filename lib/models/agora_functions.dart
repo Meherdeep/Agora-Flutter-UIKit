@@ -1,11 +1,11 @@
 class AgoraFunctions {
-  Function userJoined;
+  Function(int, int) userJoined;
   AgoraFunctions({
     required this.userJoined,
   });
 
   AgoraFunctions copyWith({
-    Function? userJoined,
+    Function(int, int)? userJoined,
   }) {
     return AgoraFunctions(
       userJoined: userJoined ?? this.userJoined,

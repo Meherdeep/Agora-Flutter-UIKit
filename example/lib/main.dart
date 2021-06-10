@@ -22,8 +22,8 @@ class _MyAppState extends State<MyApp> {
         clientRole: ClientRole.Broadcaster,
       ),
       agoraFunctions: AgoraFunctions(
-        userJoined: () {
-          print("Custom code executed when user joins");
+        userJoined: (uid, elapsed) {
+          print("Custom code executed when user joins: " + uid.toString());
         },
       ));
 

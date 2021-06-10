@@ -63,7 +63,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           final info = 'userJoined: $uid';
           print(info);
 
-          agoraFunctions?.userJoined();
+          agoraFunctions?.userJoined(uid, elapsed);
 
           addUser(
             callUser: AgoraUser(
