@@ -12,17 +12,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final AgoraClient client = AgoraClient(
-    agoraConnectionData: AgoraConnectionData(
-        appId: "<--Add your app id here-->", channelName: "test"),
-    enabledPermission: [
-      Permission.camera,
-      Permission.microphone,
-    ],
-    agoraChannelData: AgoraChannelData(
-      channelProfile: ChannelProfile.LiveBroadcasting,
-      clientRole: ClientRole.Broadcaster,
-    ),
-  );
+      agoraConnectionData: AgoraConnectionData(appId: "<--Add your app id here-->", channelName: "test"),
+      enabledPermission: [
+        Permission.camera,
+        Permission.microphone,
+      ],
+      agoraChannelData: AgoraChannelData(
+        channelProfile: ChannelProfile.LiveBroadcasting,
+        clientRole: ClientRole.Broadcaster,
+      ),
+      agoraFunctions: AgoraFunctions(
+        userJoined: () {
+          print("Custom code executed when user joins");
+        },
+      ));
 
   @override
   Widget build(BuildContext context) {
