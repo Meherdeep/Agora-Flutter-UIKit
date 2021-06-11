@@ -1,4 +1,6 @@
 import 'package:agora_flutter_uikit/models/agora_user.dart';
+import 'package:agora_flutter_uikit/src/layout/widgets/disabled_video_widget.dart';
+import 'package:agora_flutter_uikit/src/layout/widgets/number_of_users.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
@@ -6,8 +8,16 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 
 class GridLayout extends StatefulWidget {
   final AgoraClient client;
+  final bool? showNumberOfUsers;
+  final Widget? disabledVideoWidget;
 
-  const GridLayout({Key? key, required this.client}) : super(key: key);
+  const GridLayout({
+    Key? key,
+    required this.client,
+    this.showNumberOfUsers,
+    this.disabledVideoWidget,
+  }) : super(key: key);
+
   @override
   _GridLayoutState createState() => _GridLayoutState();
 }
@@ -17,8 +27,12 @@ class _GridLayoutState extends State<GridLayout> {
     final List<StatefulWidget> list = [];
     list.add(rtc_local_view.SurfaceView());
 
-    widget.client.sessionController.value.users.forEach((AgoraUser user) =>
-        list.add(rtc_remote_view.SurfaceView(uid: user.uid)));
+    widget.client.sessionController.value.users.forEach((AgoraUser user) {
+      user.videoDisabled
+          ? list.add(DisabledVideoWidget())
+          : list.add(rtc_remote_view.SurfaceView(uid: user.uid));
+    });
+
     return list;
   }
 
@@ -95,8 +109,26 @@ class _GridLayoutState extends State<GridLayout> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: widget.client.sessionController,
-      builder: (context, counter, widget) {
-        return Center(child: viewGrid());
+      builder: (context, counter, widgetx) {
+        return Center(
+          child: Stack(
+            children: [
+              viewGrid(),
+              widget.showNumberOfUsers == null ||
+                      widget.showNumberOfUsers == false
+                  ? Container()
+                  : Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: NumberOfUsers(
+                          userCount: widget
+                              .client.sessionController.value.users.length,
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+        );
       },
     );
   }

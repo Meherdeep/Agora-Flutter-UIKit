@@ -59,7 +59,6 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
             ? FloatingLayout(
                 client: widget.client,
                 disabledVideoWidget: widget.disabledVideoWidget,
-                enableActiveSpeaker: widget.enableActiveSpeaker,
                 floatingLayoutContainerHeight:
                     widget.floatingLayoutContainerHeight,
                 floatingLayoutContainerWidth:
@@ -73,6 +72,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
               )
             : GridLayout(
                 client: widget.client,
+                showNumberOfUsers: widget.showNumberOfUsers,
               ),
       ),
       onTap: () {},

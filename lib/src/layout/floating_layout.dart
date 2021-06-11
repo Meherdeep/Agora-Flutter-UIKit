@@ -1,5 +1,6 @@
 import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
 import 'package:agora_flutter_uikit/src/layout/widgets/disabled_video_widget.dart';
+import 'package:agora_flutter_uikit/src/layout/widgets/number_of_users.dart';
 import 'package:agora_flutter_uikit/src/layout/widgets/user_av_state_widget.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ class FloatingLayout extends StatefulWidget {
   final double? floatingLayoutContainerWidth;
   final EdgeInsets? floatingLayoutMainViewPadding;
   final EdgeInsets? floatingLayoutSubViewPadding;
-  final bool? enableActiveSpeaker;
   final Widget? disabledVideoWidget;
   final bool? showAVState;
   final bool? showNumberOfUsers;
@@ -24,7 +24,6 @@ class FloatingLayout extends StatefulWidget {
     this.floatingLayoutContainerWidth,
     this.floatingLayoutMainViewPadding,
     this.floatingLayoutSubViewPadding,
-    this.enableActiveSpeaker,
     this.disabledVideoWidget,
     this.showAVState = false,
     this.showNumberOfUsers,
@@ -51,8 +50,6 @@ class _FloatingLayoutState extends State<FloatingLayout> {
   }
 
   Widget viewFloat() {
-    print(
-        "USERS LENGTH: ${widget.client.sessionController.value.users.length}");
     return widget.client.sessionController.value.users.isNotEmpty
         ? Column(
             children: [
@@ -380,8 +377,26 @@ class _FloatingLayoutState extends State<FloatingLayout> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: widget.client.sessionController,
-      builder: (context, counter, widget) {
-        return Center(child: viewFloat());
+      builder: (context, counter, widgetx) {
+        return Center(
+          child: Stack(
+            children: [
+              viewFloat(),
+              widget.showNumberOfUsers == null ||
+                      widget.showNumberOfUsers == false
+                  ? Container()
+                  : Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: NumberOfUsers(
+                          userCount: widget
+                              .client.sessionController.value.users.length,
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+        );
       },
     );
   }

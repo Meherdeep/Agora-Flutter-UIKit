@@ -24,10 +24,6 @@ class _MyAppState extends State<MyApp> {
       channelProfile: ChannelProfile.LiveBroadcasting,
       clientRole: ClientRole.Broadcaster,
     ),
-    agoraEventHandlers: AgoraEventHandlers(
-      userJoined: (uid, elapsed) => print("CUSTOM USER JOIN: $uid"),
-      userOffline: (uid, reason) => print("CUSTOM USER OFFLINE REASON $reason"),
-    ),
   );
 
   @override
@@ -44,10 +40,10 @@ class _MyAppState extends State<MyApp> {
             children: [
               AgoraVideoViewer(
                 client: client,
-                layoutType: Layout.floating,
-                showAVState: true,
               ),
-              AgoraVideoButtons(client: client),
+              AgoraVideoButtons(
+                client: client,
+              ),
             ],
           ),
         ),
