@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the createEvents method from the SessionController class, for the Dart programming language.">
+  <title>createEvents method - SessionController class - session_controller library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">agora_flutter_uikit</a></li>
+    <li><a href="../../controllers_session_controller/controllers_session_controller-library.html">session_controller</a></li>
+    <li><a href="../../controllers_session_controller/SessionController-class.html">SessionController</a></li>
+    <li class="self-crumb">createEvents method</li>
+  </ol>
+  <div class="self-name">createEvents</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">createEvents</span> method 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype">void</span>
+<span class="name ">createEvents</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="createEvents-param-agoraEventHandlers"><span class="type-annotation"><a href="../../models_agora_event_handlers/AgoraEventHandlers-class.html">AgoraEventHandlers</a>?</span> <span class="parameter-name">agoraEventHandlers</span></span></li>
+</ol>)
+
+      
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">void createEvents(AgoraEventHandlers? agoraEventHandlers) async {
+  value.engine?.setEventHandler(
+    RtcEngineEventHandler(
+      error: (code) {
+        final info = &#39;onError: $code&#39;;
+        print(info);
+        var onErrorFun = agoraEventHandlers?.onError;
+        if (onErrorFun != null) onErrorFun(code);
+      },
+      joinChannelSuccess: (channel, uid, elapsed) {
+        final info = &#39;onJoinChannel: $channel, uid: $uid&#39;;
+        print(info);
+        value = value.copyWith(localUid: uid);
+        value = value.copyWith(
+            mainAgoraUser: AgoraUser(
+          uid: uid,
+          remote: false,
+          muted: value.isLocalUserMuted,
+          videoDisabled: value.isLocalVideoDisabled,
+          clientRole: value.clientRole,
+        ));
+        var joinChannelSuccessFun = agoraEventHandlers?.joinChannelSuccess;
+        if (joinChannelSuccessFun != null) {
+          joinChannelSuccessFun(channel, uid, elapsed);
+        }
+      },
+      leaveChannel: (stats) {
+        _clearUsers();
+        var leaveChannelFun = agoraEventHandlers?.leaveChannel;
+        if (leaveChannelFun != null) leaveChannelFun(stats);
+      },
+      userJoined: (uid, elapsed) {
+        final info = &#39;userJoined: $uid&#39;;
+        print(info);
+        _addUser(
+          callUser: AgoraUser(
+            uid: uid,
+            remote: true,
+            muted: false,
+            videoDisabled: false,
+            clientRole: ClientRole.Broadcaster,
+          ),
+        );
+        var userJoinedFun = agoraEventHandlers?.userJoined;
+        if (userJoinedFun != null) userJoinedFun(uid, elapsed);
+      },
+      userOffline: (uid, reason) {
+        final info = &#39;userOffline: $uid , reason: $reason&#39;;
+        print(info);
+        _checkForMaxUser(uid: uid);
+        _removeUser(uid: uid);
+        var userOfflineFun = agoraEventHandlers?.userOffline;
+        if (userOfflineFun != null) userOfflineFun(uid, reason);
+      },
+      tokenPrivilegeWillExpire: (token) async {
+        await _getToken(
+          tokenUrl: value.connectionData!.tokenUrl,
+          channelName: value.connectionData!.channelName,
+          uid: value.connectionData!.uid,
+        );
+        await value.engine?.renewToken(token);
+        var tokenPrivilegeWillExpireFun =
+            agoraEventHandlers?.tokenPrivilegeWillExpire;
+        if (tokenPrivilegeWillExpireFun != null) {
+          tokenPrivilegeWillExpireFun(token);
+        }
+      },
+      remoteVideoStateChanged: (uid, state, reason, elapsed) {
+        if (state == VideoRemoteState.Stopped) {
+          _updateUserVideo(uid: uid, videoDisabled: true);
+        } else if (state == VideoRemoteState.Decoding &amp;&amp;
+            reason == VideoRemoteStateReason.RemoteUnmuted) {
+          _updateUserVideo(uid: uid, videoDisabled: false);
+        }
+        var remoteVideoStateChangedFun =
+            agoraEventHandlers?.remoteVideoStateChanged;
+        if (remoteVideoStateChangedFun != null) {
+          remoteVideoStateChangedFun(uid, state, reason, elapsed);
+        }
+      },
+      remoteAudioStateChanged: (uid, state, reason, elapsed) {
+        if (state == AudioRemoteState.Stopped) {
+          _updateUserAudio(uid: uid, muted: true);
+        } else if (state == AudioRemoteState.Decoding &amp;&amp;
+            reason == AudioRemoteStateReason.RemoteUnmuted) {
+          _updateUserAudio(uid: uid, muted: false);
+        }
+        var remoteAudioStateChangedFun =
+            agoraEventHandlers?.remoteAudioStateChanged;
+        if (remoteAudioStateChangedFun != null) {
+          remoteAudioStateChangedFun(uid, state, reason, elapsed);
+        }
+      },
+      localAudioStateChanged: (state, error) {
+        if (state == AudioLocalState.Stopped) {
+          _updateUserAudio(uid: value.localUid, muted: true);
+        } else if (state == AudioLocalState.Recording) {
+          _updateUserAudio(uid: value.localUid, muted: false);
+        }
+        var localAudioStateChangedFun =
+            agoraEventHandlers?.localAudioStateChanged;
+        if (localAudioStateChangedFun != null) {
+          localAudioStateChangedFun(state, error);
+        }
+      },
+      localVideoStateChanged: (localVideoState, error) {
+        if (localVideoState == LocalVideoStreamState.Stopped) {
+          _updateUserVideo(uid: value.localUid, videoDisabled: true);
+        } else if (localVideoState == LocalVideoStreamState.Capturing) {
+          _updateUserVideo(uid: value.localUid, videoDisabled: false);
+        }
+        var localVideoStateChangedFun =
+            agoraEventHandlers?.localVideoStateChanged;
+        if (localVideoStateChangedFun != null) {
+          localVideoStateChangedFun(localVideoState, error);
+        }
+      },
+      activeSpeaker: (uid) {
+        if (!value.isActiveSpeakerDisabled!) {
+          final int index =
+              value.users.indexWhere((element) =&gt; element.uid == uid);
+          swapUser(index: index);
+        }
+        var activeSpeakerFun = agoraEventHandlers?.activeSpeaker;
+        if (activeSpeakerFun != null) activeSpeakerFun(uid);
+      },
+    ),
+  );
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">agora_flutter_uikit</a></li>
+  <li><a href="../../controllers_session_controller/controllers_session_controller-library.html">session_controller</a></li>
+  <li><a href="../../controllers_session_controller/SessionController-class.html">SessionController</a></li>
+  <li class="self-crumb">createEvents method</li>
+</ol>
+
+
+    <h5>SessionController class</h5>
+    <ol>
+
+    <li class="section-title"><a href="../../controllers_session_controller/SessionController-class.html#constructors">Constructors</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/SessionController.html">SessionController</a></li>
+
+
+    <li class="section-title">
+      <a href="../../controllers_session_controller/SessionController-class.html#instance-properties">Properties</a>
+    </li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/hasListeners.html">hasListeners</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/timer.html">timer</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ValueNotifier/value.html">value</a></li>
+
+    <li class="section-title"><a href="../../controllers_session_controller/SessionController-class.html#instance-methods">Methods</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/addListener.html">addListener</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/createEvents.html">createEvents</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/dispose.html">dispose</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/endCall.html">endCall</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/initializeEngine.html">initializeEngine</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/joinVideoChannel.html">joinVideoChannel</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/notifyListeners.html">notifyListeners</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/removeListener.html">removeListener</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/setChannelProperties.html">setChannelProperties</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/swapUser.html">swapUser</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/switchCamera.html">switchCamera</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/toggleCamera.html">toggleCamera</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/toggleMute.html">toggleMute</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/toggleVisible.html">toggleVisible</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ValueNotifier/toString.html">toString</a></li>
+
+    <li class="section-title inherited"><a href="../../controllers_session_controller/SessionController-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    agora_flutter_uikit
+      0.0.1
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/script.js?v1"></script>
+
+
+
+</body>
+
+</html>
+
