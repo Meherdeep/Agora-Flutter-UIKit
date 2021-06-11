@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Displays the number of users present inside the channel.
 class NumberOfUsers extends StatefulWidget {
   final int userCount;
 

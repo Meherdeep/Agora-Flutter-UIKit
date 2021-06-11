@@ -1,5 +1,7 @@
+import 'package:agora_flutter_uikit/src/enums.dart';
 import 'package:flutter/material.dart';
 
+/// Displays the camera and microphone state of local and remote user. Currently, this mode is only available in the [Layout.floating].
 class UserAVStateWidget extends StatefulWidget {
   final bool videoDisabled;
   final bool muted;

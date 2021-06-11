@@ -8,7 +8,11 @@ import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 
 class GridLayout extends StatefulWidget {
   final AgoraClient client;
+
+  /// Display the total number of users in a channel.
   final bool? showNumberOfUsers;
+
+  /// Widget that will be displayed when the local or remote user has disabled it's video.
   final Widget? disabledVideoWidget;
 
   const GridLayout({
@@ -25,13 +29,15 @@ class GridLayout extends StatefulWidget {
 class _GridLayoutState extends State<GridLayout> {
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    list.add(rtc_local_view.SurfaceView());
+    list.add(rtc_local_view.SurfaceView(
+      zOrderMediaOverlay: true,
+    ));
 
-    widget.client.sessionController.value.users.forEach((AgoraUser user) {
+    for (AgoraUser user in widget.client.sessionController.value.users) {
       user.videoDisabled
           ? list.add(DisabledVideoWidget())
           : list.add(rtc_remote_view.SurfaceView(uid: user.uid));
-    });
+    }
 
     return list;
   }
@@ -50,9 +56,8 @@ class _GridLayoutState extends State<GridLayout> {
     );
   }
 
-  Widget viewGrid() {
+  Widget _viewGrid() {
     final views = _getRenderViews();
-    print("VIEWS LENGTH = ${views.length}");
     if (views.isEmpty) {
       return Expanded(
         child: Container(
@@ -113,7 +118,7 @@ class _GridLayoutState extends State<GridLayout> {
         return Center(
           child: Stack(
             children: [
-              viewGrid(),
+              _viewGrid(),
               widget.showNumberOfUsers == null ||
                       widget.showNumberOfUsers == false
                   ? Container()

@@ -4,9 +4,11 @@ import 'package:agora_flutter_uikit/controllers/session_controller.dart';
 import 'package:agora_flutter_uikit/models/agora_channel_data.dart';
 import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
 import 'package:agora_flutter_uikit/models/agora_event_handlers.dart';
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+/// [AgoraClient] is the main class in this UIKit. It is used to initialize our [RtcEngine], add the list of user permissions, define the channel properties and use extend the [RtcEngineEventHandler] class.
 class AgoraClient {
   static const MethodChannel _channel = MethodChannel('agora_flutter_uikit');
 

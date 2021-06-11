@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:agora_flutter_uikit/models/agora_channel_data.dart';
@@ -34,9 +35,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           ),
         );
 
-  void initializeEngine({required AgoraConnectionData agoraConnectionData}) async {
+  void initializeEngine(
+      {required AgoraConnectionData agoraConnectionData}) async {
     value = value.copyWith(
-        engine: await RtcEngine.createWithConfig(RtcEngineConfig(agoraConnectionData.appId, areaCode: agoraConnectionData.areaCode)),
+        engine: await RtcEngine.createWithConfig(RtcEngineConfig(
+            agoraConnectionData.appId,
+            areaCode: agoraConnectionData.areaCode)),
         connectionData: agoraConnectionData);
   }
 
@@ -67,14 +71,14 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           }
         },
         leaveChannel: (stats) {
-          clearUsers();
+          _clearUsers();
           var leaveChannelFun = agoraEventHandlers?.leaveChannel;
           if (leaveChannelFun != null) leaveChannelFun(stats);
         },
         userJoined: (uid, elapsed) {
           final info = 'userJoined: $uid';
           print(info);
-          addUser(
+          _addUser(
             callUser: AgoraUser(
               uid: uid,
               remote: true,
@@ -89,70 +93,78 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         userOffline: (uid, reason) {
           final info = 'userOffline: $uid , reason: $reason';
           print(info);
-          checkForMaxUser(uid: uid);
-          removeUser(uid: uid);
+          _checkForMaxUser(uid: uid);
+          _removeUser(uid: uid);
           var userOfflineFun = agoraEventHandlers?.userOffline;
           if (userOfflineFun != null) userOfflineFun(uid, reason);
         },
         tokenPrivilegeWillExpire: (token) async {
-          await getToken(
+          await _getToken(
             tokenUrl: value.connectionData!.tokenUrl,
             channelName: value.connectionData!.channelName,
             uid: value.connectionData!.uid,
           );
           await value.engine?.renewToken(token);
-          var tokenPrivilegeWillExpireFun = agoraEventHandlers?.tokenPrivilegeWillExpire;
+          var tokenPrivilegeWillExpireFun =
+              agoraEventHandlers?.tokenPrivilegeWillExpire;
           if (tokenPrivilegeWillExpireFun != null) {
             tokenPrivilegeWillExpireFun(token);
           }
         },
         remoteVideoStateChanged: (uid, state, reason, elapsed) {
           if (state == VideoRemoteState.Stopped) {
-            updateUserVideo(uid: uid, videoDisabled: true);
-          } else if (state == VideoRemoteState.Decoding && reason == VideoRemoteStateReason.RemoteUnmuted) {
-            updateUserVideo(uid: uid, videoDisabled: false);
+            _updateUserVideo(uid: uid, videoDisabled: true);
+          } else if (state == VideoRemoteState.Decoding &&
+              reason == VideoRemoteStateReason.RemoteUnmuted) {
+            _updateUserVideo(uid: uid, videoDisabled: false);
           }
-          var remoteVideoStateChangedFun = agoraEventHandlers?.remoteVideoStateChanged;
+          var remoteVideoStateChangedFun =
+              agoraEventHandlers?.remoteVideoStateChanged;
           if (remoteVideoStateChangedFun != null) {
             remoteVideoStateChangedFun(uid, state, reason, elapsed);
           }
         },
         remoteAudioStateChanged: (uid, state, reason, elapsed) {
           if (state == AudioRemoteState.Stopped) {
-            updateUserAudio(uid: uid, muted: true);
-          } else if (state == AudioRemoteState.Decoding && reason == AudioRemoteStateReason.RemoteUnmuted) {
-            updateUserAudio(uid: uid, muted: false);
+            _updateUserAudio(uid: uid, muted: true);
+          } else if (state == AudioRemoteState.Decoding &&
+              reason == AudioRemoteStateReason.RemoteUnmuted) {
+            _updateUserAudio(uid: uid, muted: false);
           }
-          var remoteAudioStateChangedFun = agoraEventHandlers?.remoteAudioStateChanged;
+          var remoteAudioStateChangedFun =
+              agoraEventHandlers?.remoteAudioStateChanged;
           if (remoteAudioStateChangedFun != null) {
             remoteAudioStateChangedFun(uid, state, reason, elapsed);
           }
         },
         localAudioStateChanged: (state, error) {
           if (state == AudioLocalState.Stopped) {
-            updateUserAudio(uid: value.localUid, muted: true);
+            _updateUserAudio(uid: value.localUid, muted: true);
           } else if (state == AudioLocalState.Recording) {
-            updateUserAudio(uid: value.localUid, muted: false);
+            _updateUserAudio(uid: value.localUid, muted: false);
           }
-          var localAudioStateChangedFun = agoraEventHandlers?.localAudioStateChanged;
+          var localAudioStateChangedFun =
+              agoraEventHandlers?.localAudioStateChanged;
           if (localAudioStateChangedFun != null) {
             localAudioStateChangedFun(state, error);
           }
         },
         localVideoStateChanged: (localVideoState, error) {
           if (localVideoState == LocalVideoStreamState.Stopped) {
-            updateUserVideo(uid: value.localUid, videoDisabled: true);
+            _updateUserVideo(uid: value.localUid, videoDisabled: true);
           } else if (localVideoState == LocalVideoStreamState.Capturing) {
-            updateUserVideo(uid: value.localUid, videoDisabled: false);
+            _updateUserVideo(uid: value.localUid, videoDisabled: false);
           }
-          var localVideoStateChangedFun = agoraEventHandlers?.localVideoStateChanged;
+          var localVideoStateChangedFun =
+              agoraEventHandlers?.localVideoStateChanged;
           if (localVideoStateChangedFun != null) {
             localVideoStateChangedFun(localVideoState, error);
           }
         },
         activeSpeaker: (uid) {
           if (!value.isActiveSpeakerDisabled!) {
-            final int index = value.users.indexWhere((element) => element.uid == uid);
+            final int index =
+                value.users.indexWhere((element) => element.uid == uid);
             swapUser(index: index);
           }
           var activeSpeakerFun = agoraEventHandlers?.activeSpeaker;
@@ -162,50 +174,62 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     );
   }
 
+  /// Function to set all the channel properties.
   void setChannelProperties(AgoraChannelData agoraChannelData) async {
-    await value.engine?.setChannelProfile(agoraChannelData.channelProfile ?? ChannelProfile.Communication);
+    await value.engine?.setChannelProfile(
+        agoraChannelData.channelProfile ?? ChannelProfile.Communication);
 
     if (agoraChannelData.channelProfile == ChannelProfile.LiveBroadcasting) {
-      await value.engine?.setClientRole(agoraChannelData.clientRole ?? ClientRole.Broadcaster);
+      await value.engine?.setClientRole(
+          agoraChannelData.clientRole ?? ClientRole.Broadcaster);
     } else {
       print('You can only set channel profile in case of Live Broadcasting');
     }
 
-    await value.engine?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams ?? false);
+    await value.engine?.muteAllRemoteVideoStreams(
+        agoraChannelData.muteAllRemoteVideoStreams ?? false);
 
-    await value.engine?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams ?? false);
+    await value.engine?.muteAllRemoteAudioStreams(
+        agoraChannelData.muteAllRemoteAudioStreams ?? false);
 
     if (agoraChannelData.setBeautyEffectOptions != null) {
-      value.engine?.setBeautyEffectOptions(true, agoraChannelData.setBeautyEffectOptions!);
+      value.engine?.setBeautyEffectOptions(
+          true, agoraChannelData.setBeautyEffectOptions!);
     }
 
-    await value.engine?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
+    await value.engine
+        ?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
 
     if (agoraChannelData.localPublishFallbackOption != null) {
-      await value.engine?.setLocalPublishFallbackOption(agoraChannelData.localPublishFallbackOption!);
+      await value.engine?.setLocalPublishFallbackOption(
+          agoraChannelData.localPublishFallbackOption!);
     }
 
     if (agoraChannelData.remoteSubscribeFallbackOption != null) {
-      await value.engine?.setRemoteSubscribeFallbackOption(agoraChannelData.remoteSubscribeFallbackOption!);
+      await value.engine?.setRemoteSubscribeFallbackOption(
+          agoraChannelData.remoteSubscribeFallbackOption!);
     }
 
     if (agoraChannelData.videoEncoderConfiguration != null) {
-      await value.engine?.setVideoEncoderConfiguration(agoraChannelData.videoEncoderConfiguration!);
+      await value.engine?.setVideoEncoderConfiguration(
+          agoraChannelData.videoEncoderConfiguration!);
     }
 
-    value.engine?.setCameraAutoFocusFaceModeEnabled(agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
+    value.engine?.setCameraAutoFocusFaceModeEnabled(
+        agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
 
     value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn ?? false);
 
-    await value.engine
-        ?.setAudioProfile(agoraChannelData.audioProfile ?? AudioProfile.Default, agoraChannelData.audioScenario ?? AudioScenario.Default);
+    await value.engine?.setAudioProfile(
+        agoraChannelData.audioProfile ?? AudioProfile.Default,
+        agoraChannelData.audioScenario ?? AudioScenario.Default);
   }
 
   void joinVideoChannel() async {
     await value.engine?.enableVideo();
     await value.engine?.enableAudioVolumeIndication(200, 3, true);
     if (value.connectionData!.tokenUrl != null) {
-      await getToken(
+      await _getToken(
         tokenUrl: value.connectionData!.tokenUrl,
         channelName: value.connectionData!.channelName,
         uid: value.connectionData!.uid,
@@ -219,15 +243,15 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     );
   }
 
-  void addUser({required AgoraUser callUser}) {
+  void _addUser({required AgoraUser callUser}) {
     value = value.copyWith(users: [...value.users, callUser]);
   }
 
-  void clearUsers() {
+  void _clearUsers() {
     value = value.copyWith(users: []);
   }
 
-  void removeUser({required int uid}) {
+  void _removeUser({required int uid}) {
     List<AgoraUser> tempList = <AgoraUser>[];
     tempList = value.users;
     for (int i = 0; i < tempList.length; i++) {
@@ -238,6 +262,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value = value.copyWith(users: tempList);
   }
 
+  /// Function to mute/unmute the microphone
   void toggleMute() async {
     var status = await Permission.microphone.status;
     if (value.isLocalUserMuted && status.isDenied) {
@@ -247,6 +272,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value.engine?.muteLocalAudioStream(value.isLocalUserMuted);
   }
 
+  /// Function to toggle enable/disable the camera
   void toggleCamera() async {
     var status = await Permission.camera.status;
     if (value.isLocalVideoDisabled && status.isDenied) {
@@ -256,6 +282,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value.engine?.muteLocalVideoStream(value.isLocalVideoDisabled);
   }
 
+  /// Function to switch between front and rear camera
   void switchCamera() async {
     var status = await Permission.camera.status;
     if (status.isDenied) {
@@ -267,27 +294,26 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   void endCall() {
     value.engine?.leaveChannel();
     value.engine?.destroy();
-    dispose();
+    // dispose();
   }
 
-  void toggleVisible() {
-    value = value.copyWith(visible: !(value.visible));
-  }
+  Timer? timer;
 
-  void toggleIsButtonVisible({int? autoHideButtonTime}) {
-    if (value.isButtonVisible) {
-      toggleVisible();
-      Future.delayed(
-        Duration(seconds: autoHideButtonTime ?? 5),
-        () {
-          toggleVisible();
-          value = value.copyWith(isButtonVisible: !(value.isButtonVisible));
-        },
-      );
+  /// Function to auto hide the button class.
+  void toggleVisible({int? autoHideButtonTime}) async {
+    if (!(value.visible)) {
+      value = value.copyWith(visible: !(value.visible));
+      timer = Timer(Duration(seconds: autoHideButtonTime ?? 5), () {
+        if (!(value.visible)) return;
+        value = value.copyWith(visible: !(value.visible));
+      });
+    } else {
+      timer?.cancel();
+      value = value.copyWith(visible: !(value.visible));
     }
   }
 
-  void checkForMaxUser({int? uid}) {
+  void _checkForMaxUser({int? uid}) {
     if (uid == value.mainAgoraUser.uid) {
       value = value.copyWith(
         mainAgoraUser: AgoraUser(
@@ -299,10 +325,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         ),
       );
     }
-    removeUser(uid: value.localUid);
+    _removeUser(uid: value.localUid);
   }
 
-  void updateUserVideo({required int uid, required bool videoDisabled}) {
+  void _updateUserVideo({required int uid, required bool videoDisabled}) {
     // if local user updates video
     if (uid == value.mainAgoraUser.uid) {
       value = value.copyWith(isLocalVideoDisabled: videoDisabled);
@@ -311,12 +337,13 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       List<AgoraUser> tempList = value.users;
       int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
       if (indexOfUser == -1) return; //this means user is no longer in the call
-      tempList[indexOfUser] = tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
+      tempList[indexOfUser] =
+          tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
       value = value.copyWith(users: tempList);
     }
   }
 
-  void updateUserAudio({required int uid, required bool muted}) {
+  void _updateUserAudio({required int uid, required bool muted}) {
     // if local user updates audio
     if (uid == value.mainAgoraUser.uid) {
       value = value.copyWith(isLocalUserMuted: muted);
@@ -330,12 +357,14 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     }
   }
 
+  /// Function to swap [AgoraUser] in the floating layout.
   Future<void> swapUser({required int index}) async {
     final int newMaxUid = value.users[index].uid;
     final AgoraUser tempAgoraUser = value.mainAgoraUser;
-    final int xyz = value.users.indexWhere((element) => element.uid == newMaxUid);
+    final int xyz =
+        value.users.indexWhere((element) => element.uid == newMaxUid);
     value = value.copyWith(mainAgoraUser: value.users[xyz]);
-    addUser(callUser: tempAgoraUser);
+    _addUser(callUser: tempAgoraUser);
     value = value.copyWith(
       mainAgoraUser: AgoraUser(
         uid: newMaxUid,
@@ -345,16 +374,17 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         clientRole: ClientRole.Broadcaster,
       ),
     );
-    removeUser(uid: newMaxUid);
+    _removeUser(uid: newMaxUid);
   }
 
-  Future<void> getToken({String? tokenUrl, String? channelName, int? uid}) async {
+  Future<void> _getToken(
+      {String? tokenUrl, String? channelName, int? uid}) async {
     uid = uid ?? 0;
-    final response = await http.get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
+    final response = await http
+        .get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
     if (response.statusCode == 200) {
-      print("TOKEN BODY " + response.body);
-      value = value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
-      print('Token : ${value.connectionData!.tempToken}');
+      value =
+          value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
     } else {
       print(response.reasonPhrase);
       print('Failed to generate the token : ${response.statusCode}');

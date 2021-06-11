@@ -1,5 +1,6 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
+/// Data class of a user present in a channel.
 class AgoraUser {
   int uid;
   final bool remote;
