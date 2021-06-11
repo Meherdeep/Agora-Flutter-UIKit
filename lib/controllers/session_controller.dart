@@ -16,25 +16,27 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           AgoraSettings(
             engine: null,
             users: [],
-            mainAgoraUser: null,
+            mainAgoraUser: AgoraUser(
+              uid: 0,
+              remote: true,
+              muted: false,
+              videoDisabled: false,
+              clientRole: ClientRole.Broadcaster,
+            ),
             isLocalUserMuted: false,
             isLocalVideoDisabled: false,
             visible: true,
             isButtonVisible: false,
             clientRole: ClientRole.Broadcaster,
-            maxUid: 0,
             localUid: 0,
             generatedToken: null,
             isActiveSpeakerDisabled: false,
           ),
         );
 
-  void initializeEngine(
-      {required AgoraConnectionData agoraConnectionData}) async {
+  void initializeEngine({required AgoraConnectionData agoraConnectionData}) async {
     value = value.copyWith(
-        engine: await RtcEngine.createWithConfig(RtcEngineConfig(
-            agoraConnectionData.appId,
-            areaCode: agoraConnectionData.areaCode)),
+        engine: await RtcEngine.createWithConfig(RtcEngineConfig(agoraConnectionData.appId, areaCode: agoraConnectionData.areaCode)),
         connectionData: agoraConnectionData);
   }
 
@@ -51,7 +53,6 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           final info = 'onJoinChannel: $channel, uid: $uid';
           print(info);
           value = value.copyWith(localUid: uid);
-          value = value.copyWith(maxUid: uid);
           value = value.copyWith(
               mainAgoraUser: AgoraUser(
             uid: uid,
@@ -100,8 +101,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             uid: value.connectionData!.uid,
           );
           await value.engine?.renewToken(token);
-          var tokenPrivilegeWillExpireFun =
-              agoraEventHandlers?.tokenPrivilegeWillExpire;
+          var tokenPrivilegeWillExpireFun = agoraEventHandlers?.tokenPrivilegeWillExpire;
           if (tokenPrivilegeWillExpireFun != null) {
             tokenPrivilegeWillExpireFun(token);
           }
@@ -109,12 +109,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         remoteVideoStateChanged: (uid, state, reason, elapsed) {
           if (state == VideoRemoteState.Stopped) {
             updateUserVideo(uid: uid, videoDisabled: true);
-          } else if (state == VideoRemoteState.Decoding &&
-              reason == VideoRemoteStateReason.RemoteUnmuted) {
+          } else if (state == VideoRemoteState.Decoding && reason == VideoRemoteStateReason.RemoteUnmuted) {
             updateUserVideo(uid: uid, videoDisabled: false);
           }
-          var remoteVideoStateChangedFun =
-              agoraEventHandlers?.remoteVideoStateChanged;
+          var remoteVideoStateChangedFun = agoraEventHandlers?.remoteVideoStateChanged;
           if (remoteVideoStateChangedFun != null) {
             remoteVideoStateChangedFun(uid, state, reason, elapsed);
           }
@@ -122,12 +120,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         remoteAudioStateChanged: (uid, state, reason, elapsed) {
           if (state == AudioRemoteState.Stopped) {
             updateUserAudio(uid: uid, muted: true);
-          } else if (state == AudioRemoteState.Decoding &&
-              reason == AudioRemoteStateReason.RemoteUnmuted) {
+          } else if (state == AudioRemoteState.Decoding && reason == AudioRemoteStateReason.RemoteUnmuted) {
             updateUserAudio(uid: uid, muted: false);
           }
-          var remoteAudioStateChangedFun =
-              agoraEventHandlers?.remoteAudioStateChanged;
+          var remoteAudioStateChangedFun = agoraEventHandlers?.remoteAudioStateChanged;
           if (remoteAudioStateChangedFun != null) {
             remoteAudioStateChangedFun(uid, state, reason, elapsed);
           }
@@ -138,8 +134,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           } else if (state == AudioLocalState.Recording) {
             updateUserAudio(uid: value.localUid, muted: false);
           }
-          var localAudioStateChangedFun =
-              agoraEventHandlers?.localAudioStateChanged;
+          var localAudioStateChangedFun = agoraEventHandlers?.localAudioStateChanged;
           if (localAudioStateChangedFun != null) {
             localAudioStateChangedFun(state, error);
           }
@@ -150,16 +145,14 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           } else if (localVideoState == LocalVideoStreamState.Capturing) {
             updateUserVideo(uid: value.localUid, videoDisabled: false);
           }
-          var localVideoStateChangedFun =
-              agoraEventHandlers?.localVideoStateChanged;
+          var localVideoStateChangedFun = agoraEventHandlers?.localVideoStateChanged;
           if (localVideoStateChangedFun != null) {
             localVideoStateChangedFun(localVideoState, error);
           }
         },
         activeSpeaker: (uid) {
           if (!value.isActiveSpeakerDisabled!) {
-            final int index =
-                value.users.indexWhere((element) => element.uid == uid);
+            final int index = value.users.indexWhere((element) => element.uid == uid);
             swapUser(index: index);
           }
           var activeSpeakerFun = agoraEventHandlers?.activeSpeaker;
@@ -170,53 +163,42 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   void setChannelProperties(AgoraChannelData agoraChannelData) async {
-    await value.engine?.setChannelProfile(
-        agoraChannelData.channelProfile ?? ChannelProfile.Communication);
+    await value.engine?.setChannelProfile(agoraChannelData.channelProfile ?? ChannelProfile.Communication);
 
     if (agoraChannelData.channelProfile == ChannelProfile.LiveBroadcasting) {
-      await value.engine?.setClientRole(
-          agoraChannelData.clientRole ?? ClientRole.Broadcaster);
+      await value.engine?.setClientRole(agoraChannelData.clientRole ?? ClientRole.Broadcaster);
     } else {
       print('You can only set channel profile in case of Live Broadcasting');
     }
 
-    await value.engine?.muteAllRemoteVideoStreams(
-        agoraChannelData.muteAllRemoteVideoStreams ?? false);
+    await value.engine?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams ?? false);
 
-    await value.engine?.muteAllRemoteAudioStreams(
-        agoraChannelData.muteAllRemoteAudioStreams ?? false);
+    await value.engine?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams ?? false);
 
     if (agoraChannelData.setBeautyEffectOptions != null) {
-      value.engine?.setBeautyEffectOptions(
-          true, agoraChannelData.setBeautyEffectOptions!);
+      value.engine?.setBeautyEffectOptions(true, agoraChannelData.setBeautyEffectOptions!);
     }
 
-    await value.engine
-        ?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
+    await value.engine?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
 
     if (agoraChannelData.localPublishFallbackOption != null) {
-      await value.engine?.setLocalPublishFallbackOption(
-          agoraChannelData.localPublishFallbackOption!);
+      await value.engine?.setLocalPublishFallbackOption(agoraChannelData.localPublishFallbackOption!);
     }
 
     if (agoraChannelData.remoteSubscribeFallbackOption != null) {
-      await value.engine?.setRemoteSubscribeFallbackOption(
-          agoraChannelData.remoteSubscribeFallbackOption!);
+      await value.engine?.setRemoteSubscribeFallbackOption(agoraChannelData.remoteSubscribeFallbackOption!);
     }
 
     if (agoraChannelData.videoEncoderConfiguration != null) {
-      await value.engine?.setVideoEncoderConfiguration(
-          agoraChannelData.videoEncoderConfiguration!);
+      await value.engine?.setVideoEncoderConfiguration(agoraChannelData.videoEncoderConfiguration!);
     }
 
-    value.engine?.setCameraAutoFocusFaceModeEnabled(
-        agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
+    value.engine?.setCameraAutoFocusFaceModeEnabled(agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
 
     value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn ?? false);
 
-    await value.engine?.setAudioProfile(
-        agoraChannelData.audioProfile ?? AudioProfile.Default,
-        agoraChannelData.audioScenario ?? AudioScenario.Default);
+    await value.engine
+        ?.setAudioProfile(agoraChannelData.audioProfile ?? AudioProfile.Default, agoraChannelData.audioScenario ?? AudioScenario.Default);
   }
 
   void joinVideoChannel() async {
@@ -306,47 +288,72 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   void checkForMaxUser({int? uid}) {
-    if (uid == value.maxUid) {
-      value = value.copyWith(maxUid: value.localUid);
+    if (uid == value.mainAgoraUser.uid) {
+      value = value.copyWith(
+        mainAgoraUser: AgoraUser(
+          uid: value.localUid,
+          remote: false,
+          muted: value.isLocalUserMuted,
+          videoDisabled: value.isLocalVideoDisabled,
+          clientRole: ClientRole.Broadcaster,
+        ),
+      );
     }
     removeUser(uid: value.localUid);
   }
 
   void updateUserVideo({required int uid, required bool videoDisabled}) {
-    List<AgoraUser> tempList = value.users;
-    int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
-    tempList[indexOfUser] =
-        tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
-    value = value.copyWith(users: tempList);
+    // if local user updates video
+    if (uid == value.mainAgoraUser.uid) {
+      value = value.copyWith(isLocalVideoDisabled: videoDisabled);
+      // if remote user updates video
+    } else {
+      List<AgoraUser> tempList = value.users;
+      int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
+      if (indexOfUser == -1) return; //this means user is no longer in the call
+      tempList[indexOfUser] = tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
+      value = value.copyWith(users: tempList);
+    }
   }
 
   void updateUserAudio({required int uid, required bool muted}) {
-    List<AgoraUser> tempList = value.users;
-    int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
-    tempList[indexOfUser] = tempList[indexOfUser].copyWith(muted: muted);
-    value = value.copyWith(users: tempList);
+    // if local user updates audio
+    if (uid == value.mainAgoraUser.uid) {
+      value = value.copyWith(isLocalUserMuted: muted);
+      // if remote user updates audio
+    } else {
+      List<AgoraUser> tempList = value.users;
+      int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
+      if (indexOfUser == -1) return; //this means user is no longer in the call
+      tempList[indexOfUser] = tempList[indexOfUser].copyWith(muted: muted);
+      value = value.copyWith(users: tempList);
+    }
   }
 
   Future<void> swapUser({required int index}) async {
     final int newMaxUid = value.users[index].uid;
-    final AgoraUser tempAgoraUser = value.mainAgoraUser!;
-    final int xyz =
-        value.users.indexWhere((element) => element.uid == newMaxUid);
+    final AgoraUser tempAgoraUser = value.mainAgoraUser;
+    final int xyz = value.users.indexWhere((element) => element.uid == newMaxUid);
     value = value.copyWith(mainAgoraUser: value.users[xyz]);
     addUser(callUser: tempAgoraUser);
-    value = value.copyWith(maxUid: newMaxUid);
+    value = value.copyWith(
+      mainAgoraUser: AgoraUser(
+        uid: newMaxUid,
+        remote: true,
+        muted: false,
+        videoDisabled: false,
+        clientRole: ClientRole.Broadcaster,
+      ),
+    );
     removeUser(uid: newMaxUid);
   }
 
-  Future<void> getToken(
-      {String? tokenUrl, String? channelName, int? uid}) async {
+  Future<void> getToken({String? tokenUrl, String? channelName, int? uid}) async {
     uid = uid ?? 0;
-    final response = await http
-        .get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
+    final response = await http.get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
     if (response.statusCode == 200) {
       print("TOKEN BODY " + response.body);
-      value =
-          value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
+      value = value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
       print('Token : ${value.connectionData!.tempToken}');
     } else {
       print(response.reasonPhrase);

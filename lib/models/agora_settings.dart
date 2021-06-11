@@ -8,13 +8,12 @@ class AgoraSettings {
   final RtcEngine? engine;
   final AgoraConnectionData? connectionData;
   final List<AgoraUser> users;
-  final AgoraUser? mainAgoraUser;
+  final AgoraUser mainAgoraUser;
   final bool isLocalUserMuted;
   final bool isLocalVideoDisabled;
   final bool visible;
   final bool isButtonVisible;
   final ClientRole clientRole;
-  final int maxUid;
   final int localUid;
   String? generatedToken;
   bool? isActiveSpeakerDisabled;
@@ -29,26 +28,25 @@ class AgoraSettings {
     required this.visible,
     required this.isButtonVisible,
     required this.clientRole,
-    required this.maxUid,
     required this.localUid,
     this.generatedToken,
     this.isActiveSpeakerDisabled,
   });
 
-  AgoraSettings copyWith(
-      {RtcEngine? engine,
-      AgoraConnectionData? connectionData,
-      List<AgoraUser>? users,
-      AgoraUser? mainAgoraUser,
-      bool? isLocalUserMuted,
-      bool? isLocalVideoDisabled,
-      bool? visible,
-      bool? isButtonVisible,
-      ClientRole? clientRole,
-      int? maxUid,
-      int? localUid,
-      String? generatedToken,
-      bool? isActiveSpeakerDisabled}) {
+  AgoraSettings copyWith({
+    RtcEngine? engine,
+    AgoraConnectionData? connectionData,
+    List<AgoraUser>? users,
+    AgoraUser? mainAgoraUser,
+    bool? isLocalUserMuted,
+    bool? isLocalVideoDisabled,
+    bool? visible,
+    bool? isButtonVisible,
+    ClientRole? clientRole,
+    int? localUid,
+    String? generatedToken,
+    bool? isActiveSpeakerDisabled,
+  }) {
     return AgoraSettings(
       engine: engine ?? this.engine,
       connectionData: connectionData ?? this.connectionData,
@@ -59,11 +57,9 @@ class AgoraSettings {
       visible: visible ?? this.visible,
       isButtonVisible: isButtonVisible ?? this.isButtonVisible,
       clientRole: clientRole ?? this.clientRole,
-      maxUid: maxUid ?? this.maxUid,
       localUid: localUid ?? this.localUid,
       generatedToken: generatedToken ?? this.generatedToken,
-      isActiveSpeakerDisabled:
-          isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
+      isActiveSpeakerDisabled: isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
     );
   }
 }
