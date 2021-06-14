@@ -40,16 +40,9 @@ class _MyAppState extends State<MyApp> {
             children: [
               AgoraVideoViewer(
                 client: client,
-                layoutType: Layout.floating,
-                showAVState: true,
-                enableActiveSpeaker: false,
               ),
-              Positioned.fill(
-                child: Align(
-                  child: AgoraVideoButtons(
-                    client: client,
-                  ),
-                ),
+              AgoraVideoButtons(
+                client: client,
               ),
             ],
           ),

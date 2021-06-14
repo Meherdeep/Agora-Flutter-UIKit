@@ -57,9 +57,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   @override
   void initState() {
     super.initState();
-    widget.client.sessionController.initializeActiveSpeaker(
-      enabled: !(widget.enableActiveSpeaker!),
-    );
+    widget.client.sessionController
+        .initializeActiveSpeaker(enabled: widget.enableActiveSpeaker ?? true);
   }
 
   @override

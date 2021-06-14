@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
-set(BINARY_NAME "agora_uikit")
-set(APPLICATION_ID "io.agora.agora_uikit")
+set(BINARY_NAME "Agora UIKit")
+set(APPLICATION_ID "io.agora.agora_uikit_example")
 
 cmake_policy(SET CMP0063 NEW)
 

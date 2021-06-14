@@ -16,7 +16,7 @@ class AgoraSettings {
   final ClientRole clientRole;
   final int localUid;
   String? generatedToken;
-  bool? isActiveSpeakerDisabled;
+  final bool isActiveSpeakerDisabled;
 
   AgoraSettings({
     this.engine,
@@ -30,7 +30,7 @@ class AgoraSettings {
     required this.clientRole,
     required this.localUid,
     this.generatedToken,
-    this.isActiveSpeakerDisabled,
+    this.isActiveSpeakerDisabled = false,
   });
 
   AgoraSettings copyWith({

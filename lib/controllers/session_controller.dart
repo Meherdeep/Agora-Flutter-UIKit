@@ -165,10 +165,12 @@ class SessionController extends ValueNotifier<AgoraSettings> {
         activeSpeaker: (uid) {
           final String info = "Active speaker: $uid";
           print(info);
-          if (!(value.isActiveSpeakerDisabled!)) {
+          if (value.isActiveSpeakerDisabled == false) {
             final int index =
                 value.users.indexWhere((element) => element.uid == uid);
             swapUser(index: index);
+          } else {
+            print("Active speaker is disabled");
           }
           var activeSpeakerFun = agoraEventHandlers?.activeSpeaker;
           if (activeSpeakerFun != null) activeSpeakerFun(uid);
@@ -266,7 +268,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   void initializeActiveSpeaker({required bool enabled}) {
-    value = value.copyWith(isActiveSpeakerDisabled: enabled);
+    value = value.copyWith(isActiveSpeakerDisabled: !enabled);
   }
 
   /// Function to mute/unmute the microphone
