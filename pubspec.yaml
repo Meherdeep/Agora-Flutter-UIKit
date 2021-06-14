@@ -1,4 +1,4 @@
-name: agora_flutter_uikit
+name: agora_uikit
 description: A new flutter plugin project.
 version: 0.0.1
 homepage: null
@@ -30,10 +30,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: io.agora.agora_flutter_uikit
-        pluginClass: AgoraFlutterUikitPlugin
+        package: io.agora.agora_uikit
+        pluginClass: AgoraUikitPlugin
       ios:
-        pluginClass: AgoraFlutterUikitPlugin
+        pluginClass: AgoraUikitPlugin
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

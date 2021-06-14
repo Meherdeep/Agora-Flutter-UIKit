@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:agora_flutter_uikit/models/agora_channel_data.dart';
-import 'package:agora_flutter_uikit/models/agora_settings.dart';
-import 'package:agora_flutter_uikit/models/agora_user.dart';
-import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
-import 'package:agora_flutter_uikit/models/agora_event_handlers.dart';
+import 'package:agora_uikit/models/agora_channel_data.dart';
+import 'package:agora_uikit/models/agora_settings.dart';
+import 'package:agora_uikit/models/agora_user.dart';
+import 'package:agora_uikit/models/agora_connection_data.dart';
+import 'package:agora_uikit/models/agora_event_handlers.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -81,10 +81,6 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           _addUser(
             callUser: AgoraUser(
               uid: uid,
-              remote: true,
-              muted: false,
-              videoDisabled: false,
-              clientRole: ClientRole.Broadcaster,
             ),
           );
           var userJoinedFun = agoraEventHandlers?.userJoined;
@@ -112,11 +108,16 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           }
         },
         remoteVideoStateChanged: (uid, state, reason, elapsed) {
-          if (state == VideoRemoteState.Stopped) {
-            _updateUserVideo(uid: uid, videoDisabled: true);
-          } else if (state == VideoRemoteState.Decoding &&
-              reason == VideoRemoteStateReason.RemoteUnmuted) {
-            _updateUserVideo(uid: uid, videoDisabled: false);
+          final String info =
+              "Remote video state changed for $uid, state: $state and reason: $reason";
+          print(info);
+          if (uid != value.localUid) {
+            if (state == VideoRemoteState.Stopped) {
+              _updateUserVideo(uid: uid, videoDisabled: true);
+            } else if (state == VideoRemoteState.Decoding &&
+                reason == VideoRemoteStateReason.RemoteUnmuted) {
+              _updateUserVideo(uid: uid, videoDisabled: false);
+            }
           }
           var remoteVideoStateChangedFun =
               agoraEventHandlers?.remoteVideoStateChanged;
@@ -125,7 +126,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           }
         },
         remoteAudioStateChanged: (uid, state, reason, elapsed) {
-          if (state == AudioRemoteState.Stopped) {
+          final String info =
+              "Remote audio state changed for $uid, state: $state and reason: $reason";
+          print(info);
+          if (state == AudioRemoteState.Stopped &&
+              reason == AudioRemoteStateReason.RemoteMuted) {
             _updateUserAudio(uid: uid, muted: true);
           } else if (state == AudioRemoteState.Decoding &&
               reason == AudioRemoteStateReason.RemoteUnmuted) {
@@ -138,11 +143,9 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           }
         },
         localAudioStateChanged: (state, error) {
-          if (state == AudioLocalState.Stopped) {
-            _updateUserAudio(uid: value.localUid, muted: true);
-          } else if (state == AudioLocalState.Recording) {
-            _updateUserAudio(uid: value.localUid, muted: false);
-          }
+          final String info =
+              "Local audio state changed state: $state and error: $error";
+          print(info);
           var localAudioStateChangedFun =
               agoraEventHandlers?.localAudioStateChanged;
           if (localAudioStateChangedFun != null) {
@@ -150,11 +153,9 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           }
         },
         localVideoStateChanged: (localVideoState, error) {
-          if (localVideoState == LocalVideoStreamState.Stopped) {
-            _updateUserVideo(uid: value.localUid, videoDisabled: true);
-          } else if (localVideoState == LocalVideoStreamState.Capturing) {
-            _updateUserVideo(uid: value.localUid, videoDisabled: false);
-          }
+          final String info =
+              "Local audio state changed state: $localVideoState and error: $error";
+          print(info);
           var localVideoStateChangedFun =
               agoraEventHandlers?.localVideoStateChanged;
           if (localVideoStateChangedFun != null) {
@@ -162,7 +163,9 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           }
         },
         activeSpeaker: (uid) {
-          if (!value.isActiveSpeakerDisabled!) {
+          final String info = "Active speaker: $uid";
+          print(info);
+          if (!(value.isActiveSpeakerDisabled!)) {
             final int index =
                 value.users.indexWhere((element) => element.uid == uid);
             swapUser(index: index);
@@ -262,6 +265,10 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     value = value.copyWith(users: tempList);
   }
 
+  void initializeActiveSpeaker({required bool enabled}) {
+    value = value.copyWith(isActiveSpeakerDisabled: enabled);
+  }
+
   /// Function to mute/unmute the microphone
   void toggleMute() async {
     var status = await Permission.microphone.status;
@@ -330,7 +337,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   void _updateUserVideo({required int uid, required bool videoDisabled}) {
     // if local user updates video
-    if (uid == value.mainAgoraUser.uid) {
+    if (uid == value.localUid) {
       value = value.copyWith(isLocalVideoDisabled: videoDisabled);
       // if remote user updates video
     } else {
@@ -345,7 +352,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   void _updateUserAudio({required int uid, required bool muted}) {
     // if local user updates audio
-    if (uid == value.mainAgoraUser.uid) {
+    if (uid == value.localUid) {
       value = value.copyWith(isLocalUserMuted: muted);
       // if remote user updates audio
     } else {
@@ -359,22 +366,11 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   /// Function to swap [AgoraUser] in the floating layout.
   Future<void> swapUser({required int index}) async {
-    final int newMaxUid = value.users[index].uid;
+    final AgoraUser newUser = value.users[index];
     final AgoraUser tempAgoraUser = value.mainAgoraUser;
-    final int xyz =
-        value.users.indexWhere((element) => element.uid == newMaxUid);
-    value = value.copyWith(mainAgoraUser: value.users[xyz]);
+    value = value.copyWith(mainAgoraUser: newUser);
     _addUser(callUser: tempAgoraUser);
-    value = value.copyWith(
-      mainAgoraUser: AgoraUser(
-        uid: newMaxUid,
-        remote: true,
-        muted: false,
-        videoDisabled: false,
-        clientRole: ClientRole.Broadcaster,
-      ),
-    );
-    _removeUser(uid: newMaxUid);
+    _removeUser(uid: newUser.uid);
   }
 
   Future<void> _getToken(

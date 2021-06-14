@@ -1,10 +1,10 @@
 import Flutter
 import UIKit
 
-public class SwiftAgoraFlutterUikitPlugin: NSObject, FlutterPlugin {
+public class SwiftAgoraUikitPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "agora_flutter_uikit", binaryMessenger: registrar.messenger())
-    let instance = SwiftAgoraFlutterUikitPlugin()
+    let channel = FlutterMethodChannel(name: "agora_uikit", binaryMessenger: registrar.messenger())
+    let instance = SwiftAgoraUikitPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
 

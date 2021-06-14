@@ -1,6 +1,6 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
-import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
+import 'package:agora_uikit/models/agora_connection_data.dart';
 
 import 'agora_user.dart';
 

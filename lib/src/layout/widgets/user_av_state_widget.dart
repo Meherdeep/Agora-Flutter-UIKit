@@ -1,4 +1,4 @@
-import 'package:agora_flutter_uikit/src/enums.dart';
+import 'package:agora_uikit/src/enums.dart';
 import 'package:flutter/material.dart';
 
 /// Displays the camera and microphone state of local and remote user. Currently, this mode is only available in the [Layout.floating].

@@ -1,9 +1,9 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
+import 'package:agora_uikit/agora_uikit.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('agora_flutter_uikit');
+  const MethodChannel channel = MethodChannel('agora_uikit');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 

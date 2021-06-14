@@ -1,6 +1,6 @@
-import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
-import 'package:agora_flutter_uikit/src/layout/floating_layout.dart';
-import 'package:agora_flutter_uikit/src/layout/grid_layout.dart';
+import 'package:agora_uikit/agora_uikit.dart';
+import 'package:agora_uikit/src/layout/floating_layout.dart';
+import 'package:agora_uikit/src/layout/grid_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -57,11 +57,9 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
   @override
   void initState() {
     super.initState();
-    if (widget.enableActiveSpeaker == false) {
-      widget.client.sessionController.value = widget
-          .client.sessionController.value
-          .copyWith(isActiveSpeakerDisabled: true);
-    }
+    widget.client.sessionController.initializeActiveSpeaker(
+      enabled: !(widget.enableActiveSpeaker!),
+    );
   }
 
   @override
