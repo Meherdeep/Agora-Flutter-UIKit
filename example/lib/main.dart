@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:agora_flutter_uikit/agora_flutter_uikit.dart';
+import 'package:agora_uikit/agora_uikit.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Agora Flutter UIKit'),
+          title: const Text('Agora UIKit'),
           centerTitle: true,
         ),
         body: SafeArea(
@@ -40,9 +40,16 @@ class _MyAppState extends State<MyApp> {
             children: [
               AgoraVideoViewer(
                 client: client,
+                layoutType: Layout.floating,
+                showAVState: true,
+                enableActiveSpeaker: false,
               ),
-              AgoraVideoButtons(
-                client: client,
+              Positioned.fill(
+                child: Align(
+                  child: AgoraVideoButtons(
+                    client: client,
+                  ),
+                ),
               ),
             ],
           ),
