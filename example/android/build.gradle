@@ -15,14 +15,13 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://www.jitpack.io' }
     }
 }
 
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 
