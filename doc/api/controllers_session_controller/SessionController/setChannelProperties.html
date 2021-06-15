@@ -29,7 +29,7 @@
 <header id="title">
   <button id="sidenav-left-toggle" type="button">&nbsp;</button>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
-    <li><a href="../../index.html">agora_flutter_uikit</a></li>
+    <li><a href="../../index.html">agora_uikit</a></li>
     <li><a href="../../controllers_session_controller/controllers_session_controller-library.html">session_controller</a></li>
     <li><a href="../../controllers_session_controller/SessionController-class.html">SessionController</a></li>
     <li class="self-crumb">setChannelProperties method</li>
@@ -69,53 +69,44 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void setChannelProperties(AgoraChannelData agoraChannelData) async {
-  await value.engine?.setChannelProfile(
-      agoraChannelData.channelProfile ?? ChannelProfile.Communication);
+  await value.engine?.setChannelProfile(agoraChannelData.channelProfile ?? ChannelProfile.Communication);
 
   if (agoraChannelData.channelProfile == ChannelProfile.LiveBroadcasting) {
-    await value.engine?.setClientRole(
-        agoraChannelData.clientRole ?? ClientRole.Broadcaster);
+    await value.engine?.setClientRole(agoraChannelData.clientRole ?? ClientRole.Broadcaster);
   } else {
     print(&#39;You can only set channel profile in case of Live Broadcasting&#39;);
   }
 
-  await value.engine?.muteAllRemoteVideoStreams(
-      agoraChannelData.muteAllRemoteVideoStreams ?? false);
+  value = value.copyWith(isActiveSpeakerDisabled: agoraChannelData.isActiveSpeakerDisabled);
 
-  await value.engine?.muteAllRemoteAudioStreams(
-      agoraChannelData.muteAllRemoteAudioStreams ?? false);
+  await value.engine?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams ?? false);
+
+  await value.engine?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams ?? false);
 
   if (agoraChannelData.setBeautyEffectOptions != null) {
-    value.engine?.setBeautyEffectOptions(
-        true, agoraChannelData.setBeautyEffectOptions!);
+    value.engine?.setBeautyEffectOptions(true, agoraChannelData.setBeautyEffectOptions!);
   }
 
-  await value.engine
-      ?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
+  await value.engine?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
 
   if (agoraChannelData.localPublishFallbackOption != null) {
-    await value.engine?.setLocalPublishFallbackOption(
-        agoraChannelData.localPublishFallbackOption!);
+    await value.engine?.setLocalPublishFallbackOption(agoraChannelData.localPublishFallbackOption!);
   }
 
   if (agoraChannelData.remoteSubscribeFallbackOption != null) {
-    await value.engine?.setRemoteSubscribeFallbackOption(
-        agoraChannelData.remoteSubscribeFallbackOption!);
+    await value.engine?.setRemoteSubscribeFallbackOption(agoraChannelData.remoteSubscribeFallbackOption!);
   }
 
   if (agoraChannelData.videoEncoderConfiguration != null) {
-    await value.engine?.setVideoEncoderConfiguration(
-        agoraChannelData.videoEncoderConfiguration!);
+    await value.engine?.setVideoEncoderConfiguration(agoraChannelData.videoEncoderConfiguration!);
   }
 
-  value.engine?.setCameraAutoFocusFaceModeEnabled(
-      agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
+  value.engine?.setCameraAutoFocusFaceModeEnabled(agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
 
   value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn ?? false);
 
-  await value.engine?.setAudioProfile(
-      agoraChannelData.audioProfile ?? AudioProfile.Default,
-      agoraChannelData.audioScenario ?? AudioScenario.Default);
+  await value.engine
+      ?.setAudioProfile(agoraChannelData.audioProfile ?? AudioProfile.Default, agoraChannelData.audioScenario ?? AudioScenario.Default);
 }</code></pre>
 </section>
 
@@ -130,7 +121,7 @@
 </header>
 
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li><a href="../../index.html">agora_flutter_uikit</a></li>
+  <li><a href="../../index.html">agora_uikit</a></li>
   <li><a href="../../controllers_session_controller/controllers_session_controller-library.html">session_controller</a></li>
   <li><a href="../../controllers_session_controller/SessionController-class.html">SessionController</a></li>
   <li class="self-crumb">setChannelProperties method</li>
@@ -188,7 +179,7 @@
 
 <footer>
   <span class="no-break">
-    agora_flutter_uikit
+    agora_uikit
       0.0.1
   </span>
 

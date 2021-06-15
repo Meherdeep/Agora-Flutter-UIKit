@@ -29,7 +29,7 @@
 <header id="title">
   <button id="sidenav-left-toggle" type="button">&nbsp;</button>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
-    <li><a href="../../index.html">agora_flutter_uikit</a></li>
+    <li><a href="../../index.html">agora_uikit</a></li>
     <li><a href="../../controllers_session_controller/controllers_session_controller-library.html">session_controller</a></li>
     <li><a href="../../controllers_session_controller/SessionController-class.html">SessionController</a></li>
     <li class="self-crumb">createEvents method</li>
@@ -79,13 +79,14 @@
         print(info);
         value = value.copyWith(localUid: uid);
         value = value.copyWith(
-            mainAgoraUser: AgoraUser(
-          uid: uid,
-          remote: false,
-          muted: value.isLocalUserMuted,
-          videoDisabled: value.isLocalVideoDisabled,
-          clientRole: value.clientRole,
-        ));
+          mainAgoraUser: AgoraUser(
+            uid: uid,
+            remote: false,
+            muted: value.isLocalUserMuted,
+            videoDisabled: value.isLocalVideoDisabled,
+            clientRole: value.clientRole,
+          ),
+        );
         var joinChannelSuccessFun = agoraEventHandlers?.joinChannelSuccess;
         if (joinChannelSuccessFun != null) {
           joinChannelSuccessFun(channel, uid, elapsed);
@@ -102,10 +103,6 @@
         _addUser(
           callUser: AgoraUser(
             uid: uid,
-            remote: true,
-            muted: false,
-            videoDisabled: false,
-            clientRole: ClientRole.Broadcaster,
           ),
         );
         var userJoinedFun = agoraEventHandlers?.userJoined;
@@ -126,67 +123,63 @@
           uid: value.connectionData!.uid,
         );
         await value.engine?.renewToken(token);
-        var tokenPrivilegeWillExpireFun =
-            agoraEventHandlers?.tokenPrivilegeWillExpire;
+        var tokenPrivilegeWillExpireFun = agoraEventHandlers?.tokenPrivilegeWillExpire;
         if (tokenPrivilegeWillExpireFun != null) {
           tokenPrivilegeWillExpireFun(token);
         }
       },
       remoteVideoStateChanged: (uid, state, reason, elapsed) {
-        if (state == VideoRemoteState.Stopped) {
-          _updateUserVideo(uid: uid, videoDisabled: true);
-        } else if (state == VideoRemoteState.Decoding &amp;&amp;
-            reason == VideoRemoteStateReason.RemoteUnmuted) {
-          _updateUserVideo(uid: uid, videoDisabled: false);
+        final String info = &quot;Remote video state changed for $uid, state: $state and reason: $reason&quot;;
+        print(info);
+        if (uid != value.localUid) {
+          if (state == VideoRemoteState.Stopped) {
+            _updateUserVideo(uid: uid, videoDisabled: true);
+          } else if (state == VideoRemoteState.Decoding &amp;&amp; reason == VideoRemoteStateReason.RemoteUnmuted) {
+            _updateUserVideo(uid: uid, videoDisabled: false);
+          }
         }
-        var remoteVideoStateChangedFun =
-            agoraEventHandlers?.remoteVideoStateChanged;
+        var remoteVideoStateChangedFun = agoraEventHandlers?.remoteVideoStateChanged;
         if (remoteVideoStateChangedFun != null) {
           remoteVideoStateChangedFun(uid, state, reason, elapsed);
         }
       },
       remoteAudioStateChanged: (uid, state, reason, elapsed) {
-        if (state == AudioRemoteState.Stopped) {
+        final String info = &quot;Remote audio state changed for $uid, state: $state and reason: $reason&quot;;
+        print(info);
+        if (state == AudioRemoteState.Stopped &amp;&amp; reason == AudioRemoteStateReason.RemoteMuted) {
           _updateUserAudio(uid: uid, muted: true);
-        } else if (state == AudioRemoteState.Decoding &amp;&amp;
-            reason == AudioRemoteStateReason.RemoteUnmuted) {
+        } else if (state == AudioRemoteState.Decoding &amp;&amp; reason == AudioRemoteStateReason.RemoteUnmuted) {
           _updateUserAudio(uid: uid, muted: false);
         }
-        var remoteAudioStateChangedFun =
-            agoraEventHandlers?.remoteAudioStateChanged;
+        var remoteAudioStateChangedFun = agoraEventHandlers?.remoteAudioStateChanged;
         if (remoteAudioStateChangedFun != null) {
           remoteAudioStateChangedFun(uid, state, reason, elapsed);
         }
       },
       localAudioStateChanged: (state, error) {
-        if (state == AudioLocalState.Stopped) {
-          _updateUserAudio(uid: value.localUid, muted: true);
-        } else if (state == AudioLocalState.Recording) {
-          _updateUserAudio(uid: value.localUid, muted: false);
-        }
-        var localAudioStateChangedFun =
-            agoraEventHandlers?.localAudioStateChanged;
+        final String info = &quot;Local audio state changed state: $state and error: $error&quot;;
+        print(info);
+        var localAudioStateChangedFun = agoraEventHandlers?.localAudioStateChanged;
         if (localAudioStateChangedFun != null) {
           localAudioStateChangedFun(state, error);
         }
       },
       localVideoStateChanged: (localVideoState, error) {
-        if (localVideoState == LocalVideoStreamState.Stopped) {
-          _updateUserVideo(uid: value.localUid, videoDisabled: true);
-        } else if (localVideoState == LocalVideoStreamState.Capturing) {
-          _updateUserVideo(uid: value.localUid, videoDisabled: false);
-        }
-        var localVideoStateChangedFun =
-            agoraEventHandlers?.localVideoStateChanged;
+        final String info = &quot;Local audio state changed state: $localVideoState and error: $error&quot;;
+        print(info);
+        var localVideoStateChangedFun = agoraEventHandlers?.localVideoStateChanged;
         if (localVideoStateChangedFun != null) {
           localVideoStateChangedFun(localVideoState, error);
         }
       },
       activeSpeaker: (uid) {
-        if (!value.isActiveSpeakerDisabled!) {
-          final int index =
-              value.users.indexWhere((element) =&gt; element.uid == uid);
+        final String info = &quot;Active speaker: $uid&quot;;
+        print(info);
+        if (value.isActiveSpeakerDisabled == false) {
+          final int index = value.users.indexWhere((element) =&gt; element.uid == uid);
           swapUser(index: index);
+        } else {
+          print(&quot;Active speaker is disabled&quot;);
         }
         var activeSpeakerFun = agoraEventHandlers?.activeSpeaker;
         if (activeSpeakerFun != null) activeSpeakerFun(uid);
@@ -207,7 +200,7 @@
 </header>
 
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li><a href="../../index.html">agora_flutter_uikit</a></li>
+  <li><a href="../../index.html">agora_uikit</a></li>
   <li><a href="../../controllers_session_controller/controllers_session_controller-library.html">session_controller</a></li>
   <li><a href="../../controllers_session_controller/SessionController-class.html">SessionController</a></li>
   <li class="self-crumb">createEvents method</li>
@@ -265,7 +258,7 @@
 
 <footer>
   <span class="no-break">
-    agora_flutter_uikit
+    agora_uikit
       0.0.1
   </span>
 
