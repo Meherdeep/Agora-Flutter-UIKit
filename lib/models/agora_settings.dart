@@ -1,6 +1,6 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 
-import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
+import 'package:agora_uikit/models/agora_connection_data.dart';
 
 import 'agora_user.dart';
 
@@ -12,11 +12,10 @@ class AgoraSettings {
   final bool isLocalUserMuted;
   final bool isLocalVideoDisabled;
   final bool visible;
-  final bool isButtonVisible;
   final ClientRole clientRole;
   final int localUid;
   String? generatedToken;
-  bool? isActiveSpeakerDisabled;
+  final bool isActiveSpeakerDisabled;
 
   AgoraSettings({
     this.engine,
@@ -26,11 +25,10 @@ class AgoraSettings {
     required this.isLocalUserMuted,
     required this.isLocalVideoDisabled,
     required this.visible,
-    required this.isButtonVisible,
     required this.clientRole,
     required this.localUid,
     this.generatedToken,
-    this.isActiveSpeakerDisabled,
+    this.isActiveSpeakerDisabled = false,
   });
 
   AgoraSettings copyWith({
@@ -41,7 +39,6 @@ class AgoraSettings {
     bool? isLocalUserMuted,
     bool? isLocalVideoDisabled,
     bool? visible,
-    bool? isButtonVisible,
     ClientRole? clientRole,
     int? localUid,
     String? generatedToken,
@@ -55,12 +52,10 @@ class AgoraSettings {
       isLocalUserMuted: isLocalUserMuted ?? this.isLocalUserMuted,
       isLocalVideoDisabled: isLocalVideoDisabled ?? this.isLocalVideoDisabled,
       visible: visible ?? this.visible,
-      isButtonVisible: isButtonVisible ?? this.isButtonVisible,
       clientRole: clientRole ?? this.clientRole,
       localUid: localUid ?? this.localUid,
       generatedToken: generatedToken ?? this.generatedToken,
-      isActiveSpeakerDisabled:
-          isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
+      isActiveSpeakerDisabled: isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
     );
   }
 }

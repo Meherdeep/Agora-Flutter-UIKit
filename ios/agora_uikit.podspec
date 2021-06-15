@@ -3,7 +3,7 @@
 # Run `pod lib lint agora_flutter_uikit.podspec` to validate before publishing.
 #
 Pod::Spec.new do |s|
-  s.name             = 'agora_flutter_uikit'
+  s.name             = 'agora_uikit'
   s.version          = '0.0.1'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC

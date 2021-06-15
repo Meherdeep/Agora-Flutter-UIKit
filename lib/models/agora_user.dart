@@ -10,10 +10,10 @@ class AgoraUser {
 
   AgoraUser({
     required this.uid,
-    required this.remote,
-    required this.muted,
-    required this.videoDisabled,
-    required this.clientRole,
+    this.remote = true,
+    this.muted = false,
+    this.videoDisabled = false,
+    this.clientRole = ClientRole.Broadcaster,
   });
 
   AgoraUser copyWith({

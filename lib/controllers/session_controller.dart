@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:agora_flutter_uikit/models/agora_channel_data.dart';
-import 'package:agora_flutter_uikit/models/agora_settings.dart';
-import 'package:agora_flutter_uikit/models/agora_user.dart';
-import 'package:agora_flutter_uikit/models/agora_connection_data.dart';
-import 'package:agora_flutter_uikit/models/agora_event_handlers.dart';
+import 'package:agora_uikit/models/agora_channel_data.dart';
+import 'package:agora_uikit/models/agora_settings.dart';
+import 'package:agora_uikit/models/agora_user.dart';
+import 'package:agora_uikit/models/agora_connection_data.dart';
+import 'package:agora_uikit/models/agora_event_handlers.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -27,21 +27,19 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             isLocalUserMuted: false,
             isLocalVideoDisabled: false,
             visible: true,
-            isButtonVisible: false,
             clientRole: ClientRole.Broadcaster,
             localUid: 0,
             generatedToken: null,
-            isActiveSpeakerDisabled: false,
           ),
         );
 
-  void initializeEngine(
-      {required AgoraConnectionData agoraConnectionData}) async {
+  void initializeEngine({required AgoraConnectionData agoraConnectionData}) async {
     value = value.copyWith(
-        engine: await RtcEngine.createWithConfig(RtcEngineConfig(
-            agoraConnectionData.appId,
-            areaCode: agoraConnectionData.areaCode)),
-        connectionData: agoraConnectionData);
+      engine: await RtcEngine.createWithConfig(
+        RtcEngineConfig(agoraConnectionData.appId, areaCode: agoraConnectionData.areaCode),
+      ),
+      connectionData: agoraConnectionData,
+    );
   }
 
   void createEvents(AgoraEventHandlers? agoraEventHandlers) async {
@@ -58,13 +56,14 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           print(info);
           value = value.copyWith(localUid: uid);
           value = value.copyWith(
-              mainAgoraUser: AgoraUser(
-            uid: uid,
-            remote: false,
-            muted: value.isLocalUserMuted,
-            videoDisabled: value.isLocalVideoDisabled,
-            clientRole: value.clientRole,
-          ));
+            mainAgoraUser: AgoraUser(
+              uid: uid,
+              remote: false,
+              muted: value.isLocalUserMuted,
+              videoDisabled: value.isLocalVideoDisabled,
+              clientRole: value.clientRole,
+            ),
+          );
           var joinChannelSuccessFun = agoraEventHandlers?.joinChannelSuccess;
           if (joinChannelSuccessFun != null) {
             joinChannelSuccessFun(channel, uid, elapsed);
@@ -81,10 +80,6 @@ class SessionController extends ValueNotifier<AgoraSettings> {
           _addUser(
             callUser: AgoraUser(
               uid: uid,
-              remote: true,
-              muted: false,
-              videoDisabled: false,
-              clientRole: ClientRole.Broadcaster,
             ),
           );
           var userJoinedFun = agoraEventHandlers?.userJoined;
@@ -105,67 +100,63 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             uid: value.connectionData!.uid,
           );
           await value.engine?.renewToken(token);
-          var tokenPrivilegeWillExpireFun =
-              agoraEventHandlers?.tokenPrivilegeWillExpire;
+          var tokenPrivilegeWillExpireFun = agoraEventHandlers?.tokenPrivilegeWillExpire;
           if (tokenPrivilegeWillExpireFun != null) {
             tokenPrivilegeWillExpireFun(token);
           }
         },
         remoteVideoStateChanged: (uid, state, reason, elapsed) {
-          if (state == VideoRemoteState.Stopped) {
-            _updateUserVideo(uid: uid, videoDisabled: true);
-          } else if (state == VideoRemoteState.Decoding &&
-              reason == VideoRemoteStateReason.RemoteUnmuted) {
-            _updateUserVideo(uid: uid, videoDisabled: false);
+          final String info = "Remote video state changed for $uid, state: $state and reason: $reason";
+          print(info);
+          if (uid != value.localUid) {
+            if (state == VideoRemoteState.Stopped) {
+              _updateUserVideo(uid: uid, videoDisabled: true);
+            } else if (state == VideoRemoteState.Decoding && reason == VideoRemoteStateReason.RemoteUnmuted) {
+              _updateUserVideo(uid: uid, videoDisabled: false);
+            }
           }
-          var remoteVideoStateChangedFun =
-              agoraEventHandlers?.remoteVideoStateChanged;
+          var remoteVideoStateChangedFun = agoraEventHandlers?.remoteVideoStateChanged;
           if (remoteVideoStateChangedFun != null) {
             remoteVideoStateChangedFun(uid, state, reason, elapsed);
           }
         },
         remoteAudioStateChanged: (uid, state, reason, elapsed) {
-          if (state == AudioRemoteState.Stopped) {
+          final String info = "Remote audio state changed for $uid, state: $state and reason: $reason";
+          print(info);
+          if (state == AudioRemoteState.Stopped && reason == AudioRemoteStateReason.RemoteMuted) {
             _updateUserAudio(uid: uid, muted: true);
-          } else if (state == AudioRemoteState.Decoding &&
-              reason == AudioRemoteStateReason.RemoteUnmuted) {
+          } else if (state == AudioRemoteState.Decoding && reason == AudioRemoteStateReason.RemoteUnmuted) {
             _updateUserAudio(uid: uid, muted: false);
           }
-          var remoteAudioStateChangedFun =
-              agoraEventHandlers?.remoteAudioStateChanged;
+          var remoteAudioStateChangedFun = agoraEventHandlers?.remoteAudioStateChanged;
           if (remoteAudioStateChangedFun != null) {
             remoteAudioStateChangedFun(uid, state, reason, elapsed);
           }
         },
         localAudioStateChanged: (state, error) {
-          if (state == AudioLocalState.Stopped) {
-            _updateUserAudio(uid: value.localUid, muted: true);
-          } else if (state == AudioLocalState.Recording) {
-            _updateUserAudio(uid: value.localUid, muted: false);
-          }
-          var localAudioStateChangedFun =
-              agoraEventHandlers?.localAudioStateChanged;
+          final String info = "Local audio state changed state: $state and error: $error";
+          print(info);
+          var localAudioStateChangedFun = agoraEventHandlers?.localAudioStateChanged;
           if (localAudioStateChangedFun != null) {
             localAudioStateChangedFun(state, error);
           }
         },
         localVideoStateChanged: (localVideoState, error) {
-          if (localVideoState == LocalVideoStreamState.Stopped) {
-            _updateUserVideo(uid: value.localUid, videoDisabled: true);
-          } else if (localVideoState == LocalVideoStreamState.Capturing) {
-            _updateUserVideo(uid: value.localUid, videoDisabled: false);
-          }
-          var localVideoStateChangedFun =
-              agoraEventHandlers?.localVideoStateChanged;
+          final String info = "Local audio state changed state: $localVideoState and error: $error";
+          print(info);
+          var localVideoStateChangedFun = agoraEventHandlers?.localVideoStateChanged;
           if (localVideoStateChangedFun != null) {
             localVideoStateChangedFun(localVideoState, error);
           }
         },
         activeSpeaker: (uid) {
-          if (!value.isActiveSpeakerDisabled!) {
-            final int index =
-                value.users.indexWhere((element) => element.uid == uid);
+          final String info = "Active speaker: $uid";
+          print(info);
+          if (value.isActiveSpeakerDisabled == false) {
+            final int index = value.users.indexWhere((element) => element.uid == uid);
             swapUser(index: index);
+          } else {
+            print("Active speaker is disabled");
           }
           var activeSpeakerFun = agoraEventHandlers?.activeSpeaker;
           if (activeSpeakerFun != null) activeSpeakerFun(uid);
@@ -176,53 +167,44 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   /// Function to set all the channel properties.
   void setChannelProperties(AgoraChannelData agoraChannelData) async {
-    await value.engine?.setChannelProfile(
-        agoraChannelData.channelProfile ?? ChannelProfile.Communication);
+    await value.engine?.setChannelProfile(agoraChannelData.channelProfile ?? ChannelProfile.Communication);
 
     if (agoraChannelData.channelProfile == ChannelProfile.LiveBroadcasting) {
-      await value.engine?.setClientRole(
-          agoraChannelData.clientRole ?? ClientRole.Broadcaster);
+      await value.engine?.setClientRole(agoraChannelData.clientRole ?? ClientRole.Broadcaster);
     } else {
       print('You can only set channel profile in case of Live Broadcasting');
     }
 
-    await value.engine?.muteAllRemoteVideoStreams(
-        agoraChannelData.muteAllRemoteVideoStreams ?? false);
+    value = value.copyWith(isActiveSpeakerDisabled: agoraChannelData.isActiveSpeakerDisabled);
 
-    await value.engine?.muteAllRemoteAudioStreams(
-        agoraChannelData.muteAllRemoteAudioStreams ?? false);
+    await value.engine?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams ?? false);
+
+    await value.engine?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams ?? false);
 
     if (agoraChannelData.setBeautyEffectOptions != null) {
-      value.engine?.setBeautyEffectOptions(
-          true, agoraChannelData.setBeautyEffectOptions!);
+      value.engine?.setBeautyEffectOptions(true, agoraChannelData.setBeautyEffectOptions!);
     }
 
-    await value.engine
-        ?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
+    await value.engine?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
 
     if (agoraChannelData.localPublishFallbackOption != null) {
-      await value.engine?.setLocalPublishFallbackOption(
-          agoraChannelData.localPublishFallbackOption!);
+      await value.engine?.setLocalPublishFallbackOption(agoraChannelData.localPublishFallbackOption!);
     }
 
     if (agoraChannelData.remoteSubscribeFallbackOption != null) {
-      await value.engine?.setRemoteSubscribeFallbackOption(
-          agoraChannelData.remoteSubscribeFallbackOption!);
+      await value.engine?.setRemoteSubscribeFallbackOption(agoraChannelData.remoteSubscribeFallbackOption!);
     }
 
     if (agoraChannelData.videoEncoderConfiguration != null) {
-      await value.engine?.setVideoEncoderConfiguration(
-          agoraChannelData.videoEncoderConfiguration!);
+      await value.engine?.setVideoEncoderConfiguration(agoraChannelData.videoEncoderConfiguration!);
     }
 
-    value.engine?.setCameraAutoFocusFaceModeEnabled(
-        agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
+    value.engine?.setCameraAutoFocusFaceModeEnabled(agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
 
     value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn ?? false);
 
-    await value.engine?.setAudioProfile(
-        agoraChannelData.audioProfile ?? AudioProfile.Default,
-        agoraChannelData.audioScenario ?? AudioScenario.Default);
+    await value.engine
+        ?.setAudioProfile(agoraChannelData.audioProfile ?? AudioProfile.Default, agoraChannelData.audioScenario ?? AudioScenario.Default);
   }
 
   void joinVideoChannel() async {
@@ -330,22 +312,21 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   void _updateUserVideo({required int uid, required bool videoDisabled}) {
     // if local user updates video
-    if (uid == value.mainAgoraUser.uid) {
+    if (uid == value.localUid) {
       value = value.copyWith(isLocalVideoDisabled: videoDisabled);
       // if remote user updates video
     } else {
       List<AgoraUser> tempList = value.users;
       int indexOfUser = tempList.indexWhere((element) => element.uid == uid);
       if (indexOfUser == -1) return; //this means user is no longer in the call
-      tempList[indexOfUser] =
-          tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
+      tempList[indexOfUser] = tempList[indexOfUser].copyWith(videoDisabled: videoDisabled);
       value = value.copyWith(users: tempList);
     }
   }
 
   void _updateUserAudio({required int uid, required bool muted}) {
     // if local user updates audio
-    if (uid == value.mainAgoraUser.uid) {
+    if (uid == value.localUid) {
       value = value.copyWith(isLocalUserMuted: muted);
       // if remote user updates audio
     } else {
@@ -359,32 +340,18 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   /// Function to swap [AgoraUser] in the floating layout.
   Future<void> swapUser({required int index}) async {
-    final int newMaxUid = value.users[index].uid;
+    final AgoraUser newUser = value.users[index];
     final AgoraUser tempAgoraUser = value.mainAgoraUser;
-    final int xyz =
-        value.users.indexWhere((element) => element.uid == newMaxUid);
-    value = value.copyWith(mainAgoraUser: value.users[xyz]);
+    value = value.copyWith(mainAgoraUser: newUser);
     _addUser(callUser: tempAgoraUser);
-    value = value.copyWith(
-      mainAgoraUser: AgoraUser(
-        uid: newMaxUid,
-        remote: true,
-        muted: false,
-        videoDisabled: false,
-        clientRole: ClientRole.Broadcaster,
-      ),
-    );
-    _removeUser(uid: newMaxUid);
+    _removeUser(uid: newUser.uid);
   }
 
-  Future<void> _getToken(
-      {String? tokenUrl, String? channelName, int? uid}) async {
+  Future<void> _getToken({String? tokenUrl, String? channelName, int? uid}) async {
     uid = uid ?? 0;
-    final response = await http
-        .get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
+    final response = await http.get(Uri.parse('$tokenUrl/rtc/$channelName/publisher/uid/$uid'));
     if (response.statusCode == 200) {
-      value =
-          value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
+      value = value.copyWith(generatedToken: jsonDecode(response.body)['rtcToken']);
     } else {
       print(response.reasonPhrase);
       print('Failed to generate the token : ${response.statusCode}');

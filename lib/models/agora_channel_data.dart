@@ -96,6 +96,13 @@ class AgoraChannelData {
   /// - `false`: (Default) Receive all remote video streams.
   bool? muteAllRemoteAudioStreams;
 
+  /// Active Speaker method automatically pins the active speaker to the main view. By default active speaker is enabled.
+  ///
+  /// *Parameter* Determines whether to disable/enable active speaker:
+  /// - `true`: Set it to true to disable active speaker.
+  /// - `false`: (Default) Active speaker is enabled by default.
+  final bool isActiveSpeakerDisabled;
+
   AgoraChannelData({
     this.channelProfile,
     this.clientRole,
@@ -110,6 +117,7 @@ class AgoraChannelData {
     this.setCameraTorchOn,
     this.muteAllRemoteAudioStreams,
     this.muteAllRemoteVideoStreams,
+    this.isActiveSpeakerDisabled = false,
   });
 
   AgoraChannelData copyWith({
@@ -126,28 +134,23 @@ class AgoraChannelData {
     bool? setCameraTorchOn,
     bool? muteAllRemoteVideoStreams,
     bool? muteAllRemoteAudioStreams,
+    bool? isActiveSpeakerDisabled,
   }) {
     return AgoraChannelData(
       channelProfile: channelProfile ?? this.channelProfile,
       clientRole: clientRole ?? this.clientRole,
-      videoEncoderConfiguration:
-          videoEncoderConfiguration ?? this.videoEncoderConfiguration,
-      setCameraAutoFocusFaceModeEnabled: setCameraAutoFocusFaceModeEnabled ??
-          this.setCameraAutoFocusFaceModeEnabled,
+      videoEncoderConfiguration: videoEncoderConfiguration ?? this.videoEncoderConfiguration,
+      setCameraAutoFocusFaceModeEnabled: setCameraAutoFocusFaceModeEnabled ?? this.setCameraAutoFocusFaceModeEnabled,
       enableDualStreamMode: enableDualStreamMode ?? this.enableDualStreamMode,
-      localPublishFallbackOption:
-          localPublishFallbackOption ?? this.localPublishFallbackOption,
-      remoteSubscribeFallbackOption:
-          remoteSubscribeFallbackOption ?? this.remoteSubscribeFallbackOption,
+      localPublishFallbackOption: localPublishFallbackOption ?? this.localPublishFallbackOption,
+      remoteSubscribeFallbackOption: remoteSubscribeFallbackOption ?? this.remoteSubscribeFallbackOption,
       audioProfile: audioProfile ?? this.audioProfile,
       audioScenario: audioScenario ?? this.audioScenario,
-      setBeautyEffectOptions:
-          setBeautyEffectOptions ?? this.setBeautyEffectOptions,
+      setBeautyEffectOptions: setBeautyEffectOptions ?? this.setBeautyEffectOptions,
       setCameraTorchOn: setCameraTorchOn ?? this.setCameraTorchOn,
-      muteAllRemoteAudioStreams:
-          muteAllRemoteAudioStreams ?? this.muteAllRemoteAudioStreams,
-      muteAllRemoteVideoStreams:
-          muteAllRemoteVideoStreams ?? this.muteAllRemoteVideoStreams,
+      muteAllRemoteAudioStreams: muteAllRemoteAudioStreams ?? this.muteAllRemoteAudioStreams,
+      muteAllRemoteVideoStreams: muteAllRemoteVideoStreams ?? this.muteAllRemoteVideoStreams,
+      isActiveSpeakerDisabled: isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
     );
   }
 }
