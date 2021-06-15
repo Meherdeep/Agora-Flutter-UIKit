@@ -20,10 +20,6 @@ class _MyAppState extends State<MyApp> {
       Permission.camera,
       Permission.microphone,
     ],
-    agoraChannelData: AgoraChannelData(
-      channelProfile: ChannelProfile.LiveBroadcasting,
-      clientRole: ClientRole.Broadcaster,
-    ),
   );
 
   @override

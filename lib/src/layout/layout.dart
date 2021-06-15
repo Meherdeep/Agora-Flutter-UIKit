@@ -23,17 +23,14 @@ class AgoraVideoViewer extends StatefulWidget {
   /// Padding of the secondary user present in the list.
   final EdgeInsets? floatingLayoutSubViewPadding;
 
-  /// Automatically pin the active speaker to the main view. By default active speaker is enabled. Set it to false to disable it.
-  final bool? enableActiveSpeaker;
-
   /// Widget that will be displayed when the local or remote user has disabled it's video.
   final Widget? disabledVideoWidget;
 
   /// Display the camera and microphone status of a user. This feature is only available in the [Layout.floating]
-  final bool? showAVState;
+  final bool showAVState;
 
   /// Display the total number of users in a channel.
-  final bool? showNumberOfUsers;
+  final bool showNumberOfUsers;
 
   const AgoraVideoViewer({
     Key? key,
@@ -43,7 +40,6 @@ class AgoraVideoViewer extends StatefulWidget {
     this.floatingLayoutContainerWidth,
     this.floatingLayoutMainViewPadding,
     this.floatingLayoutSubViewPadding,
-    this.enableActiveSpeaker,
     this.disabledVideoWidget,
     this.showAVState = false,
     this.showNumberOfUsers = false,
@@ -54,13 +50,6 @@ class AgoraVideoViewer extends StatefulWidget {
 }
 
 class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
-  @override
-  void initState() {
-    super.initState();
-    widget.client.sessionController
-        .initializeActiveSpeaker(enabled: widget.enableActiveSpeaker ?? true);
-  }
-
   @override
   void dispose() {
     super.dispose();
@@ -75,11 +64,9 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           ? FloatingLayout(
               client: widget.client,
               disabledVideoWidget: widget.disabledVideoWidget,
-              floatingLayoutContainerHeight:
-                  widget.floatingLayoutContainerHeight,
+              floatingLayoutContainerHeight: widget.floatingLayoutContainerHeight,
               floatingLayoutContainerWidth: widget.floatingLayoutContainerWidth,
-              floatingLayoutMainViewPadding:
-                  widget.floatingLayoutMainViewPadding,
+              floatingLayoutMainViewPadding: widget.floatingLayoutMainViewPadding,
               floatingLayoutSubViewPadding: widget.floatingLayoutSubViewPadding,
               showAVState: widget.showAVState,
               showNumberOfUsers: widget.showNumberOfUsers,
