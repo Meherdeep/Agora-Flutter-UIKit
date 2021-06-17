@@ -55,7 +55,8 @@ class AgoraSettings {
       clientRole: clientRole ?? this.clientRole,
       localUid: localUid ?? this.localUid,
       generatedToken: generatedToken ?? this.generatedToken,
-      isActiveSpeakerDisabled: isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
+      isActiveSpeakerDisabled:
+          isActiveSpeakerDisabled ?? this.isActiveSpeakerDisabled,
     );
   }
 }

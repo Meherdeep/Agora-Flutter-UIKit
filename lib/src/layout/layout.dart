@@ -64,9 +64,11 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           ? FloatingLayout(
               client: widget.client,
               disabledVideoWidget: widget.disabledVideoWidget,
-              floatingLayoutContainerHeight: widget.floatingLayoutContainerHeight,
+              floatingLayoutContainerHeight:
+                  widget.floatingLayoutContainerHeight,
               floatingLayoutContainerWidth: widget.floatingLayoutContainerWidth,
-              floatingLayoutMainViewPadding: widget.floatingLayoutMainViewPadding,
+              floatingLayoutMainViewPadding:
+                  widget.floatingLayoutMainViewPadding,
               floatingLayoutSubViewPadding: widget.floatingLayoutSubViewPadding,
               showAVState: widget.showAVState,
               showNumberOfUsers: widget.showNumberOfUsers,
