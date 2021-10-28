@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:agora_rtm/agora_rtm.dart';
 import 'package:agora_uikit/models/agora_channel_data.dart';
 import 'package:agora_uikit/models/agora_connection_data.dart';
 import 'package:agora_uikit/models/agora_event_handlers.dart';
 import 'package:agora_uikit/models/agora_settings.dart';
 import 'package:agora_uikit/models/agora_user.dart';
+import 'package:agora_uikit/models/rtm_message.dart';
 import 'package:agora_uikit/src/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +20,8 @@ class SessionController extends ValueNotifier<AgoraSettings> {
       : super(
           AgoraSettings(
             engine: null,
+            agoraRtmChannel: null,
+            agoraRtmClient: null,
             users: [],
             mainAgoraUser: AgoraUser(
               uid: 0,
@@ -31,9 +36,72 @@ class SessionController extends ValueNotifier<AgoraSettings> {
             clientRole: ClientRole.Broadcaster,
             localUid: 0,
             generatedToken: null,
+            generatedRtmId: null,
             layoutType: Layout.grid,
           ),
         );
+
+  Future<void> initializeRtm() async {
+    value = value.copyWith(
+      agoraRtmClient: await AgoraRtmClient.createInstance(
+        value.connectionData!.appId,
+      ),
+    );
+
+    value.agoraRtmClient?.onMessageReceived =
+        (AgoraRtmMessage message, String peerId) {
+      print('Peer msg : $message, from : $peerId');
+      Message msg = Message(text: message.text);
+
+      String? messageType;
+      msg.toJson().forEach((key, val) {
+        if (key == "text") {
+          var json = jsonDecode(val);
+          messageType = json['messageType'];
+        }
+      });
+
+      print("MESSAGE TYPE: $messageType");
+      onMessageReceived(messageType: messageType!, message: msg.toJson());
+    };
+
+    value.agoraRtmClient?.onConnectionStateChanged = (int state, int reason) {
+      print(
+          'Connection state changed : ${state.toString()}, reason : ${reason.toString()}');
+      if (state == 5) {
+        value.agoraRtmClient?.logout();
+      }
+    };
+
+    value.agoraRtmClient?.onLocalInvitationReceivedByPeer =
+        (AgoraRtmLocalInvitation invitation) {
+      print(
+          'Local invitation received by peer : ${invitation.calleeId}, content : ${invitation.content}');
+    };
+
+    value.agoraRtmClient?.onRemoteInvitationReceivedByPeer =
+        (AgoraRtmRemoteInvitation invitation) {
+      print(
+          'Remote invitation received by peer : ${invitation.callerId}, content : ${invitation.content}');
+    };
+
+    value.agoraRtmClient?.onError = () {
+      print('Error Occurred');
+    };
+  }
+
+  Future<void> rtmStuff() async {
+    await loginToRtm();
+    await joinRtmChannel();
+    value = value.copyWith(
+      generatedRtmId: value.connectionData!.rtmUid ??
+          DateTime.now().microsecondsSinceEpoch.toString(),
+    );
+    await sendUserData(
+      toChannel: true,
+      username: value.connectionData!.username!,
+    );
+  }
 
   Future<void> initializeEngine(
       {required AgoraConnectionData agoraConnectionData}) async {
@@ -238,7 +306,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
               clientRole: value.clientRole,
             ),
           );
-
+          // rtmStuff();
           agoraEventHandlers.joinChannelSuccess?.call(channel, uid, elapsed);
         },
         leaveChannel: (stats) {
@@ -394,7 +462,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   Future<void> joinVideoChannel() async {
     await value.engine?.enableVideo();
     await value.engine?.enableAudioVolumeIndication(200, 3, true);
-    if (value.connectionData!.tokenUrl != null) {
+    if (value.connectionData?.tokenUrl != null) {
       await _getToken(
         tokenUrl: value.connectionData!.tokenUrl,
         channelName: value.connectionData!.channelName,
@@ -550,5 +618,230 @@ class SessionController extends ValueNotifier<AgoraSettings> {
 
   void updateLayoutType({required Layout updatedLayout}) {
     value = value.copyWith(layoutType: updatedLayout);
+  }
+
+  Future<void> loginToRtm({String? token}) async {
+    value = value.copyWith(
+      generatedRtmId: value.connectionData!.rtmUid ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
+    );
+    if (!value.isLoggedIn) {
+      try {
+        await value.agoraRtmClient?.login(
+            token,
+            value.connectionData!.rtmUid ??
+                DateTime.now().millisecondsSinceEpoch.toString());
+        value = value.copyWith(isLoggedIn: true);
+        print(
+            'Usrname : ${value.connectionData!.username} and rtmId : ${value.connectionData} logged in');
+      } catch (e) {
+        print('Error occurred while trying to login. ${e.toString()}');
+      }
+    }
+  }
+
+  Future<AgoraRtmChannel?> createChannel(
+      {required String rtmChannelName}) async {
+    AgoraRtmChannel? channel =
+        await value.agoraRtmClient?.createChannel(rtmChannelName);
+
+    if (channel != null) {
+      channel.onMessageReceived =
+          (AgoraRtmMessage message, AgoraRtmMember member) {
+        print('Channel msg : ${message.text}, from : ${member.userId}');
+        Message msg = Message(text: message.text);
+        onMessageReceived(messageType: "UserData", message: msg.toJson());
+      };
+
+      channel.onMemberJoined = (AgoraRtmMember member) {
+        print('Member joined : ${member.userId}');
+        sendUserData(
+          toChannel: false,
+          username: value.connectionData!.username!,
+          peerRtmId: member.userId,
+        );
+      };
+
+      channel.onMemberLeft = (AgoraRtmMember member) {
+        print('Member left : ${member.userId}');
+      };
+
+      channel.onMemberCountUpdated = (int count) {
+        print('Member count updated : $count');
+      };
+    }
+    return channel;
+  }
+
+  Future<void> joinRtmChannel() async {
+    if (!value.isInChannel) {
+      try {
+        value = value.copyWith(
+          agoraRtmChannel: await createChannel(
+              rtmChannelName: value.connectionData?.rtmChannelName ??
+                  value.connectionData!.channelName),
+        );
+        await value.agoraRtmChannel?.join();
+        value = value.copyWith(isInChannel: true);
+      } catch (e) {
+        print('RTM Join channel error : ${e.toString()}');
+      }
+    }
+  }
+
+  Future<void> sendUserData({
+    required bool toChannel,
+    required String username,
+    String? peerRtmId,
+  }) async {
+    String platform = Platform.isAndroid ? "Android" : "iOS";
+    int ts = DateTime.now().millisecondsSinceEpoch;
+
+    String json = '''{
+      "messageType": "UserData",
+      "content": {
+        "rtmId": "${value.generatedRtmId}",
+        "rtcId": ${value.localUid},
+        "username": "$username"
+    },
+    "uikit": {
+        "platfor": "$platform",
+        "framework": "Flutter",
+        "version": "0.0.4"
+    }
+    }''';
+
+    Message message = Message(text: json, ts: ts, offline: false);
+    AgoraRtmMessage msg = AgoraRtmMessage.fromJson(message.toJson());
+
+    if (value.agoraRtmChannel != null && toChannel) {
+      await value.agoraRtmChannel?.sendMessage(msg);
+      print('User data sent to channel');
+    } else if (value.agoraRtmClient != null &&
+        !toChannel &&
+        peerRtmId != null) {
+      await value.agoraRtmClient?.sendMessageToPeer(peerRtmId, msg);
+      print('User data sent to peer');
+    } else {
+      print("No user in the channel");
+    }
+  }
+
+  void askForUserMic({required int index, required bool isMicEnabled}) {
+    String? peerId;
+    String json = '''{
+      "messageType": "MuteRequest",
+      "content": {
+        "rtcId": ${value.users[index].uid},
+        "mute": $isMicEnabled,
+        "isForceFul": "false"
+    }
+    }''';
+
+    Message message = Message(text: json);
+    AgoraRtmMessage msg = AgoraRtmMessage.fromJson(message.toJson());
+    value.uidToUserIdMap!.forEach((key, val) {
+      if (key == value.users[index].uid) {
+        peerId = val;
+        value.agoraRtmClient?.sendMessageToPeer(peerId!, msg);
+      } else {
+        print("Peer RTM ID not found");
+      }
+    });
+  }
+
+  void askForUserCamera({required int index, required bool isCameraEnabled}) {
+    String? peerId;
+    String json = '''{
+      "messageType": "CameraRequest",
+      "content": {
+        "rtcId": ${value.users[index].uid},
+        "mute": $isCameraEnabled,
+        "isForceFul": "false"
+    }
+    }''';
+
+    Message message = Message(text: json);
+    AgoraRtmMessage msg = AgoraRtmMessage.fromJson(message.toJson());
+    value.uidToUserIdMap!.forEach((key, val) {
+      if (key == value.users[index].uid) {
+        peerId = val;
+        value.agoraRtmClient?.sendMessageToPeer(peerId!, msg);
+      } else {
+        print("Peer RTM ID not found");
+      }
+    });
+  }
+
+  void _addToUidUserMap({required int rtcId, required String rtmId}) {
+    Map<int, String> tempMap = {};
+    tempMap.addAll(value.uidToUserIdMap ?? {});
+    if (rtcId != 0) {
+      tempMap.putIfAbsent(rtcId, () => rtmId);
+    }
+    value = value.copyWith(uidToUserIdMap: tempMap);
+    print("UID TO USER MAP : ${value.uidToUserIdMap}");
+  }
+
+  void _addToUserRtmMap(
+      {required String rtmId, required Map<String, dynamic> message}) {
+    Map<String, Map<String, dynamic>> tempMap = {};
+    tempMap.addAll(value.userRtmMap ?? {});
+    tempMap.putIfAbsent(rtmId, () => message);
+    value = value.copyWith(userRtmMap: tempMap);
+    print("USER RTM MAP : ${value.userRtmMap}");
+  }
+
+  void onMessageReceived(
+      {required String messageType, required Map<String, dynamic> message}) {
+    switch (messageType) {
+      case "UserData":
+        print('User data received: $message');
+        message.forEach((key, val) {
+          if (key == "text") {
+            var json = jsonDecode(val);
+            String rtmId = json['content']['rtmId'];
+            int rtcId = json['content']['rtcId'];
+            print("RTM ID: $rtmId");
+            print("RTC ID : $rtcId");
+            _addToUidUserMap(rtcId: rtcId, rtmId: rtmId);
+            _addToUserRtmMap(rtmId: rtmId, message: message);
+          }
+        });
+        break;
+      case "MuteRequest":
+        final GlobalKey<ScaffoldState> _scaffoldKey =
+            GlobalKey<ScaffoldState>();
+        int? rtcId;
+        bool? muted;
+        message.forEach((key, val) {
+          if (key == "text") {
+            var json = jsonDecode(val);
+            rtcId = json['content']['rtcId'];
+            muted = json['content']['mute'];
+            print("RTC ID: $rtcId");
+          }
+        });
+        _scaffoldKey.currentState?.showSnackBar(SnackBar(
+          content: muted!
+              ? Text('Please unmute your mic')
+              : Text('Please mute your mic'),
+          duration: Duration(seconds: 10),
+          action: SnackBarAction(
+            label: '$muted',
+            onPressed: () {
+              value.engine?.muteRemoteAudioStream(rtcId!, !muted!);
+              _scaffoldKey.currentState?.hideCurrentSnackBar();
+            },
+          ),
+        ));
+        break;
+      case "UserVideoMute":
+
+        // value.engine?.muteRemoteVideoStream(
+        // value.users[index].uid, !value.users[index].videoDisabled);
+        break;
+      default:
+    }
   }
 }
