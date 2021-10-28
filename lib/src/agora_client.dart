@@ -71,9 +71,9 @@ class AgoraClient {
 
     await enabledPermission.request();
 
-    await _sessionController.rtmStuff();
+    // await _sessionController.rtmStuff();
 
-    // await _sessionController.loginToRtm();
+    await _sessionController.loginToRtm();
 
     _sessionController.createEvents(agoraEventHandlers ?? AgoraEventHandlers());
 

@@ -91,7 +91,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
   }
 
   Future<void> rtmStuff() async {
-    await loginToRtm();
+    //await loginToRtm();
     await joinRtmChannel();
     value = value.copyWith(
       generatedRtmId: value.connectionData!.rtmUid ??
@@ -306,7 +306,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
               clientRole: value.clientRole,
             ),
           );
-          // rtmStuff();
+          rtmStuff();
           agoraEventHandlers.joinChannelSuccess?.call(channel, uid, elapsed);
         },
         leaveChannel: (stats) {
@@ -627,10 +627,7 @@ class SessionController extends ValueNotifier<AgoraSettings> {
     );
     if (!value.isLoggedIn) {
       try {
-        await value.agoraRtmClient?.login(
-            token,
-            value.connectionData!.rtmUid ??
-                DateTime.now().millisecondsSinceEpoch.toString());
+        await value.agoraRtmClient?.login(token, value.generatedRtmId!);
         value = value.copyWith(isLoggedIn: true);
         print(
             'Usrname : ${value.connectionData!.username} and rtmId : ${value.connectionData} logged in');

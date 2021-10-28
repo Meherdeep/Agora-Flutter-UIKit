@@ -1,6 +1,5 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtm/agora_rtm.dart';
-
 import 'package:agora_uikit/models/agora_connection_data.dart';
 import 'package:agora_uikit/src/enums.dart';
 
@@ -73,7 +72,7 @@ class AgoraSettings {
     Map<String, Map<String, dynamic>>? userRtmMap,
     Map<int, String>? uidToUserIdMap,
   }) {
-    if (users == null) {
+    if (this.users.isNotEmpty && users == null) {
       print("NULL USERS LIST");
     }
     return AgoraSettings(
