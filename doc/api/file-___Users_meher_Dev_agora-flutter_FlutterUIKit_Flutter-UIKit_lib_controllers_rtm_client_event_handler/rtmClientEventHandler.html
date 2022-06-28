@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the rtmClientEventHandler function from the rtm_client_event_handler library, for the Dart programming language.">
+  <title>rtmClientEventHandler function - rtm_client_event_handler library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">agora_uikit</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_client_event_handler/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_client_event_handler-library.html">rtm_client_event_handler</a></li>
+    <li class="self-crumb">rtmClientEventHandler function</li>
+  </ol>
+  <div class="self-name">rtmClientEventHandler</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">rtmClientEventHandler</span> function 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">rtmClientEventHandler</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="rtmClientEventHandler-param-agoraRtmClient">{<span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">agoraRtmClient</span>, </span></li>
+<li><span class="parameter" id="rtmClientEventHandler-param-agoraRtmClientEventHandler"><span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">agoraRtmClientEventHandler</span>, </span></li>
+<li><span class="parameter" id="rtmClientEventHandler-param-sessionController"><span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">sessionController</span>}</span></li>
+</ol>)
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; rtmClientEventHandler({
+  required AgoraRtmClient agoraRtmClient,
+  required AgoraRtmClientEventHandler agoraRtmClientEventHandler,
+  required SessionController sessionController,
+}) async {
+  agoraRtmClient.onMessageReceived = (AgoraRtmMessage message, String peerId) {
+    agoraRtmClientEventHandler.onMessageReceived?.call(message, peerId);
+    Message msg = Message(text: message.text);
+    String? messageType;
+
+    message.toJson().forEach((key, val) {
+      if (key == &quot;text&quot;) {
+        var json = jsonDecode(val.toString());
+        messageType = json[&#39;messageType&#39;];
+      }
+    });
+    messageReceived(
+      messageType: messageType!,
+      message: msg.toJson(),
+      sessionController: sessionController,
+    );
+  };
+
+  agoraRtmClient.onConnectionStateChanged = (int state, int reason) {
+    agoraRtmClientEventHandler.onConnectionStateChanged?.call(state, reason);
+
+    log(
+      &#39;Connection state changed : ${state.toString()}, reason : ${reason.toString()}&#39;,
+      level: Level.info.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+    if (state == 5) {
+      agoraRtmClient.logout();
+    }
+  };
+
+  agoraRtmClient.onError = (error) {
+    agoraRtmClientEventHandler.onError?.call(error);
+
+    log(
+      &#39;Error Occurred while initializing the RTM client: ${error.hashCode}&#39;,
+      level: Level.error.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+  };
+
+  agoraRtmClient.onTokenExpired = () {
+    agoraRtmClientEventHandler.onTokenExpired?.call();
+
+    getRtmToken(
+      tokenUrl: sessionController.value.connectionData!.tokenUrl,
+      sessionController: sessionController,
+    );
+  };
+
+  agoraRtmClient.onLocalInvitationReceivedByPeer =
+      (AgoraRtmLocalInvitation invitation) {
+    agoraRtmClientEventHandler.onLocalInvitationReceivedByPeer
+        ?.call(invitation);
+  };
+
+  agoraRtmClient.onLocalInvitationAccepted =
+      (AgoraRtmLocalInvitation invitation) {
+    agoraRtmClientEventHandler.onLocalInvitationAccepted?.call(invitation);
+  };
+
+  agoraRtmClient.onLocalInvitationRefused =
+      (AgoraRtmLocalInvitation invitation) {
+    agoraRtmClientEventHandler.onLocalInvitationRefused?.call(invitation);
+  };
+
+  agoraRtmClient.onLocalInvitationCanceled =
+      (AgoraRtmLocalInvitation invitation) {
+    agoraRtmClientEventHandler.onLocalInvitationCanceled?.call(invitation);
+  };
+
+  agoraRtmClient.onLocalInvitationFailure =
+      (AgoraRtmLocalInvitation invitation, int errorCode) {
+    agoraRtmClientEventHandler.onLocalInvitationFailure
+        ?.call(invitation, errorCode);
+  };
+
+  agoraRtmClient.onRemoteInvitationReceivedByPeer =
+      (AgoraRtmRemoteInvitation invitation) {
+    agoraRtmClientEventHandler.onRemoteInvitationReceivedByPeer
+        ?.call(invitation);
+  };
+
+  agoraRtmClient.onRemoteInvitationAccepted =
+      (AgoraRtmRemoteInvitation invitation) {
+    agoraRtmClientEventHandler.onRemoteInvitationAccepted?.call(invitation);
+  };
+
+  agoraRtmClient.onRemoteInvitationRefused =
+      (AgoraRtmRemoteInvitation invitation) {
+    agoraRtmClientEventHandler.onRemoteInvitationRefused?.call(invitation);
+  };
+
+  agoraRtmClient.onRemoteInvitationCanceled =
+      (AgoraRtmRemoteInvitation invitation) {
+    agoraRtmClientEventHandler.onRemoteInvitationCanceled?.call(invitation);
+  };
+
+  agoraRtmClient.onRemoteInvitationFailure =
+      (AgoraRtmRemoteInvitation invitation, int errorCode) {
+    agoraRtmClientEventHandler.onRemoteInvitationFailure
+        ?.call(invitation, errorCode);
+  };
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">agora_uikit</a></li>
+  <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_client_event_handler/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_client_event_handler-library.html">rtm_client_event_handler</a></li>
+  <li class="self-crumb">rtmClientEventHandler function</li>
+</ol>
+
+
+    <h5>rtm_client_event_handler library</h5>
+    <ol>
+
+
+
+
+
+  <li class="section-title"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_client_event_handler/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_client_event_handler-library.html#functions">Functions</a></li>
+  <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_client_event_handler/rtmClientEventHandler.html">rtmClientEventHandler</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    agora_uikit
+      1.0.2
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

@@ -1,24 +1,61 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_uikit/controllers/session_controller.dart';
 import 'package:agora_uikit/models/agora_channel_data.dart';
 import 'package:agora_uikit/models/agora_connection_data.dart';
-import 'package:agora_uikit/models/agora_event_handlers.dart';
-import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:agora_uikit/models/agora_rtc_event_handlers.dart';
+import 'package:agora_uikit/models/agora_rtm_channel_event_handler.dart';
+import 'package:agora_uikit/models/agora_rtm_client_event_handler.dart';
+import 'package:agora_uikit/src/enums.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// [AgoraClient] is the main class in this UIKit. It is used to initialize our [RtcEngine], add the list of user permissions, define the channel properties and use extend the [RtcEngineEventHandler] class.
 class AgoraClient {
+  /// [AgoraConnectionData] is a class used to store all the connection details to authenticate your account with the Agora SDK.
+  final AgoraConnectionData agoraConnectionData;
+
+  /// [enabledPermission] is a list of permissions that the user has to grant to the app. By default the UIKit asks for the camera and microphone permissions for every broadcaster that joins the channel.
+  final List<Permission>? enabledPermission;
+
+  /// [AgoraChannelData] is a class that contains all the Agora channel properties.
+  final AgoraChannelData? agoraChannelData;
+
+  /// [AgoraRtcEventHandlers] is a class that contains all the Agora RTC event handlers. Use it to add your own functions or methods.
+  final AgoraRtcEventHandlers? agoraEventHandlers;
+
+  /// [AgoraRtmClientEventHandlers] is a class that contains all the Agora RTM Client event handlers. Use it to add your own functions or methods.
+  final AgoraRtmClientEventHandler? agoraRtmClientEventHandler;
+
+  /// [AgoraRtmChannelEventHandlers] is a class that contains all the Agora RTM channel event handlers. Use it to add your own functions or methods.
+  final AgoraRtmChannelEventHandler? agoraRtmChannelEventHandler;
+
+  bool _initialized = false;
+
+  AgoraClient({
+    required this.agoraConnectionData,
+    this.enabledPermission,
+    this.agoraChannelData,
+    this.agoraEventHandlers,
+    this.agoraRtmClientEventHandler,
+    this.agoraRtmChannelEventHandler,
+  }) : _initialized = false;
+
+  /// Useful to check if [AgoraClient] is ready for further usage
+  bool get isInitialized => _initialized;
+
   static const MethodChannel _channel = MethodChannel('agora_uikit');
 
-  static Future<String> get platformVersion async {
+  static Future<String> platformVersion() async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
 
-  Future<List<int>> get users async {
-    final List<int> version = _sessionController.value.users.map((e) => e.uid).toList();
+  List<int> get users {
+    final List<int> version =
+        _sessionController.value.users.map((e) => e.uid).toList();
     return version;
   }
 
@@ -28,42 +65,50 @@ class AgoraClient {
     return _sessionController;
   }
 
-  AgoraClient({
-    required AgoraConnectionData agoraConnectionData,
-    required List<Permission> enabledPermission,
-    AgoraChannelData? agoraChannelData,
-    AgoraEventHandlers? agoraEventHandlers,
-  }) {
-    _initAgoraRtcEngine(
-      agoraConnectionData: agoraConnectionData,
-      enabledPermission: enabledPermission,
-      agoraChannelData: agoraChannelData,
-      agoraEventHandlers: agoraEventHandlers,
-    );
+  RtcEngine get engine {
+    return _sessionController.value.engine!;
   }
 
-  Future<void> _initAgoraRtcEngine({
-    required AgoraConnectionData agoraConnectionData,
-    required List<Permission> enabledPermission,
-    AgoraChannelData? agoraChannelData,
-    AgoraEventHandlers? agoraEventHandlers,
-  }) async {
-    try {
-      _sessionController.initializeEngine(
-        agoraConnectionData: agoraConnectionData,
-      );
-    } catch (e) {
-      print("Error occured while initializing Agora RtcEngine: $e");
+  Future<void> initialize() async {
+    if (_initialized) {
+      return;
     }
 
-    await enabledPermission.request();
+    try {
+      await _sessionController.initializeEngine(
+          agoraConnectionData: agoraConnectionData);
+    } catch (e) {
+      log("Error while initializing Agora RTC SDK", level: Level.error.value);
+    }
 
-    _sessionController.createEvents(agoraEventHandlers);
+    if (agoraConnectionData.rtmEnabled) {
+      try {
+        await _sessionController.initializeRtm(
+            agoraRtmClientEventHandler ?? AgoraRtmClientEventHandler());
+      } catch (e) {
+        log("Error while initializing Agora RTM SDK. ${e.toString()}",
+            level: Level.error.value);
+      }
+    }
+
+    if (agoraChannelData?.clientRole == ClientRole.Broadcaster ||
+        agoraChannelData?.clientRole == null) {
+      await _sessionController.askForUserCameraAndMicPermission();
+    }
+    if (enabledPermission != null) {
+      await enabledPermission!.request();
+    }
+
+    _sessionController.createEvents(
+      agoraRtmChannelEventHandler ?? AgoraRtmChannelEventHandler(),
+      agoraEventHandlers ?? AgoraRtcEventHandlers(),
+    );
 
     if (agoraChannelData != null) {
-      _sessionController.setChannelProperties(agoraChannelData);
+      _sessionController.setChannelProperties(agoraChannelData!);
     }
 
-    _sessionController.joinVideoChannel();
+    await _sessionController.joinVideoChannel();
+    _initialized = true;
   }
 }

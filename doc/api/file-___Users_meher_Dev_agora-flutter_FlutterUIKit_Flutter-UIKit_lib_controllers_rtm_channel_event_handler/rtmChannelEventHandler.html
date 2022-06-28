@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the rtmChannelEventHandler function from the rtm_channel_event_handler library, for the Dart programming language.">
+  <title>rtmChannelEventHandler function - rtm_channel_event_handler library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">agora_uikit</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_channel_event_handler/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_channel_event_handler-library.html">rtm_channel_event_handler</a></li>
+    <li class="self-crumb">rtmChannelEventHandler function</li>
+  </ol>
+  <div class="self-name">rtmChannelEventHandler</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">rtmChannelEventHandler</span> function 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
+<span class="name ">rtmChannelEventHandler</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="rtmChannelEventHandler-param-channel">{<span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">channel</span>, </span></li>
+<li><span class="parameter" id="rtmChannelEventHandler-param-agoraRtmChannelEventHandler"><span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">agoraRtmChannelEventHandler</span>, </span></li>
+<li><span class="parameter" id="rtmChannelEventHandler-param-sessionController"><span>required</span> <span class="type-annotation">dynamic</span> <span class="parameter-name">sessionController</span>}</span></li>
+</ol>)
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;void&gt; rtmChannelEventHandler({
+  required AgoraRtmChannel channel,
+  required AgoraRtmChannelEventHandler agoraRtmChannelEventHandler,
+  required SessionController sessionController,
+}) async {
+  channel.onMessageReceived = (AgoraRtmMessage message, AgoraRtmMember member) {
+    agoraRtmChannelEventHandler.onMessageReceived?.call(
+      message,
+      member,
+    );
+
+    log(
+      &#39;Channel msg : ${message.text}, from : ${member.userId}&#39;,
+      level: Level.info.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+    Message msg = Message(text: message.text);
+    messageReceived(
+      messageType: &quot;UserData&quot;,
+      message: msg.toJson(),
+      sessionController: sessionController,
+    );
+  };
+
+  channel.onMemberJoined = (AgoraRtmMember member) {
+    agoraRtmChannelEventHandler.onMemberJoined?.call(member);
+
+    log(
+      &#39;Member joined : ${member.userId}&#39;,
+      level: Level.info.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+    sendUserData(
+      toChannel: false,
+      username: sessionController.value.connectionData!.username!,
+      peerRtmId: member.userId,
+      sessionController: sessionController,
+    );
+  };
+
+  channel.onMemberLeft = (AgoraRtmMember member) {
+    agoraRtmChannelEventHandler.onMemberLeft?.call(member);
+
+    log(
+      &#39;Member left : ${member.userId}&#39;,
+      level: Level.info.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+
+    if (sessionController.value.userRtmMap!.containsKey(member.userId)) {
+      removeFromUserRtmMap(
+        rtmId: member.userId,
+        sessionController: sessionController,
+      );
+    }
+
+    if (sessionController.value.uidToUserIdMap!.containsValue(member.userId)) {
+      for (var i = 0; i &lt; sessionController.value.uidToUserIdMap!.length; i++) {
+        int rtcId = sessionController.value.uidToUserIdMap!.keys.elementAt(i);
+        removeFromUidToUserMap(
+          rtcId: rtcId,
+          sessionController: sessionController,
+        );
+      }
+    }
+  };
+
+  channel.onMemberCountUpdated = (int count) {
+    agoraRtmChannelEventHandler.onMemberCountUpdated?.call(count);
+
+    log(
+      &#39;Member count updated : $count&#39;,
+      level: Level.info.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+  };
+
+  channel.onAttributesUpdated = (List&lt;AgoraRtmChannelAttribute&gt; attributes) {
+    agoraRtmChannelEventHandler.onAttributesUpdated?.call(attributes);
+
+    log(
+      &#39;Channel attributes updated : $attributes&#39;,
+      level: Level.info.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+  };
+
+  channel.onError = (dynamic error) {
+    agoraRtmChannelEventHandler.onError?.call(error);
+
+    log(
+      &#39;RTM Channel error: $error&#39;,
+      level: Level.info.value,
+      name: &#39;AgoraUIKit&#39;,
+    );
+  };
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">agora_uikit</a></li>
+  <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_channel_event_handler/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_channel_event_handler-library.html">rtm_channel_event_handler</a></li>
+  <li class="self-crumb">rtmChannelEventHandler function</li>
+</ol>
+
+
+    <h5>rtm_channel_event_handler library</h5>
+    <ol>
+
+
+
+
+
+  <li class="section-title"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_channel_event_handler/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_channel_event_handler-library.html#functions">Functions</a></li>
+  <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_controllers_rtm_channel_event_handler/rtmChannelEventHandler.html">rtmChannelEventHandler</a></li>
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    agora_uikit
+      1.0.2
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

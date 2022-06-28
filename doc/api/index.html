@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="generator" content="made with love by dartdoc 0.45.0">
+  <meta name="generator" content="made with love by dartdoc 5.1.2">
   <meta name="description" content="agora_uikit API docs, for the Dart programming language.">
   <title>agora_uikit - Dart API docs</title>
 
@@ -22,15 +22,14 @@
 </head>
 
 
-<body data-base-href=""
-      data-using-base-href="false">
+<body data-base-href="" data-using-base-href="false">
 
 <div id="overlay-under-drawer"></div>
 
 <header id="title">
   <button id="sidenav-left-toggle" type="button">&nbsp;</button>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
-    <li class="self-crumb">agora_uikit package</li>
+    <li><a href="https://www.agora.io/en/">agora_uikit package</a></li>
   </ol>
   <div class="self-name">agora_uikit</div>
   <form class="search navbar-right" role="search">
@@ -44,9 +43,34 @@
   <div id="dartdoc-main-content" class="main-content">
       
 <section class="desc markdown">
-  <h1 id="agora-ui-kit-for-flutter">Agora UI Kit for Flutter</h1>
+  <h1 id="agora-ui-kit-for-flutter">Agora UI Kit for Flutter</h1><p align="center">
+    <a href="https://pub.dev/packages/agora_uikit"><img src="https://badges.bar/agora_uikit/likes"></a>
+    <a href="https://pub.dev/packages/agora_uikit"><img src="https://badges.bar/agora_uikit/popularity"></a>
+    <a href="https://pub.dev/packages/agora_uikit"><img src="https://badges.bar/agora_uikit/pub%20points"></a><br>
+  <img src="https://img.shields.io/badge/Platform-iOS%20%7C%20Android-blue?logo=flutter" alt="Platform">
+  <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/AgoraIO-Community/Flutter-UIKit/Flutter">
+  <a href="https://pub.dev/packages/agora_uikit"><img src="https://img.shields.io/pub/v/agora_uikit"></a>
+  <img src="https://img.shields.io/github/license/agoraio-community/flutter-uikit?color=red" alt="License: MIT">
+  <a href="https://www.agora.io/en/join-slack/"><img src="https://img.shields.io/badge/slack-@RTE%20Dev-blue.svg?logo=slack"></a>
+</p>
 <p>Instantly integrate Agora video calling or video streaming into your Flutter application.</p>
-<h2 id="getting-started">Getting started</h2>
+<h2 id="getting-started">Getting started</h2><p align="center">
+ <img src="https://i.ibb.co/1XhRmZ1/Group-4.png" alt="Agora Flutter UIKit Layout Sample">
+</p>
+<h3 id="roadmap">Roadmap</h3>
+<ul>
+<li><code> </code> Add Usernames</li>
+<li><code>x</code> More Event Callbacks</li>
+<li><code>x</code> Add RTM SDK</li>
+<li><code> </code> Screen Sharing</li>
+<li><code> </code> Layout for Voice Calls</li>
+<li><code> </code> Re-orderable list view (Floating Layout)</li>
+<li><code> </code> Cloud recording</li>
+<li><code> </code> Promoting an audience member to a broadcaster role.</li>
+<li><code>x</code> Muting/Unmuting a remote member</li>
+<li><code>x</code> Flutter Web Support as a pre-release</li>
+<li><code> </code> Flutter Desktop Support as a pre-release</li>
+</ul>
 <h3 id="requirements">Requirements</h3>
 <ul>
 <li><a href="https://www.agora.io/en/blog/how-to-get-started-with-agora">An Agora developer account</a></li>
@@ -54,7 +78,7 @@
 <li>A Flutter Project</li>
 </ul>
 <h3 id="installation">Installation</h3>
-<p>To a Flutter application, add the <code>agora_uikit</code> as a dependency inside your <code>pubspec.yaml</code> file.</p>
+<p>In your Flutter application, add the <code>agora_uikit</code> as a dependency inside your <code>pubspec.yaml</code> file.</p>
 <p>In your Android level <code>build.gradle</code> add this at the end of the repositories:</p>
 <pre class="language-css"><code class="language-css">allprojects {
 	repositories {
@@ -88,17 +112,26 @@
 </ul>
 <p>Your application can still run the voice call when it is switched to the background if the background mode is enabled. Select the app target in Xcode, click the Capabilities tab, enable Background Modes, and check Audio, AirPlay, and Picture in Picture.</p>
 <h2 id="usage">Usage</h2>
-<pre class="language-dart"><code class="language-dart">final AgoraClient client = AgoraClient(
+<pre class="language-dart"><code class="language-dart">// Instantiate the client
+final AgoraClient client = AgoraClient(
   agoraConnectionData: AgoraConnectionData(
     appId: "&lt;--Add Your App Id Here--&gt;",
     channelName: "test",
   ),
-  enabledPermission: [
-    Permission.camera,
-    Permission.microphone,
-  ],
 );
 
+// Initialize the Agora Engine
+@override
+void initState() {
+  super.initState();
+  initAgora();
+}
+
+void initAgora() async {
+  await client.initialize();
+}
+
+// Build your layout
 @override
 Widget build(BuildContext context) {
   return MaterialApp(
@@ -116,6 +149,8 @@ Widget build(BuildContext context) {
 }
 
 </code></pre>
+<h2 id="uikits">UIKits</h2>
+<p>The plan is to grow this library and have similar offerings across all supported platforms. There are already similar libraries for <a href="https://github.com/AgoraIO-Community/Android-UIKit/">Android</a>, <a href="https://github.com/AgoraIO-Community/ReactNative-UIKit">React Native</a>, and <a href="https://github.com/AgoraIO-Community/iOS-UIKit/">iOS</a>, so be sure to check them out.</p>
 </section>
 
 
@@ -126,49 +161,140 @@ Widget build(BuildContext context) {
   <span class="name"><a href="models_agora_channel_data/models_agora_channel_data-library.html">agora_channel_data</a></span> 
 
 </dt>
-<dd> 
+<dd>
 </dd>
 
           <dt id="agora_connection_data">
   <span class="name"><a href="models_agora_connection_data/models_agora_connection_data-library.html">agora_connection_data</a></span> 
 
 </dt>
-<dd> 
+<dd>
 </dd>
 
-          <dt id="agora_event_handlers">
-  <span class="name"><a href="models_agora_event_handlers/models_agora_event_handlers-library.html">agora_event_handlers</a></span> 
+          <dt id="agora_rtc_event_handlers">
+  <span class="name"><a href="models_agora_rtc_event_handlers/models_agora_rtc_event_handlers-library.html">agora_rtc_event_handlers</a></span> 
 
 </dt>
-<dd> 
+<dd>
+</dd>
+
+          <dt id="agora_rtm_channel_event_handler">
+  <span class="name"><a href="models_agora_rtm_channel_event_handler/models_agora_rtm_channel_event_handler-library.html">agora_rtm_channel_event_handler</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="agora_rtm_client_event_handler">
+  <span class="name"><a href="models_agora_rtm_client_event_handler/models_agora_rtm_client_event_handler-library.html">agora_rtm_client_event_handler</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="agora_rtm_mute_request">
+  <span class="name"><a href="models_agora_rtm_mute_request/models_agora_rtm_mute_request-library.html">agora_rtm_mute_request</a></span> 
+
+</dt>
+<dd>
 </dd>
 
           <dt id="agora_settings">
   <span class="name"><a href="models_agora_settings/models_agora_settings-library.html">agora_settings</a></span> 
 
 </dt>
-<dd> 
+<dd>
 </dd>
 
           <dt id="agora_uikit">
   <span class="name"><a href="agora_uikit/agora_uikit-library.html">agora_uikit</a></span> 
 
 </dt>
-<dd> 
+<dd>
 </dd>
 
           <dt id="agora_user">
   <span class="name"><a href="models_agora_user/models_agora_user-library.html">agora_user</a></span> 
 
 </dt>
-<dd> 
+<dd>
+</dd>
+
+          <dt id="rtc_buttons">
+  <span class="name"><a href="controllers_rtc_buttons/controllers_rtc_buttons-library.html">rtc_buttons</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtc_event_handlers">
+  <span class="name"><a href="controllers_rtc_event_handlers/controllers_rtc_event_handlers-library.html">rtc_event_handlers</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtc_token_handler">
+  <span class="name"><a href="controllers_rtc_token_handler/controllers_rtc_token_handler-library.html">rtc_token_handler</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtm_channel_event_handler">
+  <span class="name"><a href="controllers_rtm_channel_event_handler/controllers_rtm_channel_event_handler-library.html">rtm_channel_event_handler</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtm_client_event_handler">
+  <span class="name"><a href="controllers_rtm_client_event_handler/controllers_rtm_client_event_handler-library.html">rtm_client_event_handler</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtm_controller">
+  <span class="name"><a href="controllers_rtm_controller/controllers_rtm_controller-library.html">rtm_controller</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtm_controller_helper">
+  <span class="name"><a href="controllers_rtm_controller_helper/controllers_rtm_controller_helper-library.html">rtm_controller_helper</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtm_message">
+  <span class="name"><a href="models_rtm_message/models_rtm_message-library.html">rtm_message</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtm_mute_request">
+  <span class="name"><a href="controllers_rtm_mute_request/controllers_rtm_mute_request-library.html">rtm_mute_request</a></span> 
+
+</dt>
+<dd>
+</dd>
+
+          <dt id="rtm_token_handler">
+  <span class="name"><a href="controllers_rtm_token_handler/controllers_rtm_token_handler-library.html">rtm_token_handler</a></span> 
+
+</dt>
+<dd>
 </dd>
 
           <dt id="session_controller">
   <span class="name"><a href="controllers_session_controller/controllers_session_controller-library.html">session_controller</a></span> 
 
 </dt>
-<dd> 
+<dd>
 </dd>
 
         </dl>
@@ -184,7 +310,7 @@ Widget build(BuildContext context) {
 </header>
 
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-  <li class="self-crumb">agora_uikit package</li>
+  <li><a href="https://www.agora.io/en/">agora_uikit package</a></li>
 </ol>
 
 
@@ -193,10 +319,23 @@ Widget build(BuildContext context) {
       <li class="section-title">Libraries</li>
       <li><a href="models_agora_channel_data/models_agora_channel_data-library.html">agora_channel_data</a></li>
       <li><a href="models_agora_connection_data/models_agora_connection_data-library.html">agora_connection_data</a></li>
-      <li><a href="models_agora_event_handlers/models_agora_event_handlers-library.html">agora_event_handlers</a></li>
+      <li><a href="models_agora_rtc_event_handlers/models_agora_rtc_event_handlers-library.html">agora_rtc_event_handlers</a></li>
+      <li><a href="models_agora_rtm_channel_event_handler/models_agora_rtm_channel_event_handler-library.html">agora_rtm_channel_event_handler</a></li>
+      <li><a href="models_agora_rtm_client_event_handler/models_agora_rtm_client_event_handler-library.html">agora_rtm_client_event_handler</a></li>
+      <li><a href="models_agora_rtm_mute_request/models_agora_rtm_mute_request-library.html">agora_rtm_mute_request</a></li>
       <li><a href="models_agora_settings/models_agora_settings-library.html">agora_settings</a></li>
       <li><a href="agora_uikit/agora_uikit-library.html">agora_uikit</a></li>
       <li><a href="models_agora_user/models_agora_user-library.html">agora_user</a></li>
+      <li><a href="controllers_rtc_buttons/controllers_rtc_buttons-library.html">rtc_buttons</a></li>
+      <li><a href="controllers_rtc_event_handlers/controllers_rtc_event_handlers-library.html">rtc_event_handlers</a></li>
+      <li><a href="controllers_rtc_token_handler/controllers_rtc_token_handler-library.html">rtc_token_handler</a></li>
+      <li><a href="controllers_rtm_channel_event_handler/controllers_rtm_channel_event_handler-library.html">rtm_channel_event_handler</a></li>
+      <li><a href="controllers_rtm_client_event_handler/controllers_rtm_client_event_handler-library.html">rtm_client_event_handler</a></li>
+      <li><a href="controllers_rtm_controller/controllers_rtm_controller-library.html">rtm_controller</a></li>
+      <li><a href="controllers_rtm_controller_helper/controllers_rtm_controller_helper-library.html">rtm_controller_helper</a></li>
+      <li><a href="models_rtm_message/models_rtm_message-library.html">rtm_message</a></li>
+      <li><a href="controllers_rtm_mute_request/controllers_rtm_mute_request-library.html">rtm_mute_request</a></li>
+      <li><a href="controllers_rtm_token_handler/controllers_rtm_token_handler-library.html">rtm_token_handler</a></li>
       <li><a href="controllers_session_controller/controllers_session_controller-library.html">session_controller</a></li>
 </ol>
 
@@ -210,7 +349,7 @@ Widget build(BuildContext context) {
 <footer>
   <span class="no-break">
     agora_uikit
-      0.0.1
+      1.0.2
   </span>
 
   
@@ -219,7 +358,7 @@ Widget build(BuildContext context) {
 
 
 <script src="static-assets/highlight.pack.js?v1"></script>
-<script src="static-assets/script.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
 
 
 

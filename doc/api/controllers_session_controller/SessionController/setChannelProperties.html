@@ -21,8 +21,7 @@
 </head>
 
 
-<body data-base-href="../../"
-      data-using-base-href="false">
+<body data-base-href="../../" data-using-base-href="false">
 
 <div id="overlay-under-drawer"></div>
 
@@ -69,44 +68,53 @@
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
   <pre class="language-dart"><code class="language-dart">void setChannelProperties(AgoraChannelData agoraChannelData) async {
-  await value.engine?.setChannelProfile(agoraChannelData.channelProfile ?? ChannelProfile.Communication);
-
+  await value.engine?.setChannelProfile(agoraChannelData.channelProfile);
   if (agoraChannelData.channelProfile == ChannelProfile.LiveBroadcasting) {
-    await value.engine?.setClientRole(agoraChannelData.clientRole ?? ClientRole.Broadcaster);
+    await value.engine?.setClientRole(agoraChannelData.clientRole);
   } else {
-    print(&#39;You can only set channel profile in case of Live Broadcasting&#39;);
+    log(&#39;You can only set channel profile in case of Live Broadcasting&#39;,
+        level: Level.warning.value);
   }
 
-  value = value.copyWith(isActiveSpeakerDisabled: agoraChannelData.isActiveSpeakerDisabled);
+  value = value.copyWith(
+      isActiveSpeakerDisabled: agoraChannelData.isActiveSpeakerDisabled);
 
-  await value.engine?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams ?? false);
+  await value.engine
+      ?.muteAllRemoteVideoStreams(agoraChannelData.muteAllRemoteVideoStreams);
 
-  await value.engine?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams ?? false);
+  await value.engine
+      ?.muteAllRemoteAudioStreams(agoraChannelData.muteAllRemoteAudioStreams);
 
   if (agoraChannelData.setBeautyEffectOptions != null) {
-    value.engine?.setBeautyEffectOptions(true, agoraChannelData.setBeautyEffectOptions!);
+    await value.engine?.setBeautyEffectOptions(
+        true, agoraChannelData.setBeautyEffectOptions!);
   }
 
-  await value.engine?.enableDualStreamMode(agoraChannelData.enableDualStreamMode ?? false);
+  await value.engine
+      ?.enableDualStreamMode(agoraChannelData.enableDualStreamMode);
 
   if (agoraChannelData.localPublishFallbackOption != null) {
-    await value.engine?.setLocalPublishFallbackOption(agoraChannelData.localPublishFallbackOption!);
+    await value.engine?.setLocalPublishFallbackOption(
+        agoraChannelData.localPublishFallbackOption!);
   }
 
   if (agoraChannelData.remoteSubscribeFallbackOption != null) {
-    await value.engine?.setRemoteSubscribeFallbackOption(agoraChannelData.remoteSubscribeFallbackOption!);
+    await value.engine?.setRemoteSubscribeFallbackOption(
+        agoraChannelData.remoteSubscribeFallbackOption!);
   }
 
   if (agoraChannelData.videoEncoderConfiguration != null) {
-    await value.engine?.setVideoEncoderConfiguration(agoraChannelData.videoEncoderConfiguration!);
+    await value.engine?.setVideoEncoderConfiguration(
+        agoraChannelData.videoEncoderConfiguration!);
   }
 
-  value.engine?.setCameraAutoFocusFaceModeEnabled(agoraChannelData.setCameraAutoFocusFaceModeEnabled ?? false);
+  await value.engine?.setCameraAutoFocusFaceModeEnabled(
+      agoraChannelData.setCameraAutoFocusFaceModeEnabled);
 
-  value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn ?? false);
+  await value.engine?.setCameraTorchOn(agoraChannelData.setCameraTorchOn);
 
-  await value.engine
-      ?.setAudioProfile(agoraChannelData.audioProfile ?? AudioProfile.Default, agoraChannelData.audioScenario ?? AudioScenario.Default);
+  await value.engine?.setAudioProfile(
+      agoraChannelData.audioProfile, agoraChannelData.audioScenario);
 }</code></pre>
 </section>
 
@@ -131,36 +139,40 @@
     <h5>SessionController class</h5>
     <ol>
 
-    <li class="section-title"><a href="../../controllers_session_controller/SessionController-class.html#constructors">Constructors</a></li>
-    <li><a href="../../controllers_session_controller/SessionController/SessionController.html">SessionController</a></li>
+        <li class="section-title"><a href="../../controllers_session_controller/SessionController-class.html#constructors">Constructors</a></li>
+          <li><a href="../../controllers_session_controller/SessionController/SessionController.html">SessionController</a></li>
 
 
-    <li class="section-title">
+    <li class="section-title inherited">
       <a href="../../controllers_session_controller/SessionController-class.html#instance-properties">Properties</a>
     </li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/hasListeners.html">hasListeners</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
-    <li><a href="../../controllers_session_controller/SessionController/timer.html">timer</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ValueNotifier/value.html">value</a></li>
 
     <li class="section-title"><a href="../../controllers_session_controller/SessionController-class.html#instance-methods">Methods</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/addListener.html">addListener</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/addUser.html">addUser</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/askForUserCameraAndMicPermission.html">askForUserCameraAndMicPermission</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/checkForMaxUser.html">checkForMaxUser</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/clearUsers.html">clearUsers</a></li>
     <li><a href="../../controllers_session_controller/SessionController/createEvents.html">createEvents</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/createRtmClientEvents.html">createRtmClientEvents</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/dispose.html">dispose</a></li>
-    <li><a href="../../controllers_session_controller/SessionController/endCall.html">endCall</a></li>
     <li><a href="../../controllers_session_controller/SessionController/initializeEngine.html">initializeEngine</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/initializeRtm.html">initializeRtm</a></li>
     <li><a href="../../controllers_session_controller/SessionController/joinVideoChannel.html">joinVideoChannel</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/notifyListeners.html">notifyListeners</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ChangeNotifier/removeListener.html">removeListener</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/removeUser.html">removeUser</a></li>
     <li><a href="../../controllers_session_controller/SessionController/setChannelProperties.html">setChannelProperties</a></li>
     <li><a href="../../controllers_session_controller/SessionController/swapUser.html">swapUser</a></li>
-    <li><a href="../../controllers_session_controller/SessionController/switchCamera.html">switchCamera</a></li>
-    <li><a href="../../controllers_session_controller/SessionController/toggleCamera.html">toggleCamera</a></li>
-    <li><a href="../../controllers_session_controller/SessionController/toggleMute.html">toggleMute</a></li>
-    <li><a href="../../controllers_session_controller/SessionController/toggleVisible.html">toggleVisible</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/ValueNotifier/toString.html">toString</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/updateLayoutType.html">updateLayoutType</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/updateUserAudio.html">updateUserAudio</a></li>
+    <li><a href="../../controllers_session_controller/SessionController/updateUserVideo.html">updateUserVideo</a></li>
 
     <li class="section-title inherited"><a href="../../controllers_session_controller/SessionController-class.html#operators">Operators</a></li>
     <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
@@ -180,7 +192,7 @@
 <footer>
   <span class="no-break">
     agora_uikit
-      0.0.1
+      1.0.2
   </span>
 
   
@@ -189,7 +201,7 @@
 
 
 <script src="../../static-assets/highlight.pack.js?v1"></script>
-<script src="../../static-assets/script.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
 
 
 

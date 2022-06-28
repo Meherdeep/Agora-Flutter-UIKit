@@ -1,4 +1,5 @@
 import 'package:agora_uikit/agora_uikit.dart';
+import 'package:agora_uikit/controllers/rtc_buttons.dart';
 import 'package:flutter/material.dart';
 
 /// A UI class to style how the buttons look. Use this class to add, remove or customize the buttons in your live video calling application.
@@ -15,13 +16,13 @@ class AgoraVideoButtons extends StatefulWidget {
   final bool? autoHideButtons;
 
   /// The default auto hide time = 5 seconds
-  final int? autoHideButtonTime;
+  final int autoHideButtonTime;
 
   /// Adds a vertical padding to the set of button
   final double? verticalButtonPadding;
 
   /// Alignment for the button class
-  final Alignment? buttonAlignment;
+  final Alignment buttonAlignment;
 
   /// Use this to style the disconnect button as per your liking while still keeping the default functionality.
   final Widget? disconnectButtonChild;
@@ -41,9 +42,9 @@ class AgoraVideoButtons extends StatefulWidget {
     this.enabledButtons,
     this.extraButtons,
     this.autoHideButtons,
-    this.autoHideButtonTime,
+    this.autoHideButtonTime = 5,
     this.verticalButtonPadding,
-    this.buttonAlignment,
+    this.buttonAlignment = Alignment.bottomCenter,
     this.disconnectButtonChild,
     this.muteButtonChild,
     this.switchCameraButtonChild,
@@ -51,7 +52,7 @@ class AgoraVideoButtons extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AgoraVideoButtonsState createState() => _AgoraVideoButtonsState();
+  State<AgoraVideoButtons> createState() => _AgoraVideoButtonsState();
 }
 
 class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
@@ -61,11 +62,13 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   void initState() {
     super.initState();
     Future.delayed(
-      Duration(seconds: widget.autoHideButtonTime ?? 5),
+      Duration(seconds: widget.autoHideButtonTime),
       () {
         if (mounted) {
           setState(() {
-            widget.client.sessionController.toggleVisible();
+            toggleVisible(
+              sessionController: widget.client.sessionController,
+            );
           });
         }
       },
@@ -91,7 +94,7 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
 
   Widget toolbar(List<Widget>? buttonList) {
     return Container(
-      alignment: widget.buttonAlignment ?? Alignment.bottomCenter,
+      alignment: widget.buttonAlignment,
       padding: widget.verticalButtonPadding == null
           ? const EdgeInsets.only(bottom: 48)
           : EdgeInsets.symmetric(
@@ -114,14 +117,31 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
                           _switchCameraButton(),
                           _disableVideoButton(),
                           if (widget.extraButtons != null)
-                            for (var i = 0; i < widget.extraButtons!.length; i++) widget.extraButtons![i]
+                            for (var i = 0;
+                                i < widget.extraButtons!.length;
+                                i++)
+                              widget.extraButtons![i]
                         ],
                       )
                     : Row(
                         children: [
-                          for (var i = 0; i < buttonList!.length; i++) buttonList[i],
+                          if (widget.enabledButtons!
+                              .contains(BuiltInButtons.toggleMic))
+                            _muteMicButton(),
+                          if (widget.enabledButtons!
+                              .contains(BuiltInButtons.callEnd))
+                            _disconnectCallButton(),
+                          if (widget.enabledButtons!
+                              .contains(BuiltInButtons.switchCamera))
+                            _switchCameraButton(),
+                          if (widget.enabledButtons!
+                              .contains(BuiltInButtons.toggleCamera))
+                            _disableVideoButton(),
                           if (widget.extraButtons != null)
-                            for (var i = 0; i < widget.extraButtons!.length; i++) widget.extraButtons![i]
+                            for (var i = 0;
+                                i < widget.extraButtons!.length;
+                                i++)
+                              widget.extraButtons![i]
                         ],
                       ),
               ),
@@ -135,19 +155,29 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   Widget _muteMicButton() {
     return widget.muteButtonChild != null
         ? RawMaterialButton(
-            onPressed: () => widget.client.sessionController.toggleMute(),
+            onPressed: () => toggleMute(
+              sessionController: widget.client.sessionController,
+            ),
             child: widget.muteButtonChild,
           )
         : RawMaterialButton(
-            onPressed: () => widget.client.sessionController.toggleMute(),
+            onPressed: () => toggleMute(
+              sessionController: widget.client.sessionController,
+            ),
             child: Icon(
-              widget.client.sessionController.value.isLocalUserMuted ? Icons.mic_off : Icons.mic,
-              color: widget.client.sessionController.value.isLocalUserMuted ? Colors.white : Colors.blueAccent,
+              widget.client.sessionController.value.isLocalUserMuted
+                  ? Icons.mic_off
+                  : Icons.mic,
+              color: widget.client.sessionController.value.isLocalUserMuted
+                  ? Colors.white
+                  : Colors.blueAccent,
               size: 20.0,
             ),
             shape: CircleBorder(),
             elevation: 2.0,
-            fillColor: widget.client.sessionController.value.isLocalUserMuted ? Colors.blueAccent : Colors.white,
+            fillColor: widget.client.sessionController.value.isLocalUserMuted
+                ? Colors.blueAccent
+                : Colors.white,
             padding: const EdgeInsets.all(12.0),
           );
   }
@@ -171,11 +201,15 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   Widget _switchCameraButton() {
     return widget.switchCameraButtonChild != null
         ? RawMaterialButton(
-            onPressed: () => widget.client.sessionController.switchCamera(),
+            onPressed: () => switchCamera(
+              sessionController: widget.client.sessionController,
+            ),
             child: widget.switchCameraButtonChild,
           )
         : RawMaterialButton(
-            onPressed: () => widget.client.sessionController.switchCamera(),
+            onPressed: () => switchCamera(
+              sessionController: widget.client.sessionController,
+            ),
             child: Icon(
               Icons.switch_camera,
               color: Colors.blueAccent,
@@ -191,27 +225,39 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
   Widget _disableVideoButton() {
     return widget.disableVideoButtonChild != null
         ? RawMaterialButton(
-            onPressed: () => widget.client.sessionController.toggleCamera(),
+            onPressed: () => toggleCamera(
+              sessionController: widget.client.sessionController,
+            ),
             child: widget.disableVideoButtonChild,
           )
         : RawMaterialButton(
-            onPressed: () => widget.client.sessionController.toggleCamera(),
+            onPressed: () => toggleCamera(
+              sessionController: widget.client.sessionController,
+            ),
             child: Icon(
-              widget.client.sessionController.value.isLocalVideoDisabled ? Icons.videocam_off : Icons.videocam,
-              color: widget.client.sessionController.value.isLocalVideoDisabled ? Colors.white : Colors.blueAccent,
+              widget.client.sessionController.value.isLocalVideoDisabled
+                  ? Icons.videocam_off
+                  : Icons.videocam,
+              color: widget.client.sessionController.value.isLocalVideoDisabled
+                  ? Colors.white
+                  : Colors.blueAccent,
               size: 20.0,
             ),
             shape: CircleBorder(),
             elevation: 2.0,
-            fillColor: widget.client.sessionController.value.isLocalVideoDisabled ? Colors.blueAccent : Colors.white,
+            fillColor:
+                widget.client.sessionController.value.isLocalVideoDisabled
+                    ? Colors.blueAccent
+                    : Colors.white,
             padding: const EdgeInsets.all(12.0),
           );
   }
 
   /// Default functionality of disconnect button is such that it pops the view and navigates the user to the previous screen.
-  void _onCallEnd(BuildContext context) {
-    widget.client.sessionController.dispose();
-    widget.client.sessionController.endCall();
+  Future<void> _onCallEnd(BuildContext context) async {
+    await endCall(
+      sessionController: widget.client.sessionController,
+    );
     Navigator.pop(context);
   }
 
@@ -224,9 +270,12 @@ class _AgoraVideoButtonsState extends State<AgoraVideoButtons> {
               ? widget.autoHideButtons!
                   ? Visibility(
                       visible: widget.client.sessionController.value.visible,
-                      child: toolbar(widget.enabledButtons == null ? null : buttonsEnabled),
+                      child: toolbar(widget.enabledButtons == null
+                          ? null
+                          : buttonsEnabled),
                     )
-                  : toolbar(widget.enabledButtons == null ? null : buttonsEnabled)
+                  : toolbar(
+                      widget.enabledButtons == null ? null : buttonsEnabled)
               : toolbar(widget.enabledButtons == null ? null : buttonsEnabled);
         });
   }

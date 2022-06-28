@@ -15,28 +15,52 @@ class GridLayout extends StatefulWidget {
   /// Widget that will be displayed when the local or remote user has disabled it's video.
   final Widget? disabledVideoWidget;
 
+  /// Render mode for local and remote video
+  final VideoRenderMode videoRenderMode;
+
   const GridLayout({
     Key? key,
     required this.client,
     this.showNumberOfUsers,
-    this.disabledVideoWidget,
+    this.disabledVideoWidget = const DisabledVideoWidget(),
+    this.videoRenderMode = VideoRenderMode.Hidden,
   }) : super(key: key);
 
   @override
-  _GridLayoutState createState() => _GridLayoutState();
+  State<GridLayout> createState() => _GridLayoutState();
 }
 
 class _GridLayoutState extends State<GridLayout> {
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    list.add(rtc_local_view.SurfaceView(
-      zOrderMediaOverlay: true,
-    ));
+    widget.client.sessionController.value.isLocalVideoDisabled
+        ? list.add(
+            DisabledVideoStfWidget(
+              disabledVideoWidget: widget.disabledVideoWidget,
+            ),
+          )
+        : list.add(
+            rtc_local_view.SurfaceView(
+              zOrderMediaOverlay: true,
+              renderMode: widget.videoRenderMode,
+            ),
+          );
 
     for (AgoraUser user in widget.client.sessionController.value.users) {
       user.videoDisabled
-          ? list.add(DisabledVideoWidget())
-          : list.add(rtc_remote_view.SurfaceView(uid: user.uid));
+          ? list.add(
+              DisabledVideoStfWidget(
+                disabledVideoWidget: widget.disabledVideoWidget,
+              ),
+            )
+          : list.add(
+              rtc_remote_view.SurfaceView(
+                channelId: widget
+                    .client.sessionController.value.connectionData!.channelName,
+                uid: user.uid,
+                renderMode: widget.videoRenderMode,
+              ),
+            );
     }
 
     return list;
@@ -136,5 +160,21 @@ class _GridLayoutState extends State<GridLayout> {
         );
       },
     );
+  }
+}
+
+class DisabledVideoStfWidget extends StatefulWidget {
+  final Widget? disabledVideoWidget;
+  const DisabledVideoStfWidget({Key? key, this.disabledVideoWidget})
+      : super(key: key);
+
+  @override
+  State<DisabledVideoStfWidget> createState() => _DisabledVideoStfWidgetState();
+}
+
+class _DisabledVideoStfWidgetState extends State<DisabledVideoStfWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.disabledVideoWidget!;
   }
 }

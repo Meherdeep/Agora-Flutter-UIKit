@@ -1,13 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:agora_uikit/agora_uikit.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -15,17 +17,23 @@ class _MyAppState extends State<MyApp> {
     agoraConnectionData: AgoraConnectionData(
       appId: "<--Add your App Id here-->",
       channelName: "test",
+      username: "user",
     ),
-    enabledPermission: [
-      Permission.camera,
-      Permission.microphone,
-    ],
   );
+
+  @override
+  void initState() {
+    super.initState();
+    initAgora();
+  }
+
+  void initAgora() async {
+    await client.initialize();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Agora UIKit'),
@@ -36,6 +44,8 @@ class _MyAppState extends State<MyApp> {
             children: [
               AgoraVideoViewer(
                 client: client,
+                layoutType: Layout.floating,
+                enableHostControls: true, // Add this to enable host controls
               ),
               AgoraVideoButtons(
                 client: client,

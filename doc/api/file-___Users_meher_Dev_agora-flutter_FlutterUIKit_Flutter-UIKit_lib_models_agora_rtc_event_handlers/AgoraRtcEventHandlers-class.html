@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the AgoraRtcEventHandlers class from the agora_rtc_event_handlers library, for the Dart programming language.">
+  <title>AgoraRtcEventHandlers class - agora_rtc_event_handlers library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">agora_uikit</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers-library.html">agora_rtc_event_handlers</a></li>
+    <li class="self-crumb">AgoraRtcEventHandlers class</li>
+  </ol>
+  <div class="self-name">AgoraRtcEventHandlers</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-class">AgoraRtcEventHandlers</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+
+
+
+    
+  <section class="summary offset-anchor" id="constructors">
+    <h2>Constructors</h2>
+
+    <dl class="constructor-summary-list">
+        <dt id="AgoraRtcEventHandlers" class="callable">
+          <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/AgoraRtcEventHandlers.html">AgoraRtcEventHandlers</a></span><span class="signature">(<span class="parameter" id="-param-warning">{<span class="type-annotation">dynamic</span> <span class="parameter-name">warning</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-apiCallExecuted"><span class="type-annotation">dynamic</span> <span class="parameter-name">apiCallExecuted</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span></span>)?, </span><span class="parameter" id="-param-rejoinChannelSuccess"><span class="type-annotation">dynamic</span> <span class="parameter-name">rejoinChannelSuccess</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-localUserRegistered"><span class="type-annotation">dynamic</span> <span class="parameter-name">localUserRegistered</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span></span>)?, </span><span class="parameter" id="-param-userInfoUpdated"><span class="type-annotation">dynamic</span> <span class="parameter-name">userInfoUpdated</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-clientRoleChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">clientRoleChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-connectionStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">connectionStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-networkTypeChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">networkTypeChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-connectionLost"><span class="type-annotation">dynamic</span> <span class="parameter-name">connectionLost</span>()?, </span><span class="parameter" id="-param-requestToken"><span class="type-annotation">dynamic</span> <span class="parameter-name">requestToken</span>()?, </span><span class="parameter" id="-param-audioVolumeIndication"><span class="type-annotation">dynamic</span> <span class="parameter-name">audioVolumeIndication</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-firstLocalAudioFrame"><span class="type-annotation">dynamic</span> <span class="parameter-name">firstLocalAudioFrame</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-firstLocalVideoFrame"><span class="type-annotation">dynamic</span> <span class="parameter-name">firstLocalVideoFrame</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-userMuteVideo"><span class="type-annotation">dynamic</span> <span class="parameter-name">userMuteVideo</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span></span>)?, </span><span class="parameter" id="-param-videoSizeChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">videoSizeChanged</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-localPublishFallbackToAudioOnly"><span class="type-annotation">dynamic</span> <span class="parameter-name">localPublishFallbackToAudioOnly</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span></span>)?, </span><span class="parameter" id="-param-remoteSubscribeFallbackToAudioOnly"><span class="type-annotation">dynamic</span> <span class="parameter-name">remoteSubscribeFallbackToAudioOnly</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span></span>)?, </span><span class="parameter" id="-param-audioRouteChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">audioRouteChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-cameraFocusAreaChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">cameraFocusAreaChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-cameraExposureAreaChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">cameraExposureAreaChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-facePositionChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">facePositionChanged</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a></span></span>)?, </span><span class="parameter" id="-param-rtcStats"><span class="type-annotation">dynamic</span> <span class="parameter-name">rtcStats</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-lastmileQuality"><span class="type-annotation">dynamic</span> <span class="parameter-name">lastmileQuality</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-networkQuality"><span class="type-annotation">dynamic</span> <span class="parameter-name">networkQuality</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-lastmileProbeResult"><span class="type-annotation">dynamic</span> <span class="parameter-name">lastmileProbeResult</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-localVideoStats"><span class="type-annotation">dynamic</span> <span class="parameter-name">localVideoStats</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-localAudioStats"><span class="type-annotation">dynamic</span> <span class="parameter-name">localAudioStats</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-remoteVideoStats"><span class="type-annotation">dynamic</span> <span class="parameter-name">remoteVideoStats</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-remoteAudioStats"><span class="type-annotation">dynamic</span> <span class="parameter-name">remoteAudioStats</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-audioMixingFinished"><span class="type-annotation">dynamic</span> <span class="parameter-name">audioMixingFinished</span>()?, </span><span class="parameter" id="-param-audioMixingStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">audioMixingStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-audioEffectFinished"><span class="type-annotation">dynamic</span> <span class="parameter-name">audioEffectFinished</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-rtmpStreamingStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">rtmpStreamingStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-transcodingUpdated"><span class="type-annotation">dynamic</span> <span class="parameter-name">transcodingUpdated</span>()?, </span><span class="parameter" id="-param-streamInjectedStatus"><span class="type-annotation">dynamic</span> <span class="parameter-name">streamInjectedStatus</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-streamMessage"><span class="type-annotation">dynamic</span> <span class="parameter-name">streamMessage</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-typed_data/Uint8List-class.html">Uint8List</a></span></span>)?, </span><span class="parameter" id="-param-streamMessageError"><span class="type-annotation">dynamic</span> <span class="parameter-name">streamMessageError</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-mediaEngineLoadSuccess"><span class="type-annotation">dynamic</span> <span class="parameter-name">mediaEngineLoadSuccess</span>()?, </span><span class="parameter" id="-param-mediaEngineStartCallSuccess"><span class="type-annotation">dynamic</span> <span class="parameter-name">mediaEngineStartCallSuccess</span>()?, </span><span class="parameter" id="-param-channelMediaRelayStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">channelMediaRelayStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-channelMediaRelayEvent"><span class="type-annotation">dynamic</span> <span class="parameter-name">channelMediaRelayEvent</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-metadataReceived"><span class="type-annotation">dynamic</span> <span class="parameter-name">metadataReceived</span>(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-firstLocalAudioFramePublished"><span class="type-annotation">dynamic</span> <span class="parameter-name">firstLocalAudioFramePublished</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-firstLocalVideoFramePublished"><span class="type-annotation">dynamic</span> <span class="parameter-name">firstLocalVideoFramePublished</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-audioPublishStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">audioPublishStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-videoPublishStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">videoPublishStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-audioSubscribeStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">audioSubscribeStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-videoSubscribeStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">videoSubscribeStateChanged</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)?, </span><span class="parameter" id="-param-rtmpStreamingEvent"><span class="type-annotation">dynamic</span> <span class="parameter-name">rtmpStreamingEvent</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-userSuperResolutionEnabled"><span class="type-annotation">dynamic</span> <span class="parameter-name">userSuperResolutionEnabled</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-uploadLogResult"><span class="type-annotation">dynamic</span> <span class="parameter-name">uploadLogResult</span>(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)?, </span><span class="parameter" id="-param-userJoined"><span class="type-annotation">dynamic</span> <span class="parameter-name">userJoined</span>(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)?, </span><span class="parameter" id="-param-joinChannelSuccess"><span class="type-annotation">dynamic</span> <span class="parameter-name">joinChannelSuccess</span>(<span class="parameter" id="param-channel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">channel</span>, </span><span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)?, </span><span class="parameter" id="-param-onError"><span class="type-annotation">dynamic</span> <span class="parameter-name">onError</span>(<span class="parameter" id="param-errorCode"><span class="type-annotation">dynamic</span> <span class="parameter-name">errorCode</span></span>)?, </span><span class="parameter" id="-param-activeSpeaker"><span class="type-annotation">dynamic</span> <span class="parameter-name">activeSpeaker</span>(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span></span>)?, </span><span class="parameter" id="-param-leaveChannel"><span class="type-annotation">dynamic</span> <span class="parameter-name">leaveChannel</span>(<span class="parameter" id="param-stats"><span class="type-annotation">dynamic</span> <span class="parameter-name">stats</span></span>)?, </span><span class="parameter" id="-param-localAudioStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">localAudioStateChanged</span>(<span class="parameter" id="param-state"><span class="type-annotation">dynamic</span> <span class="parameter-name">state</span>, </span><span class="parameter" id="param-error"><span class="type-annotation">dynamic</span> <span class="parameter-name">error</span></span>)?, </span><span class="parameter" id="-param-localVideoStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">localVideoStateChanged</span>(<span class="parameter" id="param-localVideoState"><span class="type-annotation">dynamic</span> <span class="parameter-name">localVideoState</span>, </span><span class="parameter" id="param-error"><span class="type-annotation">dynamic</span> <span class="parameter-name">error</span></span>)?, </span><span class="parameter" id="-param-remoteAudioStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">remoteAudioStateChanged</span>(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-state"><span class="type-annotation">dynamic</span> <span class="parameter-name">state</span>, </span><span class="parameter" id="param-reason"><span class="type-annotation">dynamic</span> <span class="parameter-name">reason</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)?, </span><span class="parameter" id="-param-remoteVideoStateChanged"><span class="type-annotation">dynamic</span> <span class="parameter-name">remoteVideoStateChanged</span>(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-state"><span class="type-annotation">dynamic</span> <span class="parameter-name">state</span>, </span><span class="parameter" id="param-reason"><span class="type-annotation">dynamic</span> <span class="parameter-name">reason</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)?, </span><span class="parameter" id="-param-tokenPrivilegeWillExpire"><span class="type-annotation">dynamic</span> <span class="parameter-name">tokenPrivilegeWillExpire</span>(<span class="parameter" id="param-token"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">token</span></span>)?, </span><span class="parameter" id="-param-userOffline"><span class="type-annotation">dynamic</span> <span class="parameter-name">userOffline</span>(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-reason"><span class="type-annotation">dynamic</span> <span class="parameter-name">reason</span></span>)?}</span>)</span>
+        </dt>
+        <dd>
+          
+            <div class="constructor-modifier features">const</div>
+        </dd>
+    </dl>
+  </section>
+
+    <section class="summary offset-anchor" id="instance-properties">
+      <h2>Properties</h2>
+
+      <dl class="properties">
+        <dt id="activeSpeaker" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/activeSpeaker.html">activeSpeaker</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports which user is the loudest speaker.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="apiCallExecuted" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/apiCallExecuted.html">apiCallExecuted</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when an API method is executed.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="audioEffectFinished" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioEffectFinished.html">audioEffectFinished</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the audio effect file playback finishes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="audioMixingFinished" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioMixingFinished.html">audioMixingFinished</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">()</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the audio mixing file playback finishes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="audioMixingStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioMixingStateChanged.html">audioMixingStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the playback state of the local user's music file changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="audioPublishStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioPublishStateChanged.html">audioPublishStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the audio publishing state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="audioRouteChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioRouteChanged.html">audioRouteChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local audio playback route changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="audioSubscribeStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the audio subscribing state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="audioVolumeIndication" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioVolumeIndication.html">audioVolumeIndication</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports which users are speaking and the speakers' volume, and whether the local user is speaking.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="cameraExposureAreaChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/cameraExposureAreaChanged.html">cameraExposureAreaChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  The camera exposure area has changed.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="cameraFocusAreaChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/cameraFocusAreaChanged.html">cameraFocusAreaChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the camera focus area is changed.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="channelMediaRelayEvent" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/channelMediaRelayEvent.html">channelMediaRelayEvent</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports events during the media stream relay.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="channelMediaRelayStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the state of the media stream relay changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="clientRoleChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/clientRoleChanged.html">clientRoleChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the user role switches in a live broadcast. For example, from a host to an audience or from an audience to a host.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="connectionLost" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/connectionLost.html">connectionLost</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">()</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the SDK cannot reconnect to Agora's edge server 10 seconds after its connection to the server is interrupted.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="connectionStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/connectionStateChanged.html">connectionStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the network connection state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="facePositionChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/facePositionChanged.html">facePositionChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the face detection result of the local user.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="firstLocalAudioFrame" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalAudioFrame.html">firstLocalAudioFrame</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the first local audio frame is sent.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="firstLocalAudioFramePublished" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalAudioFramePublished.html">firstLocalAudioFramePublished</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the first audio frame is published.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="firstLocalVideoFrame" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalVideoFrame.html">firstLocalVideoFrame</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the first local video frame is rendered.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="firstLocalVideoFramePublished" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalVideoFramePublished.html">firstLocalVideoFramePublished</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the first video frame is published.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features">read-only, inherited</div>
+
+</dd>
+
+        <dt id="joinChannelSuccess" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/joinChannelSuccess.html">joinChannelSuccess</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-channel"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">channel</span>, </span><span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local user joins a specified channel.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="lastmileProbeResult" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/lastmileProbeResult.html">lastmileProbeResult</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the last-mile network probe result.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="lastmileQuality" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/lastmileQuality.html">lastmileQuality</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the last mile network quality of the local user once every two seconds before the user joins the channel.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="leaveChannel" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/leaveChannel.html">leaveChannel</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-stats"><span class="type-annotation">dynamic</span> <span class="parameter-name">stats</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when a user leaves the channel.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="localAudioStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localAudioStateChanged.html">localAudioStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-state"><span class="type-annotation">dynamic</span> <span class="parameter-name">state</span>, </span><span class="parameter" id="param-error"><span class="type-annotation">dynamic</span> <span class="parameter-name">error</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local audio state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="localAudioStats" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localAudioStats.html">localAudioStats</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the statistics of the local audio stream.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="localPublishFallbackToAudioOnly" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localPublishFallbackToAudioOnly.html">localPublishFallbackToAudioOnly</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the published media stream falls back to an audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="localUserRegistered" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localUserRegistered.html">localUserRegistered</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local user registers a user account.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="localVideoStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localVideoStateChanged.html">localVideoStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-localVideoState"><span class="type-annotation">dynamic</span> <span class="parameter-name">localVideoState</span>, </span><span class="parameter" id="param-error"><span class="type-annotation">dynamic</span> <span class="parameter-name">error</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local video state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="localVideoStats" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localVideoStats.html">localVideoStats</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the statistics of the local video streams.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="mediaEngineLoadSuccess" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/mediaEngineLoadSuccess.html">mediaEngineLoadSuccess</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">()</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the media engine is loaded.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="mediaEngineStartCallSuccess" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/mediaEngineStartCallSuccess.html">mediaEngineStartCallSuccess</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">()</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the media engine starts.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="metadataReceived" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/metadataReceived.html">metadataReceived</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local user receives the metadata.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="networkQuality" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/networkQuality.html">networkQuality</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the last mile network quality of each user in the channel once every two seconds.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="networkTypeChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/networkTypeChanged.html">networkTypeChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the network type changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="onError" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/onError.html">onError</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-errorCode"><span class="type-annotation">dynamic</span> <span class="parameter-name">errorCode</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports an error during SDK runtime
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="rejoinChannelSuccess" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rejoinChannelSuccess.html">rejoinChannelSuccess</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when a user rejoins the channel after being disconnected due to network problems.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="remoteAudioStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteAudioStateChanged.html">remoteAudioStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-state"><span class="type-annotation">dynamic</span> <span class="parameter-name">state</span>, </span><span class="parameter" id="param-reason"><span class="type-annotation">dynamic</span> <span class="parameter-name">reason</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the remote audio state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="remoteAudioStats" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteAudioStats.html">remoteAudioStats</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the statistics of the audio stream from each remote user/host.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="remoteSubscribeFallbackToAudioOnly" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteSubscribeFallbackToAudioOnly.html">remoteSubscribeFallbackToAudioOnly</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the remote media stream falls back to audio-only stream due to poor network conditions or switches back to video stream after the network conditions improve.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="remoteVideoStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteVideoStateChanged.html">remoteVideoStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-state"><span class="type-annotation">dynamic</span> <span class="parameter-name">state</span>, </span><span class="parameter" id="param-reason"><span class="type-annotation">dynamic</span> <span class="parameter-name">reason</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the remote video state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="remoteVideoStats" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteVideoStats.html">remoteVideoStats</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the statistics of the video stream from each remote user/host.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="requestToken" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/requestToken.html">requestToken</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">()</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the token has expired.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="rtcStats" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rtcStats.html">rtcStats</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the statistics of the <code>RtcEngine</code> once every two seconds.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="rtmpStreamingEvent" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rtmpStreamingEvent.html">rtmpStreamingEvent</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports events during the RTMP or RTMPS streaming.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="rtmpStreamingStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the state of the RTMP or RTMPS streaming changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features">read-only, inherited</div>
+
+</dd>
+
+        <dt id="streamInjectedStatus" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/streamInjectedStatus.html">streamInjectedStatus</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports the status of injecting the online media stream.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="streamMessage" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/streamMessage.html">streamMessage</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-typed_data/Uint8List-class.html">Uint8List</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local user receives a remote data stream.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="streamMessageError" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/streamMessageError.html">streamMessageError</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the local user fails to receive a remote data stream.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="tokenPrivilegeWillExpire" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/tokenPrivilegeWillExpire.html">tokenPrivilegeWillExpire</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-token"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">token</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the token expires in 30 seconds.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="transcodingUpdated" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/transcodingUpdated.html">transcodingUpdated</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">()</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the publisher's transcoding settings are updated.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="userInfoUpdated" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userInfoUpdated.html">userInfoUpdated</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the SDK gets the user ID and user account of the remote user.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="userJoined" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userJoined.html">userJoined</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-elapsed"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">elapsed</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when a remote user <code>ChannelProfile.Communication</code>/host <code>ChannelProfile.LiveBroadcasting</code> joins the channel
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="userMuteVideo" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userMuteVideo.html">userMuteVideo</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when a remote user stops/resumes sending the video stream.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="userOffline" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userOffline.html">userOffline</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-uid"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span> <span class="parameter-name">uid</span>, </span><span class="parameter" id="param-reason"><span class="type-annotation">dynamic</span> <span class="parameter-name">reason</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when a remote user <code>ChannelProfile.Communication</code>/host <code>ChannelProfile.LiveBroadcasting</code> leaves the channel.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="videoPublishStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/videoPublishStateChanged.html">videoPublishStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the video publishing state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="videoSizeChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/videoSizeChanged.html">videoSizeChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the video size or rotation information of a remote user changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="videoSubscribeStateChanged" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation">dynamic</span>, </span><span class="parameter" id="param-"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Occurs when the video subscribing state changes.
+  <div class="features">final</div>
+
+</dd>
+
+        <dt id="warning" class="property">
+  <span class="name"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/warning.html">warning</a></span>
+  <span class="signature">&#8594; (dynamic Function?<span class="signature">(<span class="parameter" id="param-"><span class="type-annotation">dynamic</span></span>)</span>?)</span> 
+
+</dt>
+<dd>
+  Reports a warning during SDK runtime.
+  <div class="features">final</div>
+
+</dd>
+
+      </dl>
+    </section>
+
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed.
+  <div class="features">inherited</div>
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features">inherited</div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features">inherited</div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">agora_uikit</a></li>
+  <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers-library.html">agora_rtc_event_handlers</a></li>
+  <li class="self-crumb">AgoraRtcEventHandlers class</li>
+</ol>
+
+
+    <h5>agora_rtc_event_handlers library</h5>
+    <ol>
+  <li class="section-title"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers-library.html#classes">Classes</a></li>
+  <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers-class.html">AgoraRtcEventHandlers</a></li>
+
+
+
+
+
+
+
+
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <ol>
+
+        <li class="section-title"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers-class.html#constructors">Constructors</a></li>
+          <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/AgoraRtcEventHandlers.html">AgoraRtcEventHandlers</a></li>
+
+
+    <li class="section-title">
+      <a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/activeSpeaker.html">activeSpeaker</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/apiCallExecuted.html">apiCallExecuted</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioEffectFinished.html">audioEffectFinished</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioMixingFinished.html">audioMixingFinished</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioMixingStateChanged.html">audioMixingStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioPublishStateChanged.html">audioPublishStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioRouteChanged.html">audioRouteChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioSubscribeStateChanged.html">audioSubscribeStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/audioVolumeIndication.html">audioVolumeIndication</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/cameraExposureAreaChanged.html">cameraExposureAreaChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/cameraFocusAreaChanged.html">cameraFocusAreaChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/channelMediaRelayEvent.html">channelMediaRelayEvent</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/channelMediaRelayStateChanged.html">channelMediaRelayStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/clientRoleChanged.html">clientRoleChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/connectionLost.html">connectionLost</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/connectionStateChanged.html">connectionStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/facePositionChanged.html">facePositionChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalAudioFrame.html">firstLocalAudioFrame</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalAudioFramePublished.html">firstLocalAudioFramePublished</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalVideoFrame.html">firstLocalVideoFrame</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/firstLocalVideoFramePublished.html">firstLocalVideoFramePublished</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/joinChannelSuccess.html">joinChannelSuccess</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/lastmileProbeResult.html">lastmileProbeResult</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/lastmileQuality.html">lastmileQuality</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/leaveChannel.html">leaveChannel</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localAudioStateChanged.html">localAudioStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localAudioStats.html">localAudioStats</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localPublishFallbackToAudioOnly.html">localPublishFallbackToAudioOnly</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localUserRegistered.html">localUserRegistered</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localVideoStateChanged.html">localVideoStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/localVideoStats.html">localVideoStats</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/mediaEngineLoadSuccess.html">mediaEngineLoadSuccess</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/mediaEngineStartCallSuccess.html">mediaEngineStartCallSuccess</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/metadataReceived.html">metadataReceived</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/networkQuality.html">networkQuality</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/networkTypeChanged.html">networkTypeChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/onError.html">onError</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rejoinChannelSuccess.html">rejoinChannelSuccess</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteAudioStateChanged.html">remoteAudioStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteAudioStats.html">remoteAudioStats</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteSubscribeFallbackToAudioOnly.html">remoteSubscribeFallbackToAudioOnly</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteVideoStateChanged.html">remoteVideoStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/remoteVideoStats.html">remoteVideoStats</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/requestToken.html">requestToken</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rtcStats.html">rtcStats</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rtmpStreamingEvent.html">rtmpStreamingEvent</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/rtmpStreamingStateChanged.html">rtmpStreamingStateChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/streamInjectedStatus.html">streamInjectedStatus</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/streamMessage.html">streamMessage</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/streamMessageError.html">streamMessageError</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/tokenPrivilegeWillExpire.html">tokenPrivilegeWillExpire</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/transcodingUpdated.html">transcodingUpdated</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userInfoUpdated.html">userInfoUpdated</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userJoined.html">userJoined</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userMuteVideo.html">userMuteVideo</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/userOffline.html">userOffline</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/videoPublishStateChanged.html">videoPublishStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/videoSizeChanged.html">videoSizeChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/videoSubscribeStateChanged.html">videoSubscribeStateChanged</a></li>
+    <li><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers/warning.html">warning</a></li>
+
+    <li class="section-title inherited"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers-class.html#instance-methods">Methods</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/toString.html">toString</a></li>
+
+    <li class="section-title inherited"><a href="../file-___Users_meher_Dev_agora-flutter_FlutterUIKit_Flutter-UIKit_lib_models_agora_rtc_event_handlers/AgoraRtcEventHandlers-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    agora_uikit
+      1.0.2
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

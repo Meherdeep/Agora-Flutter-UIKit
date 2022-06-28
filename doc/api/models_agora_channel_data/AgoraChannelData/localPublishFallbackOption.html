@@ -21,8 +21,7 @@
 </head>
 
 
-<body data-base-href="../../"
-      data-using-base-href="false">
+<body data-base-href="../../" data-using-base-href="false">
 
 <div id="overlay-under-drawer"></div>
 
@@ -50,7 +49,7 @@
 </h1></div>
 
         <section class="multi-line-signature">
-          <a href="https://pub.dev/documentation/agora_rtc_engine/4.0.1/rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions</a>?
+          <a href="https://pub.dev/documentation/agora_rtc_engine/5.2.0/agora_rtc_engine/StreamFallbackOptions.html">StreamFallbackOptions</a>?
           <span class="name ">localPublishFallbackOption</span>
           <div class="features">read / write</div>
 
@@ -61,9 +60,9 @@
 <p>Note: Agora does not recommend using this method for CDN live streaming, because the remote CDN live user will have a noticeable lag when the locally published video stream falls back to audio only.
 <em>Parameter</em> StreamFallbackOptions</p>
 <ul>
-<li><a href="https://pub.dev/documentation/agora_rtc_engine/4.0.1/rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions.AudioOnly</a>: Under unreliable uplink network conditions, the published video stream falls back to audio only. Under unreliable downlink network conditions, the remote video stream first falls back to the low-stream (low resolution and low bitrate) video; and then to an audio-only stream if the network condition deteriorates.</li>
-<li><a href="https://pub.dev/documentation/agora_rtc_engine/4.0.1/rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions.Disabled</a>: No fallback behavior for the local/remote video stream when the uplink/downlink network condition is unreliable. The quality of the stream is not guaranteed.</li>
-<li><a href="https://pub.dev/documentation/agora_rtc_engine/4.0.1/rtc_engine/StreamFallbackOptions-class.html">StreamFallbackOptions.VideoStreamLow</a>: Under unreliable downlink network conditions, the remote video stream falls back to the low-stream (low resolution and low bitrate) video. You can only set this option in the <a href="../../models_agora_channel_data/AgoraChannelData/remoteSubscribeFallbackOption.html">remoteSubscribeFallbackOption</a> method. Nothing happens when you set this in the <a href="../../models_agora_channel_data/AgoraChannelData/localPublishFallbackOption.html">localPublishFallbackOption</a> method.</li>
+<li><a href="https://pub.dev/documentation/agora_rtc_engine/5.2.0/agora_rtc_engine/StreamFallbackOptions.html">StreamFallbackOptions.AudioOnly</a>: Under unreliable uplink network conditions, the published video stream falls back to audio only. Under unreliable downlink network conditions, the remote video stream first falls back to the low-stream (low resolution and low bitrate) video; and then to an audio-only stream if the network condition deteriorates.</li>
+<li><a href="https://pub.dev/documentation/agora_rtc_engine/5.2.0/agora_rtc_engine/StreamFallbackOptions.html">StreamFallbackOptions.Disabled</a>: No fallback behavior for the local/remote video stream when the uplink/downlink network condition is unreliable. The quality of the stream is not guaranteed.</li>
+<li><a href="https://pub.dev/documentation/agora_rtc_engine/5.2.0/agora_rtc_engine/StreamFallbackOptions.html">StreamFallbackOptions.VideoStreamLow</a>: Under unreliable downlink network conditions, the remote video stream falls back to the low-stream (low resolution and low bitrate) video. You can only set this option in the <a href="../../models_agora_channel_data/AgoraChannelData/remoteSubscribeFallbackOption.html">remoteSubscribeFallbackOption</a> method. Nothing happens when you set this in the <a href="../../models_agora_channel_data/AgoraChannelData/localPublishFallbackOption.html">localPublishFallbackOption</a> method.</li>
 </ul>
 </section>
 
@@ -96,8 +95,8 @@
     <h5>AgoraChannelData class</h5>
     <ol>
 
-    <li class="section-title"><a href="../../models_agora_channel_data/AgoraChannelData-class.html#constructors">Constructors</a></li>
-    <li><a href="../../models_agora_channel_data/AgoraChannelData/AgoraChannelData.html">AgoraChannelData</a></li>
+        <li class="section-title"><a href="../../models_agora_channel_data/AgoraChannelData-class.html#constructors">Constructors</a></li>
+          <li><a href="../../models_agora_channel_data/AgoraChannelData/AgoraChannelData.html">AgoraChannelData</a></li>
 
 
     <li class="section-title">
@@ -143,7 +142,7 @@
 <footer>
   <span class="no-break">
     agora_uikit
-      0.0.1
+      1.0.2
   </span>
 
   
@@ -152,7 +151,7 @@
 
 
 <script src="../../static-assets/highlight.pack.js?v1"></script>
-<script src="../../static-assets/script.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
 
 
 
